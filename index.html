@@ -695,7 +695,7 @@ const LOCKED={
 
 /* ================= DASHBOARD ================= */
 SCREENS.dashboard = (p, st) => Page({key:'dash', title:'Good morning, Joshua',
- sub:'Owner / Admin · Thursday, Aug 7 — 4 items need a human right now, 2 site visits booked today',
+ sub:'Owner / Admin',
  actions:[h('div',{style:{display:'flex', gap:'4px', background:'#fff', border:'1px solid '+C.bd, borderRadius:'9px', padding:'4px'}},
    ...['All','Commercial GC','Restoration'].map(a=>h('div',{key:a, onClick:()=>APP.setState({arm:a}),
      style:{padding:'7px 13px', borderRadius:'6px', cursor:'pointer', fontSize:'12.5px', fontWeight:600, transition:'all .15s',
