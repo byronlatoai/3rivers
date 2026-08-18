@@ -1,0 +1,2088 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;padding:0;background:#F4F7FA}
+  *{box-sizing:border-box}
+  a{color:#087BB2;text-decoration:none}
+  a:hover{color:#0B5C88}
+  input,select,textarea,button{font-family:'Public Sans',system-ui,sans-serif}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:#D5E1EA;border-radius:8px}
+  ::-webkit-scrollbar-track{background:transparent}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  @keyframes pop{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+  @keyframes slidein{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+  @keyframes pulsedot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.8)}}
+  @keyframes shimmer{0%{background-position:-320px 0}100%{background-position:320px 0}}
+</style>
+</helmet>
+<div style="display:flex;min-height:100vh;font-family:'Public Sans',system-ui,sans-serif;color:#0E2A3B;background:#F4F7FA;font-size:13px">
+
+  <aside style="{{ asideStyle }}">
+    <div style="padding:16px 16px 12px;border-bottom:1px solid #EEF3F7;display:flex;align-items:center;gap:10px">
+      <img src="assets/3rivers-logo.png" alt="3Rivers" style="{{ logoStyle }}">
+      <span style="flex:1"></span>
+      <div onClick="{{ toggleRail }}" title="Collapse menu" style="width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#7C93A5;font-size:12px" style-hover="background:#F0F5F9;color:#087BB2">☰</div>
+    </div>
+    <nav style="flex:1;overflow-y:auto;padding:8px 8px 24px">
+      <sc-for list="{{ navRows }}" as="row" hint-placeholder-count="16">
+        <sc-if value="{{ row.isGroup }}" hint-placeholder-val="{{ true }}">
+          <div onClick="{{ row.onClick }}" style="{{ row.style }}">
+            <span style="width:9px;font-size:8px;color:#9DB2C1">{{ row.arrow }}</span>
+            <span style="flex:1;white-space:nowrap;overflow:hidden">{{ row.label }}</span>
+            <sc-if value="{{ row.phase }}">
+              <span style="font-family:'Barlow',sans-serif;font-size:9.5px;font-weight:600;letter-spacing:.06em;color:#7C93A5;border:1px solid #DFE8EF;border-radius:3px;padding:1px 4px">{{ row.phase }}</span>
+            </sc-if>
+          </div>
+        </sc-if>
+        <sc-if value="{{ row.isItem }}">
+          <div onClick="{{ row.onClick }}" title="{{ row.label }}" style="{{ row.style }}">
+            <span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ row.label }}</span>
+            <sc-if value="{{ row.badge }}">
+              <span style="{{ row.badgeStyle }}">{{ row.badge }}</span>
+            </sc-if>
+          </div>
+        </sc-if>
+      </sc-for>
+    </nav>
+    <div style="border-top:1px solid #EEF3F7;padding:11px 16px;display:flex;align-items:center;gap:10px">
+      <div style="width:29px;height:29px;flex:none;border-radius:50%;background:#E7F2F9;color:#087BB2;font-family:'Barlow',sans-serif;font-weight:700;font-size:11.5px;display:flex;align-items:center;justify-content:center">JT</div>
+      <div style="{{ userMetaStyle }}">
+        <div style="font-size:12.5px;font-weight:600">Joshua Tohey</div>
+        <div style="font-size:11px;color:#7C93A5">Owner / Admin</div>
+      </div>
+    </div>
+  </aside>
+
+  <main style="flex:1;min-width:1010px;display:flex;flex-direction:column">
+    <header style="position:sticky;top:0;z-index:30;background:rgba(255,255,255,.93);backdrop-filter:blur(8px);border-bottom:1px solid #E2E9EF;padding:0 24px;height:58px;display:flex;align-items:center;gap:14px;flex:none">
+      <div onClick="{{ openPalette }}" style="display:flex;align-items:center;gap:9px;width:100%;max-width:400px;font-size:13px;color:#9DB2C1;background:#F4F7FA;border:1px solid #E2E9EF;border-radius:8px;padding:8px 12px;cursor:pointer" style-hover="border-color:#087BB2;color:#5B7387">
+        <span>⌕</span><span style="flex:1">Search leads, jobs, contacts, screens…</span>
+        <span style="font-size:10.5px;font-weight:600;border:1px solid #DFE8EF;border-radius:4px;padding:1px 5px;background:#fff">⌘K</span>
+      </div>
+      <span style="flex:1"></span>
+      <div style="display:flex;align-items:center;gap:7px;font-size:12px;color:#5B7387;background:#F4F7FA;border:1px solid #E2E9EF;border-radius:8px;padding:6px 11px">
+        <span style="width:7px;height:7px;border-radius:50%;background:#2FA36B;animation:pulsedot 2.4s ease-in-out infinite"></span>AI receptionist live
+      </div>
+      <div onClick="{{ openAlerts }}" style="position:relative;width:34px;height:34px;border:1px solid #E2E9EF;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:#fff" style-hover="border-color:#087BB2">
+        <span style="font-size:14px">🔔</span>
+        <span style="position:absolute;top:-6px;right:-6px;min-width:17px;height:17px;border-radius:9px;background:#C8442E;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px">3</span>
+      </div>
+    </header>
+    <div style="flex:1;min-width:0">{{ screen }}</div>
+  </main>
+
+  {{ modal }}
+  {{ palette }}
+  <div style="position:fixed;right:20px;bottom:20px;z-index:200;display:flex;flex-direction:column;gap:9px;align-items:flex-end">{{ toastList }}</div>
+  <input type="file" ref="{{ fileRef }}" onChange="{{ onFilePicked }}" style="display:none">
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+/* ============ 3Rivers platform — full front end ============ */
+const E = React.createElement;
+const h = (t, p, ...k) => E(t, p || null, ...k);
+
+const C = {ink:'#0E2A3B', mut:'#5B7387', faint:'#7C93A5', bd:'#E2E9EF', line:'#F2F6F9',
+  bg:'#F4F7FA', pri:'#087BB2', priD:'#0B5C88', priL:'#E7F2F9', cy:'#30A5DE',
+  dg:'#C8442E', dgL:'#FBEDE9', wn:'#8A6413', wnL:'#FBF3E2', ok:'#2F6B4F', okL:'#E9F4EE'};
+const BAR = "'Barlow',sans-serif";
+
+/* ---------------- sample data ---------------- */
+const USERS=[
+ {id:'u1',name:'Joshua Tohey',role:'Owner / Admin',oncall:true,arms:'Both',max:'—',level:'—',active:true},
+ {id:'u2',name:'Byron Tohey',role:'Operations Manager',oncall:true,arms:'Both',max:'—',level:'—',active:true},
+ {id:'u3',name:"Jathan D'Antonio",role:'Sales Estimator',oncall:false,arms:'Both',max:25,level:'Senior',active:true},
+ {id:'u4',name:'Jason Reed',role:'Sales Estimator',oncall:false,arms:'Restoration',max:20,level:'Senior',active:true},
+ {id:'u5',name:'Marcus Hale',role:'Sales Estimator',oncall:false,arms:'Both',max:10,level:'Junior',active:true},
+ {id:'u6',name:'Dana Cruz',role:'Project Manager',oncall:true,arms:'—',max:'—',level:'—',active:true}];
+const EST = USERS.filter(u => u.role === 'Sales Estimator').map(u => u.name);
+
+const LEADS=[
+ {id:'L-2026-0417',client:'Sarah Mitchell',ctype:'Individual',company:'',arm:'Restoration',emg:true,job:'Water damage',src:'AI Call',stage:'New',assigned:null,created:'Aug 7, 02:14',last:'—',next:'Transfer failed → call back',cad:'—',value:null,
+  phone:'(412) 555-0142',phone2:'',email:'s.mitchell@example.com',pref:'Phone',addr:'412 Sycamore St',city:'Pittsburgh',state:'PA',zip:'15201',ptype:'Single family',access:'Lockbox code 4471, dog on site',
+  desc:'Burst supply line under kitchen sink overnight. Water through kitchen ceiling into basement.',carrier:'State Farm',claim:'SF-2026-88413',bidref:'',biddue:'',
+  avail:'Any time today — she is home. Prefers morning.',notes:'Called at 2:14am. Very distressed. AI classified EMERGENCY, transfer to on-call not answered.',
+  q:{scope:'Water mitigation kitchen + basement, drywall & ceiling repair',sa:'Qualified',budget:'Insurance claim — deductible $1,000',ba:'Qualified',time:'Needs mitigation today',ta:'Qualified',out:'Qualified'}},
+ {id:'L-2026-0416',client:'Allegheny Property Group',ctype:'Organization',company:'Allegheny Property Group LLC',arm:'Commercial GC',emg:false,job:'Tenant buildout',src:'Web form',stage:'Visit scheduled',assigned:"Jathan D'Antonio",created:'Aug 5, 09:22',last:'Aug 6, 14:10',next:'Site visit — Fri Aug 8, 10:00',cad:'Running · step 2 of 4',value:'184,500',
+  phone:'(412) 555-0900',phone2:'(412) 555-0901',email:'projects@alleghenypg.com',pref:'Email',addr:'2200 Liberty Ave, Suite 300',city:'Pittsburgh',state:'PA',zip:'15222',ptype:'Commercial office',access:'Building mgr must escort — call ahead',
+  desc:'4,200 sf office buildout. Demo existing partitions, new drywall, electrical, HVAC modifications, flooring, paint.',carrier:'',claim:'',bidref:'APG-BID-2026-11',biddue:'Aug 22, 2026',
+  avail:'Weekday mornings before 11am',notes:'Web form submission. Contact is Rachel Owens, Facilities Director.',
+  q:{scope:'4,200 sf office buildout, 5 trades',sa:'Qualified',budget:'$150k–$200k stated',ba:'Qualified',time:'Start Sept 15, finish by Dec 1',ta:'Qualified',out:'Qualified'}},
+ {id:'L-2026-0415',client:'Robert Chen',ctype:'Individual',company:'',arm:'Restoration',emg:false,job:'Fire damage',src:'Email',stage:'Proposal sent',assigned:'Jason Reed',created:'Aug 1, 11:40',last:'Aug 4, 09:00',next:'STALLED — no reply',cad:'Exhausted · 4 of 4',value:'62,300',
+  phone:'(412) 555-0338',phone2:'',email:'rchen@example.com',pref:'Email',addr:'88 Hillcrest Dr',city:'Mt Lebanon',state:'PA',zip:'15228',ptype:'Single family',access:'Vacant — key at neighbour',
+  desc:'Kitchen fire, smoke damage throughout first floor. Structural review needed for load-bearing wall.',carrier:'Allstate',claim:'AL-772104',bidref:'',biddue:'',
+  avail:'—',notes:'Property is vacant, insured staying with family.',
+  q:{scope:'Fire restoration, kitchen rebuild, smoke remediation 1st floor',sa:'Qualified',budget:'Insurance — carrier approved scope',ba:'Qualified',time:'ASAP',ta:'Qualified',out:'Qualified'}},
+ {id:'L-2026-0414',client:'Westmoreland Retail Partners',ctype:'Organization',company:'Westmoreland Retail Partners',arm:'Commercial GC',emg:false,job:'Roof replacement',src:'Bid invitation',stage:'Estimating',assigned:"Jathan D'Antonio",created:'Jul 30, 15:05',last:'Aug 5, 16:22',next:'Estimate due Aug 12',cad:'Paused',value:'240,000',
+  phone:'(724) 555-0177',phone2:'',email:'bids@wrpartners.com',pref:'Email',addr:'6100 Route 30',city:'Greensburg',state:'PA',zip:'15601',ptype:'Retail strip',access:'Roof access via rear ladder',
+  desc:'38,000 sf TPO roof replacement, 3 retail units occupied during work.',carrier:'',claim:'',bidref:'WRP-2026-ROOF-03',biddue:'Aug 12, 2026',
+  avail:'—',notes:'Formal bid package received. Instructions must be followed exactly.',
+  q:{scope:'38,000 sf TPO roof replacement',sa:'Qualified',budget:'Not disclosed — competitive bid',ba:'Unclear',time:'Bid due Aug 12, work Oct–Nov',ta:'Qualified',out:'Qualified'}},
+ {id:'L-2026-0413',client:'Linda Vasquez',ctype:'Individual',company:'',arm:'Restoration',emg:true,job:'Mold',src:'AI Call',stage:'Assigned',assigned:'Jason Reed',created:'Aug 6, 19:31',last:'Aug 6, 19:48',next:'First contact overdue',cad:'Running · step 1 of 4',value:null,
+  phone:'(412) 555-0455',phone2:'',email:'l.vasquez@example.com',pref:'Text',addr:'19 Beechwood Blvd',city:'Pittsburgh',state:'PA',zip:'15217',ptype:'Duplex',access:'Tenant occupied unit B',
+  desc:'Visible black mould in basement and bathroom ceiling. Tenant reporting respiratory symptoms.',carrier:'Erie Insurance',claim:'ER-2026-4471',bidref:'',biddue:'',
+  avail:'Evenings after 5pm',notes:'AI picked up "mould" + "can\'t breathe" → EMERGENCY. Transferred successfully to Byron.',
+  q:{scope:'Mould remediation basement + bathroom',sa:'Qualified',budget:'Unknown — checking coverage',ba:'Unclear',time:'This week',ta:'Qualified',out:'Needs more info'}},
+ {id:'L-2026-0412',client:'Tri-State Logistics',ctype:'Organization',company:'Tri-State Logistics Inc',arm:'Commercial GC',emg:false,job:'Warehouse repair',src:'Referral',stage:'Qualified',assigned:null,created:'Aug 6, 08:15',last:'—',next:'Assign estimator',cad:'Not started',value:'55,000',
+  phone:'(304) 555-0210',phone2:'',email:'ops@tristatelog.com',pref:'Phone',addr:'1450 Industrial Pkwy',city:'Weirton',state:'WV',zip:'26062',ptype:'Warehouse',access:'Gate code required',
+  desc:'Loading dock door replacement x4, concrete apron repair.',carrier:'',claim:'',bidref:'',biddue:'',
+  avail:'Any weekday',notes:'Referred by Allegheny Property Group. OUT OF STATE — WV.',
+  q:{scope:'4 dock doors + concrete apron',sa:'Qualified',budget:'~$50k',ba:'Qualified',time:'Within 60 days',ta:'Qualified',out:'Qualified'}},
+ {id:'L-2026-0411',client:'Gregory Palmer',ctype:'Individual',company:'',arm:'Restoration',emg:false,job:'Storm damage',src:'Manual Call',stage:'Lost',assigned:'Marcus Hale',created:'Jul 28, 10:02',last:'Aug 2, 11:00',next:'—',cad:'Stopped — declined',value:null,
+  phone:'(412) 555-0611',phone2:'',email:'gpalmer@example.com',pref:'Phone',addr:'77 Orchard Ln',city:'Sewickley',state:'PA',zip:'15143',ptype:'Single family',access:'—',
+  desc:'Wind damage to siding and gutters.',carrier:'Nationwide',claim:'',bidref:'',biddue:'',
+  avail:'—',notes:'Went with another contractor — price.',
+  q:{scope:'Siding + gutter repair',sa:'Qualified',budget:'Under $10k',ba:'Not qualified',time:'—',ta:'—',out:'Not qualified'}}];
+
+const CALLS=[
+ {t:'Aug 7, 02:14',from:'(412) 555-0142',dur:'3:12',cls:'EMERGENCY',out:'Lead created',to:'Byron Tohey',res:'Not answered',lead:'L-2026-0417'},
+ {t:'Aug 6, 19:31',from:'(412) 555-0455',dur:'4:41',cls:'EMERGENCY',out:'Lead created · transferred',to:'Byron Tohey',res:'Answered',lead:'L-2026-0413'},
+ {t:'Aug 6, 09:41',from:'(412) 555-0338',dur:'4:05',cls:'Non-emergency',out:'Lead created · visit booked',to:'—',res:'—',lead:'L-2026-0415'},
+ {t:'Aug 6, 11:03',from:'(724) 555-0812',dur:'0:48',cls:'Non-emergency',out:'Not qualified — outside service area',to:'—',res:'—',lead:''},
+ {t:'Aug 5, 13:22',from:'(412) 555-0990',dur:'0:12',cls:'—',out:'ABANDONED — follow-up task created',to:'—',res:'—',lead:''},
+ {t:'Aug 5, 16:50',from:'(412) 555-0455',dur:'2:30',cls:'Non-emergency',out:'Existing lead updated',to:'—',res:'—',lead:'L-2026-0413'}];
+const INBOX=[
+ {t:'Aug 7, 08:12',from:'noreply@3riversgc.com',subj:'Website enquiry — water in basement',src:'Web form',st:'Parsed · 9 of 9 fields',lead:'L-2026-0419'},
+ {t:'Aug 7, 09:40',from:'bids@wrpartners.com',subj:'RE: Bid invitation — Route 30 roof',src:'Email',st:'Parsed · 6 of 9 · missing budget, timeline',lead:'L-2026-0414'},
+ {t:'Aug 7, 10:05',from:'jhoward@example.com',subj:'(no subject)',src:'Email',st:'COULD NOT PARSE → needs a human',lead:''},
+ {t:'Aug 6, 16:31',from:'claims@statefarm.com',subj:'Claim assignment SF-2026-88413',src:'Email',st:'Parsed · attached to existing lead',lead:'L-2026-0417'}];
+const APPTS=[
+ {d:'Fri Aug 8',t:'10:00–11:30',est:"Jathan D'Antonio",client:'Allegheny Property Group',addr:'2200 Liberty Ave',arm:'Commercial GC',lead:'L-2026-0416',st:'Booked',by:'AI'},
+ {d:'Fri Aug 8',t:'14:00–15:00',est:'Jason Reed',client:'Linda Vasquez',addr:'19 Beechwood Blvd',arm:'Restoration',lead:'L-2026-0413',st:'Booked',by:'Human'},
+ {d:'Mon Aug 11',t:'09:00–10:30',est:'Marcus Hale',client:'Tri-State Logistics',addr:'1450 Industrial Pkwy',arm:'Commercial GC',lead:'L-2026-0412',st:'Booked',by:'Human'},
+ {d:'Thu Aug 7',t:'08:00–09:00',est:'Jason Reed',client:'Robert Chen',addr:'88 Hillcrest Dr',arm:'Restoration',lead:'L-2026-0415',st:'Completed',by:'AI'}];
+const CONTACTS=[
+ {n:'Sarah Mitchell',t:'Individual',p:'—',ph:'(412) 555-0142',e:'s.mitchell@example.com',loc:'Pittsburgh, PA',l:1,j:0,last:'Aug 7'},
+ {n:'Allegheny Property Group LLC',t:'Organization',p:'Rachel Owens — Facilities Director',ph:'(412) 555-0900',e:'projects@alleghenypg.com',loc:'Pittsburgh, PA',l:3,j:2,last:'Aug 6'},
+ {n:'Robert Chen',t:'Individual',p:'—',ph:'(412) 555-0338',e:'rchen@example.com',loc:'Mt Lebanon, PA',l:1,j:0,last:'Aug 4'},
+ {n:'Westmoreland Retail Partners',t:'Organization',p:'Dan Kirby — Procurement',ph:'(724) 555-0177',e:'bids@wrpartners.com',loc:'Greensburg, PA',l:2,j:1,last:'Aug 5'},
+ {n:'Tri-State Logistics Inc',t:'Organization',p:'Maria Santos — Ops Manager',ph:'(304) 555-0210',e:'ops@tristatelog.com',loc:'Weirton, WV',l:1,j:0,last:'Aug 6'}];
+const PROPS=[
+ ['412 Sycamore St','Pittsburgh','PA','15201','Single family','Sarah Mitchell','Yes','1'],
+ ['2200 Liberty Ave, Suite 300','Pittsburgh','PA','15222','Commercial office','Allegheny Property Group LLC','Yes','2'],
+ ['915 Penn Ave','Pittsburgh','PA','15222','Commercial office','Allegheny Property Group LLC','No','1'],
+ ['88 Hillcrest Dr','Mt Lebanon','PA','15228','Single family','Robert Chen','Yes','1'],
+ ['6100 Route 30','Greensburg','PA','15601','Retail strip','Westmoreland Retail Partners','Yes','2'],
+ ['19 Beechwood Blvd','Pittsburgh','PA','15217','Duplex','Linda Vasquez','Yes','1'],
+ ['1450 Industrial Pkwy','Weirton','WV','26062','Warehouse','Tri-State Logistics Inc','Yes','1']];
+const CADENCES=[
+ {n:'Default Lead Cadence',def:true,act:true,d:'Runs the moment a lead is created. Max 4 touches, then flags for manual review.',trig:'When a lead enters stage · New',
+  steps:[['1','Email','Immediately','Welcome / acknowledgement'],['2','SMS','After 1 day','SMS reminder'],['3','AI voice call','After 3 days','Follow-up call script'],['4','Email','After 7 days','Final check-in']],
+  br:[['If lead replies','Move to stage · Contacted, stop follow-ups'],['If meeting booked','Move to stage · Visit scheduled, stop follow-ups'],['If declines','Move to Lost, require loss reason'],['If no reply after 7d','Flag for manual review, notify Operations Manager']]},
+ {n:'Emergency Response',def:false,act:true,d:'Fires the second a lead is flagged emergency. Confirms to the client, alerts on-call, escalates on failed transfer.',trig:'When Emergency = Yes',
+  steps:[['1','SMS','Immediately','Emergency acknowledgement'],['2','Email','Immediately','Emergency intake confirmation'],['3','AI voice call','After 30 minutes','Status check — only if transfer failed']],
+  br:[['If transfer not answered','Notify backup + Operations Manager'],['If client replies','Stop follow-ups']]},
+ {n:'Proposal Follow-Up — friendly',def:false,act:true,d:'Chases a sent proposal. Gentle tone. For a job that has not started.',trig:'When proposal is sent',
+  steps:[['1','Email','After 2 days','Friendly proposal check-in'],['2','SMS','After 5 days','Friendly reminder'],['3','AI voice call','After 8 days','Courtesy call']],
+  br:[['If proposal signed','Move to Won, stop follow-ups'],['If no reply (10d)','Escalate to assigned estimator']]},
+ {n:'Invoice Follow-Up — job in production',def:false,act:true,d:'STERN. Materials purchased and labour performed. Objective policy, escalates to a legal step.',trig:'When invoice overdue AND job status = In production',
+  steps:[['1','Email','On due date +1','Payment due notice'],['2','Email','After 3 days','Firm payment demand'],['3','AI voice call','After 5 days','Collections call'],['4','Email','After 10 days','Final notice before legal referral']],
+  br:[['If payment received','Stop follow-ups'],['If no reply (14d)','Escalate to Owner + flag for legal referral']]}];
+const TEMPLATES=[
+ {n:'Welcome / acknowledgement',c:'Email',u:'Default Lead Cadence · step 1',e:'Aug 2'},
+ {n:'SMS reminder',c:'SMS',u:'Default Lead Cadence · step 2',e:'Aug 2'},
+ {n:'Follow-up call script',c:'AI call script',u:'Default Lead Cadence · step 3',e:'Jul 30'},
+ {n:'Emergency acknowledgement',c:'SMS',u:'Emergency Response · step 1',e:'Aug 4'},
+ {n:'Friendly proposal check-in',c:'Email',u:'Proposal Follow-Up — friendly',e:'Aug 1'},
+ {n:'Firm payment demand',c:'Email',u:'Invoice Follow-Up — job in production',e:'Aug 1'},
+ {n:'Appointment confirmation',c:'SMS',u:'Appointment reminders',e:'Jul 28'}];
+const ONCALL=[
+ ['00:00 – 08:00','Byron Tohey','Byron Tohey','Byron Tohey','Joshua Tohey','Joshua Tohey','Dana Cruz','⚠ NOT COVERED'],
+ ['08:00 – 17:00','Joshua Tohey','Joshua Tohey','Joshua Tohey','Joshua Tohey','Joshua Tohey','Byron Tohey','Byron Tohey'],
+ ['17:00 – 24:00','Byron Tohey','Dana Cruz','Byron Tohey','Dana Cruz','Byron Tohey','Joshua Tohey','Joshua Tohey'],
+ ['BACKUP','Joshua Tohey','Joshua Tohey','Dana Cruz','Byron Tohey','Dana Cruz','Byron Tohey','Byron Tohey']];
+const STAGES_R=[['1','New','Lead created','15 min','—'],['2','Emergency dispatch','Emergency = Yes','immediate','Emergency Response'],['3','Qualified','Qualification outcome = Qualified','—','Default Lead Cadence'],['4','Assigned','Estimator assigned','4 h to first contact','—'],['5','Visit scheduled','Appointment booked','—','Appointment reminders'],['6','Estimating','Visit completed','3 days','—'],['7','Proposal sent','→ Phase 2','—','Proposal Follow-Up — friendly'],['8','Won','Proposal signed + binder paid','—','—'],['9','Lost','Terminal — reason required','—','—']];
+const STAGES_C=[['1','New','Lead created','1 business day','—'],['2','Bid invitation received','Bid reference present','—','—'],['3','Qualified','Qualification outcome = Qualified','—','Default Lead Cadence'],['4','Assigned','Estimator assigned','1 business day','—'],['5','Visit scheduled','Appointment booked','—','Appointment reminders'],['6','Estimating','Visit completed','5 days','—'],['7','Proposal / bid submitted','→ Phase 2','—','Proposal Follow-Up — friendly'],['8','Won','Proposal signed + binder paid','—','—'],['9','Lost','Terminal — reason required','—','—']];
+const JOB={id:'L-2026-0415',client:'Robert Chen',arm:'Restoration',job:'Fire damage',addr:'88 Hillcrest Dr, Mt Lebanon, PA 15228',carrier:'Allstate',claim:'AL-772104',est:'Jason Reed',visit:'Aug 7, 08:00',total:'62,300.00'};
+const QUEUE=[
+ {id:'L-2026-0415',client:'Robert Chen',arm:'Restoration',job:'Fire damage',est:'Jason Reed',visit:'Aug 7',days:0,e:'Reviewed',s:'Structured',b:'Baseline locked',p:'63',pr:'Sent · v2',v:'62,300'},
+ {id:'L-2026-0416',client:'Allegheny Property Group',arm:'Commercial GC',job:'Tenant buildout',est:"Jathan D'Antonio",visit:'Aug 8',days:0,e:'—',s:'—',b:'—',p:'0',pr:'—',v:'184,500'},
+ {id:'L-2026-0414',client:'Westmoreland Retail Partners',arm:'Commercial GC',job:'Roof replacement',est:"Jathan D'Antonio",visit:'Aug 1',days:6,e:'Uploaded · in review',s:'—',b:'—',p:'22',pr:'—',v:'240,000'},
+ {id:'L-2026-0413',client:'Linda Vasquez',arm:'Restoration',job:'Mold',est:'Jason Reed',visit:'Aug 8',days:0,e:'—',s:'—',b:'—',p:'0',pr:'—',v:'—'},
+ {id:'L-2026-0408',client:'Northside Dental',arm:'Commercial GC',job:'Renovation',est:'Marcus Hale',visit:'Jul 25',days:13,e:'MISSING',s:'—',b:'—',p:'8',pr:'—',v:'—'},
+ {id:'L-2026-0410',client:'Carnegie Mills LP',arm:'Commercial GC',job:'Warehouse buildout',est:"Jathan D'Antonio",visit:'Jul 29',days:9,e:'Reviewed',s:'Structured',b:'Draft',p:'34',pr:'—',v:'96,400'},
+ {id:'L-2026-0409',client:'Marcy Alvarado',arm:'Restoration',job:'Water damage',est:'Jason Reed',visit:'Aug 4',days:3,e:'Reviewed',s:'Structured',b:'Baseline locked',p:'47',pr:'Draft · v1',v:'28,750'},
+ {id:'L-2026-0406',client:'Steel City Apartments',arm:'Commercial GC',job:'Fire damage',est:'Jason Reed',visit:'Jul 18',days:20,e:'Reviewed',s:'Structured',b:'Baseline locked',p:'88',pr:'Signed · v2',v:'145,900'},
+ {id:'L-2026-0405',client:'Hollis Residence',arm:'Restoration',job:'Storm damage',est:'Marcus Hale',visit:'Jul 15',days:23,e:'Reviewed',s:'Structured',b:'Draft',p:'19',pr:'Declined · v1',v:'11,200'}];
+const LINES=[
+ ['Kitchen','Tear out wet drywall, cut & bag - per LF',320,'SF','0.68','217.60','09-100 Demolition','Demolition','Sub',1],
+ ['Kitchen','Drywall - 1/2" - hung, taped, floated, ready for paint',320,'SF','2.42','774.40','09-250 Drywall','Drywall','Sub',1],
+ ['Kitchen','Seal then paint the walls and ceiling (2 coats)',480,'SF','1.12','537.60','09-900 Painting','Painting','Sub',1],
+ ['Kitchen','R&R Cabinetry - lower (base) units',18,'LF','268.00','4,824.00','06-400 Millwork','Carpentry','Sub',1],
+ ['Kitchen','R&R Cabinetry - upper (wall) units',14,'LF','214.00','2,996.00','06-400 Millwork','Carpentry','Sub',1],
+ ['Kitchen','R&R Countertop - solid surface',26,'SF','82.00','2,132.00','06-400 Millwork','Carpentry','Sub',1],
+ ['Kitchen','Detach & reset range',1,'EA','62.00','62.00','06-400 Millwork','Carpentry','Labour',1],
+ ['Kitchen','R&R Light fixture',3,'EA','118.00','354.00','16-100 Electrical','Electrical','Sub',1],
+ ['Kitchen','Electrical - rewire kitchen branch circuit',1,'EA','2,850.00','2,850.00','16-100 Electrical','Electrical','Sub',1],
+ ['Living / Dining','Clean the surface area - heavy',640,'SF','0.42','268.80','02-200 Cleaning','Mitigation','Labour',1],
+ ['Living / Dining','Seal then paint the ceiling',640,'SF','1.24','793.60','09-900 Painting','Painting','Sub',1],
+ ['Living / Dining','R&R Carpet',640,'SF','4.10','2,624.00','09-680 Flooring','Flooring','Sub',1],
+ ['Living / Dining','R&R Flooring - hardwood - engineered',420,'SF','12.80','5,376.00','09-680 Flooring','Flooring','Sub',1],
+ ['1st floor','Thermal fogging',1850,'SF','0.28','518.00','02-300 Odour control','Mitigation','Labour',1],
+ ['1st floor','HEPA air scrubber (per 24 hour period)',5,'DA','78.00','390.00','02-150 Equipment','Mitigation','Equipment',1],
+ ['1st floor','Content manipulation - per hour',12,'HR','42.00','504.00','02-100 Mitigation labour','Mitigation','Labour',1],
+ ['1st floor','R&R Baseboard - 3 1/4"',310,'LF','6.40','1,984.00','06-200 Finish carpentry','Carpentry','Sub',1],
+ ['1st floor','R&R Interior door unit',6,'EA','385.00','2,310.00','06-200 Finish carpentry','Carpentry','Sub',1],
+ ['1st floor','HVAC - clean the duct system',1,'EA','1,940.00','1,940.00','15-500 HVAC','HVAC','Sub',1],
+ ['Structural','R&R Load bearing header - engineered',1,'EA','3,200.00','3,200.00','06-100 Rough carpentry','Carpentry','Sub',0.62],
+ ['Site','Dumpster load - approx 30 yards',2,'EA','620.00','1,240.00','01-500 Site','General','Sub',1],
+ ['Site','Final cleaning - construction - residential',1850,'SF','0.34','629.00','02-200 Cleaning','Mitigation','Labour',1]];
+const SCOPEPKGS=[
+ {c:'SP-01',n:'Mitigation & odour control',t:'Mitigation',ex:'Self-perform',v:'1,780.80',items:[9,13,14,15,21],start:'Aug 18',fin:'Aug 22'},
+ {c:'SP-02',n:'Demolition & debris',t:'Demolition',ex:'Subcontracted',v:'1,457.60',items:[0,20],start:'Aug 25',fin:'Aug 26'},
+ {c:'SP-03',n:'Structural repair',t:'Carpentry',ex:'Subcontracted',v:'3,200.00',items:[19],start:'Aug 27',fin:'Aug 29'},
+ {c:'SP-04',n:'Electrical',t:'Electrical',ex:'Subcontracted',v:'3,204.00',items:[7,8],start:'Sep 1',fin:'Sep 3'},
+ {c:'SP-05',n:'HVAC',t:'HVAC',ex:'Subcontracted',v:'1,940.00',items:[18],start:'Sep 1',fin:'Sep 2'},
+ {c:'SP-06',n:'Drywall',t:'Drywall',ex:'Subcontracted',v:'774.40',items:[1],start:'Sep 4',fin:'Sep 8'},
+ {c:'SP-07',n:'Millwork & finish carpentry',t:'Carpentry',ex:'Subcontracted',v:'12,226.00',items:[3,4,5,6,16,17],start:'Sep 9',fin:'Sep 16'},
+ {c:'SP-08',n:'Painting',t:'Painting',ex:'Subcontracted',v:'1,331.20',items:[2,10],start:'Sep 17',fin:'Sep 19'},
+ {c:'SP-09',n:'Flooring',t:'Flooring',ex:'Subcontracted',v:'8,000.00',items:[11,12],start:'Sep 22',fin:'Sep 25'}];
+const BUDGET=[
+ ['02-100 Mitigation labour','SP-01','Labour','—','$38.00/h','32','Technician','1,216.00',false],
+ ['02-150 Equipment','SP-01','Equipment','5 DA','$52.00','—','—','260.00',false],
+ ['02-200 Cleaning','SP-01','Labour','—','$38.00/h','18','Technician','684.00',false],
+ ['02-300 Odour control','SP-01','Labour','—','$38.00/h','8','Lead technician','392.00',false],
+ ['09-100 Demolition','SP-02','Sub','—','—','—','—','980.00',true],
+ ['01-500 Site','SP-02','Material','2 EA','$540.00','—','—','1,080.00',false],
+ ['06-100 Rough carpentry','SP-03','Sub','—','—','—','—','2,400.00',true],
+ ['16-100 Electrical','SP-04','Sub','—','—','—','—','2,450.00',true],
+ ['15-500 HVAC','SP-05','Sub','—','—','—','—','1,480.00',true],
+ ['09-250 Drywall','SP-06','Sub','—','—','—','—','560.00',true],
+ ['06-400 Millwork','SP-07','Sub','—','—','—','—','8,900.00',true],
+ ['06-200 Finish carpentry','SP-07','Sub','—','—','—','—','2,950.00',true],
+ ['09-900 Painting','SP-08','Sub','—','—','—','—','960.00',true],
+ ['09-680 Flooring','SP-09','Sub','—','—','—','—','5,900.00',true],
+ ['PM / supervision','—','Labour','—','$62.00/h','40','Project manager','2,480.00',false]];
+const PHOTOS=[
+ ['Front elevation','North','Elevation','Exterior','—','device',1],['Rear elevation','South','Elevation','Exterior','—','inferred',1],
+ ['Left side elevation','West','Elevation','Exterior','—','device',1],['Right side elevation','East','Elevation','Exterior','—','device',1],
+ ['Kitchen — overview','—','Overview','Kitchen','Fire damage','—',1],['Kitchen — ceiling','—','Affected area','Kitchen','Fire damage','—',1],
+ ['Kitchen — cabinet run, north wall','—','Affected area','Kitchen','Fire damage','—',1],['Kitchen — range / origin','—','Detail','Kitchen','Fire damage','—',1],
+ ['Living room — overview','—','Overview','Living room','Smoke','—',1],['Living room — ceiling staining','—','Affected area','Living room','Smoke','—',1],
+ ['Dining room — overview','—','Overview','Dining room','Smoke','—',1],['Hallway — wall surfaces','—','Affected area','Hallway','Smoke','—',1],
+ ['Unlabelled capture','—','—','—','—','—',0.41]];
+const MILESTONES=[
+ ['1','Binder','Proposal approved by the client','Fixed','500.00','—','On acceptance','Pending',true],
+ ['2','Deposit','Invoiced within 5 calendar days of acceptance','%','24,920.00','40','Auto draft invoice on acceptance + 0d','Pending',false],
+ ['3','Milestone 1','Demolition, mitigation and structural repair complete','%','9,345.00','15','On milestone marked complete','Pending',false],
+ ['4','Milestone 2','Rough-in complete — electrical, HVAC, drywall','%','9,345.00','15','On milestone marked complete','Pending',false],
+ ['5','Milestone 3','Millwork, painting and flooring complete','%','15,575.00','25','On milestone marked complete','Pending',false],
+ ['6','Final','Punch list signed off / job closeout','%','3,115.00','5','On completion','Pending',false]];
+const COSTCODES=[['01-500','Site','General','Sub','—'],['02-100','Mitigation labour','Mitigation','Labour','$38.00'],['02-150','Equipment','Mitigation','Equipment','—'],['02-200','Cleaning','Mitigation','Labour','$38.00'],['02-300','Odour control','Mitigation','Labour','$38.00'],['06-100','Rough carpentry','Structure','Sub','—'],['06-200','Finish carpentry','Finishes','Sub','—'],['06-400','Millwork','Finishes','Sub','—'],['09-100','Demolition','Demolition','Sub','—'],['09-250','Drywall','Finishes','Sub','—'],['09-680','Flooring','Finishes','Sub','—'],['09-900','Painting','Finishes','Sub','—'],['15-500','HVAC','MEP','Sub','—'],['16-100','Electrical','MEP','Sub','—']];
+const TRADES=['General Contractor','Demolition','Mitigation','Carpentry','Drywall','Painting','Flooring','Electrical','Plumbing','HVAC','Roofing','Masonry','Concrete'];
+const LABOUR=[['Technician','$38.00','$57.00'],['Lead technician','$49.00','$73.50'],['Project manager','$62.00','—'],['Estimator','$68.00','—'],['Labourer','$28.00','$42.00']];
+const CONTRACTS=[['Standard Agreement — small','$0','$10,000','v2','☑'],['Standard Agreement — mid','$10,001','$50,000','v3','☑'],['Standard Agreement — large','$50,001','$250,000','v3','☑'],['Standard Agreement — major','$250,001','—','v1','☑']];
+const SESSIONS=[['Aug 7, 08:12','L-2026-0415','Robert Chen','Voice','14:22','28','17','Synced'],['Aug 7, 08:40','L-2026-0415','Robert Chen','Silent','06:10','35','0','Synced'],['Aug 1, 10:05','L-2026-0414','Westmoreland Retail','Silent','22:40','22','0','Synced'],['Jul 25, 09:30','L-2026-0408','Northside Dental','Voice','11:05','8','6','Synced']];
+const PROPOSALS=[
+ ['L-2026-0415','Robert Chen','v2','62,300.00','Standard Agreement — large · v3','Aug 7, 17:40','Sent','Aug 7, 19:02','—'],
+ ['L-2026-0415','Robert Chen','v1','58,120.00','Standard Agreement — large · v3','Aug 5, 11:15','Superseded','Aug 5, 13:44','—'],
+ ['L-2026-0411','Gregory Palmer','v1','8,940.00','Standard Agreement — small · v2','Jul 30, 14:20','Declined','Jul 30, 16:10','—']];
+const HOT_STAGES=['New','Qualified','Assigned','Visit scheduled','Estimating','Proposal sent','Won','Lost'];
+const EQLANES=['Visit scheduled','Awaiting estimate','In review','Structuring','Proposal draft','Sent — awaiting client','Won','Lost'];
+function eqLane(q){const pr=q.pr||'—';
+ if(pr.includes('Signed'))return 'Won'; if(pr.includes('Declined')||pr.includes('Expired'))return 'Lost';
+ if(pr.includes('Sent'))return 'Sent — awaiting client'; if(pr.includes('Draft'))return 'Proposal draft';
+ if((q.e||'').includes('in review'))return 'In review'; if(q.e==='MISSING')return 'Awaiting estimate';
+ if(q.e==='—')return 'Visit scheduled'; return 'Structuring';}
+
+/* ---------------- nav ---------------- */
+const NAV=[
+ {k:'top',id:'dashboard',l:'Dashboard'},
+ {k:'grp',id:'g_intake',l:'INTAKE',ph:'F1',items:[['hotlist','Hotlist','7'],['calls','Calls'],['inbox','Inbox Capture','1'],['appointments','Appointments']]},
+ {k:'grp',id:'g_est',l:'ESTIMATING',ph:'F2',items:[['equeue','Estimating queue','9'],['sessions','Inspection sessions'],['photolib','Photo library']]},
+ {k:'grp',id:'g_prop',l:'PROPOSALS',ph:'F2',items:[['proposals','Proposals'],['schedules','Payment schedules']]},
+ {k:'grp',id:'g_rec',l:'RECORDS',ph:'',items:[['contacts','Contacts'],['properties','Properties']]},
+ {k:'lock',id:'g_sub',l:'SUBCONTRACTORS',ph:'F3',items:['Subcontractor database','Bid management (RFP / ITB)','Bid comparison','Work orders','Contracts & signatures','Project scheduling','Project tracking','Change orders','Subcontractor portal','Client portal']},
+ {k:'lock',id:'g_bill',l:'BILLING',ph:'F4',items:['Invoices (AR)','Payments & collections','Vendor invoices (AP)','Invoice OCR','QuickBooks sync','Payment runs']},
+ {k:'lock',id:'g_field',l:'FIELD & PAYROLL',ph:'F5',items:['Time clock','Timesheets','Labour cost allocation','Payroll preparation','Gusto sync']},
+ {k:'sec',id:'g_set',l:'SETTINGS',ph:'',subs:[
+  {l:'Intake & AI',id:'x1',items:[['s_ai','AI Receptionist'],['s_oncall','On-Call Schedule'],['s_assign','Assignment Rules'],['s_pipeline','Pipeline & Stages']]},
+  {l:'Follow-up',id:'x2',items:[['s_cadences','Automations & Cadences'],['s_rules','Sending Rules'],['s_templates','Templates']]},
+  {l:'Estimating & cost',id:'x3',items:[['s_cost','Cost codes & trades'],['s_markup','Markup defaults'],['s_capture','Field capture'],['s_labels','Photo labels']]},
+  {l:'Documents',id:'x4',items:[['s_contracts','Contract templates'],['s_docs','Company documents']]},
+  {l:'System',id:'x5',items:[['s_team','Team & Roles'],['s_fields','Custom Fields'],['s_cal','Calendars'],['s_integr','Integrations'],['s_audit','Audit Log']]}]}];
+const OWNER={lead:'hotlist',newlead:'hotlist',call:'calls',contact:'contacts',cadence:'s_cadences',cadence_new:'s_cadences',template:'s_templates',
+ estimate:'equeue',mapping:'equeue',scope:'equeue',budget:'equeue',narrative:'equeue',photos:'equeue',photoreport:'equeue',
+ proposal:'proposals',schedule:'schedules',versions:'proposals',acceptance:'proposals',inspection:'sessions'};
+const TITLES={dashboard:'Dashboard',hotlist:'Hotlist',calls:'Calls',inbox:'Inbox Capture',appointments:'Appointments',equeue:'Estimating queue',
+ sessions:'Inspection sessions',photolib:'Photo library',proposals:'Proposals',schedules:'Payment schedules',contacts:'Contacts',properties:'Properties',
+ newlead:'New lead',s_ai:'AI Receptionist',s_oncall:'On-Call Schedule',s_assign:'Assignment Rules',s_pipeline:'Pipeline & Stages',
+ s_cadences:'Automations & Cadences',s_rules:'Sending Rules',s_templates:'Templates',s_cost:'Cost codes & trades',s_markup:'Markup defaults',
+ s_capture:'Field capture',s_labels:'Photo labels',s_contracts:'Contract templates',s_docs:'Company documents',s_team:'Team & Roles',
+ s_fields:'Custom Fields',s_cal:'Calendars',s_integr:'Integrations',s_audit:'Audit Log',estimate:'Job · Estimate intake',mapping:'Job · Line item mapping',
+ scope:'Job · Scope structuring',budget:'Job · Budget & cost',narrative:'Job · Scope narrative',photos:'Job · Photos',photoreport:'Job · Photo report',
+ proposal:'Job · Proposal builder',schedule:'Job · Payment schedule',versions:'Job · Send & versions',acceptance:'Job · Acceptance',inspection:'Inspection session (mobile)'};
+
+/* ---------------- UI kit ---------------- */
+let APP = null;
+const go = (id, p) => APP && APP.go(id, p);
+const toast = (m, k) => APP && APP.toast(m, k);
+const modal = (t, b, f) => APP && APP.openModal(t, b, f);
+const closeM = () => APP && APP.closeModal();
+const setTab = i => APP && APP.setState({tab: i});
+
+const Btn = (label, o) => {o = o || {};
+ const kind = o.kind || 'ghost';
+ const bg = o.disabled ? '#F4F7FA' : kind === 'pri' ? C.pri : kind === 'danger' ? C.dg : '#fff';
+ const col = o.disabled ? '#B4C4CF' : (kind === 'pri' || kind === 'danger') ? '#fff' : C.ink;
+ return h('button', {title:o.title||'', disabled:!!o.disabled, onClick:o.disabled?null:(o.onClick||null),
+  style:{font:'inherit', fontSize:o.sm?'11.5px':'12.5px', fontWeight:600, color:col, background:bg,
+   border:'1px solid '+(o.disabled?C.bd:kind==='pri'?C.pri:kind==='danger'?C.dg:C.bd), borderRadius:'7px',
+   padding:o.sm?'5px 9px':'8px 13px', cursor:o.disabled?'not-allowed':'pointer', whiteSpace:'nowrap',
+   transition:'all .16s ease', boxShadow:kind==='pri'&&!o.disabled?'0 1px 2px rgba(8,123,178,.25)':'none'},
+  onMouseEnter:e=>{if(o.disabled)return; e.currentTarget.style.transform='translateY(-1px)';
+   if(kind==='ghost')e.currentTarget.style.borderColor=C.pri, e.currentTarget.style.color=C.pri;
+   if(kind==='pri')e.currentTarget.style.background=C.priD;},
+  onMouseLeave:e=>{if(o.disabled)return; e.currentTarget.style.transform='none';
+   if(kind==='ghost')e.currentTarget.style.borderColor=C.bd, e.currentTarget.style.color=C.ink;
+   if(kind==='pri')e.currentTarget.style.background=C.pri;}}, label);};
+
+const Tag = (t, k) => h('span', {style:{display:'inline-block', fontSize:'11px', fontWeight:600, borderRadius:'999px', padding:'3px 9px',
+ background: k==='ai'?C.priL : k==='dg'?C.dgL : k==='ok'?C.okL : k==='wn'?C.wnL : '#F4F7FA',
+ color: k==='ai'?C.priD : k==='dg'?C.dg : k==='ok'?C.ok : k==='wn'?C.wn : C.mut,
+ border:'1px solid '+(k==='ai'?'#CFE4F2':k==='dg'?'#F0D6D1':k==='ok'?'#D3E8DC':k==='wn'?'#F0E2C0':C.bd)}}, t);
+
+const Lbl = t => h('div', {style:{fontFamily:BAR, fontSize:'10px', fontWeight:600, letterSpacing:'.09em',
+ textTransform:'uppercase', color:C.faint, margin:'10px 0 4px'}}, t);
+const inputStyle = w => ({font:'inherit', fontSize:'12.5px', color:C.ink, background:'#fff', border:'1px solid '+C.bd,
+ borderRadius:'7px', padding:'7px 10px', outline:'none', width:w||'100%', transition:'border-color .15s'});
+const focusable = {onFocus:e=>e.target.style.borderColor=C.pri, onBlur:e=>e.target.style.borderColor=C.bd};
+const Fld = (v, o) => {o=o||{}; return h('input', Object.assign({defaultValue:v||'', placeholder:o.ph||'', key:o.key,
+ style:Object.assign(inputStyle(o.w))}, focusable));};
+const Sel = (v, opts, o) => {o=o||{}; return h('select', Object.assign({defaultValue:v, style:Object.assign(inputStyle(o.w),{cursor:'pointer'})}, focusable),
+ ...opts.map(x => h('option', {key:x, value:x}, x)));};
+const Ta = (v, o) => {o=o||{}; return h('textarea', Object.assign({defaultValue:v||'', placeholder:o.ph||'',
+ style:Object.assign(inputStyle('100%'), {minHeight:(o.min||64)+'px', resize:'vertical', lineHeight:1.5, fontFamily:'inherit'})}, focusable));};
+const Chk = (t, on) => h('label', {style:{display:'inline-flex', alignItems:'center', gap:'7px', fontSize:'12.5px', marginRight:'16px', cursor:'pointer'}},
+ h('input', {type:'checkbox', defaultChecked:on!==false, style:{accentColor:C.pri, width:'14px', height:'14px'}}), t);
+
+const Card = (title, body, o) => {o=o||{};
+ return h('section', {style:{background:'#fff', border:'1px solid '+(o.hard?'#CFE4F2':C.bd), borderRadius:'12px',
+  boxShadow:o.hard?'0 4px 16px rgba(8,123,178,.08)':'none', overflow:'hidden', animation:'rise .3s ease both'}},
+  title ? h('div', {style:{display:'flex', alignItems:'center', gap:'10px', padding:'13px 16px', borderBottom:'1px solid '+C.line,
+   background:o.hard?'#F8FBFD':'#fff'}},
+   h('h3', {style:{fontFamily:BAR, fontSize:'14px', fontWeight:600, margin:0, flex:1}}, title),
+   ...(o.actions||[])) : null,
+  h('div', {style:{padding:o.flush?0:'14px 16px'}}, body));};
+
+
+const Ph = (txt, o) => {o=o||{};
+ return h('div', {style:{border:'1px dashed #CBD9E3', borderRadius:'10px', background:'repeating-linear-gradient(135deg,#FAFCFD,#FAFCFD 10px,#F4F8FB 10px,#F4F8FB 20px)',
+  color:C.faint, padding:o.pad||'26px', textAlign:o.left?'left':'center', fontSize:'12px', fontFamily:o.mono?'ui-monospace,Menlo,monospace':'inherit',
+  lineHeight:1.6, height:o.h||'auto', overflow:'auto'}}, o.html ? h('div',{dangerouslySetInnerHTML:{__html:txt}}) : txt);};
+
+const Bar = (...kids) => h('div', {style:{display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center',
+ background:'#fff', border:'1px solid '+C.bd, borderRadius:'10px', padding:'9px 11px'}}, ...kids);
+const Sp = () => h('span', {style:{flex:1}});
+const Grp = (...kids) => h('div', {style:{display:'flex', gap:'8px', flexWrap:'nowrap', alignItems:'center'}}, ...kids);
+const Row = (...kids) => h('div', {style:{display:'flex', gap:'16px', flexWrap:'wrap'}},
+ ...kids.map(k => h('div', {style:{flex:'1 1 300px', minWidth:0}}, k)));
+const Stack = (...kids) => h('div', {style:{display:'flex', flexDirection:'column', gap:'16px'}}, ...kids.filter(Boolean));
+
+/* --- table with client-side sorting --- */
+function cellText(c){ if(c==null) return ''; if(typeof c==='object' && !c.props) return String(c.t==null?'':c.t);
+ if(typeof c==='object') return ''; return String(c); }
+function DataTable(props){
+ const [s, setS] = React.useState({i:null, dir:1});
+ const cols = props.cols, rows = props.rows.slice();
+ if(s.i !== null){
+  rows.sort((a,b)=>{
+   const x=cellText(a.c[s.i]).replace(/[$,\s]/g,''), y=cellText(b.c[s.i]).replace(/[$,\s]/g,'');
+   const bx=(!x||x==='—'), by=(!y||y==='—'); if(bx!==by) return bx?1:-1;
+   const nx=parseFloat(x), ny=parseFloat(y);
+   const r=(!isNaN(nx)&&!isNaN(ny)) ? nx-ny : cellText(a.c[s.i]).localeCompare(cellText(b.c[s.i]),undefined,{numeric:true});
+   return s.dir*r;});
+ }
+ return h('div', {style:{overflowX:'auto', borderRadius:props.flush?0:'12px', border:props.flush?'none':'1px solid '+C.bd, background:'#fff'}},
+  h('table', {style:{width:'100%', borderCollapse:'collapse', fontSize:'12.5px', minWidth:props.min||'auto'}},
+   h('thead', null, h('tr', null, ...cols.map((c,i)=>{
+     const t = typeof c==='object'?c.t:c, num = typeof c==='object'&&c.n;
+     const active = s.i===i;
+     return h('th', {key:i, onClick:()=>setS({i, dir: active ? -s.dir : 1}),
+      style:{position:'sticky', top:0, zIndex:2, background:'#F8FBFD', borderBottom:'1px solid '+C.bd,
+       textAlign:num?'right':'left', padding:'10px 12px', fontFamily:BAR, fontSize:'10.5px', fontWeight:600,
+       letterSpacing:'.09em', textTransform:'uppercase', color:active?C.pri:C.faint, whiteSpace:'nowrap', cursor:'pointer', userSelect:'none'}},
+      t, t ? h('span',{style:{opacity:active?1:.35, marginLeft:'5px'}}, active ? (s.dir===1?'▲':'▼') : '⇅') : null);}))),
+   h('tbody', null, ...rows.map((r,ri)=>
+    h('tr', {key:r.key||ri, onClick:r.onClick||null,
+     style:Object.assign({cursor:r.onClick?'pointer':'default', transition:'background .14s'}, r.style||{}),
+     onMouseEnter:e=>e.currentTarget.style.background = r.hover || '#F8FBFD',
+     onMouseLeave:e=>e.currentTarget.style.background = (r.style&&r.style.background)||'transparent'},
+     ...r.c.map((c,ci)=>{
+      const num = typeof cols[ci]==='object' && cols[ci].n;
+      const isObj = c && typeof c==='object' && !c.props && !Array.isArray(c);
+      return h('td', {key:ci, style:{padding:'11px 12px', borderBottom:'1px solid '+C.line, verticalAlign:'top',
+       textAlign:num||(isObj&&c.n)?'right':'left', color:C.ink, whiteSpace:num?'nowrap':'normal'}},
+       isObj ? h('span',{dangerouslySetInnerHTML:{__html:String(c.t==null?'—':c.t)}})
+        : (typeof c==='string' ? h('span',{dangerouslySetInnerHTML:{__html:c}}) : (c==null?'—':c)));})))
+   ),
+   props.foot ? h('tfoot', null, h('tr', null, ...props.foot.map((c,i)=>h('td',{key:i,
+    style:{padding:'11px 12px', background:'#F8FBFD', fontWeight:700, borderTop:'1px solid '+C.bd,
+     textAlign:(typeof cols[i]==='object'&&cols[i].n)?'right':'left'}},
+    h('span',{dangerouslySetInnerHTML:{__html:String(typeof c==='object'?(c.t||''):(c||''))}}))))) : null));
+}
+const Tbl = (cols, rows, o) => {o=o||{};
+ return h(DataTable, Object.assign({cols, rows: rows.map(r => Array.isArray(r) ? {c:r} : r)}, o));};
+
+const Tiles = list => h('div', {style:{display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))', gap:'12px'}},
+ ...list.map((t,i)=>h('div', {key:i, onClick:t[2]?()=>go(t[2]):null,
+  style:{background:'#fff', border:'1px solid '+C.bd, borderTop:'3px solid '+(t[3]||C.pri), borderRadius:'10px',
+   padding:'14px 15px', cursor:t[2]?'pointer':'default', transition:'all .18s ease', animation:'rise .35s ease both', animationDelay:(i*40)+'ms'},
+  onMouseEnter:e=>{e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 8px 20px rgba(14,42,59,.08)';},
+  onMouseLeave:e=>{e.currentTarget.style.transform='none'; e.currentTarget.style.boxShadow='none';}},
+  h('div',{style:{fontFamily:BAR, fontSize:'30px', fontWeight:600, lineHeight:1, color:t[3]||C.ink}}, t[0]),
+  h('div',{style:{fontSize:'12px', color:C.mut, marginTop:'6px'}}, t[1]))));
+
+const Tabs = (names, cur) => h('div', {style:{display:'flex', gap:'2px', borderBottom:'1px solid '+C.bd, flexWrap:'wrap'}},
+ ...names.map((n,i)=>h('button', {key:n, onClick:()=>setTab(i),
+  style:{font:'inherit', fontSize:'13px', fontWeight:600, color:cur===i?C.pri:C.mut, background:'transparent', border:'none',
+   borderBottom:'2px solid '+(cur===i?C.pri:'transparent'), padding:'10px 14px', marginBottom:'-1px', cursor:'pointer', transition:'all .16s'}},
+  h('span',{dangerouslySetInnerHTML:{__html:n}}))));
+
+const Kanban = (lanes, cardsFor, onDrop) => h('div', {style:{display:'flex', gap:'10px', overflowX:'auto', paddingBottom:'6px'}},
+ ...lanes.map(L => h('div', {key:L, onDragOver:onDrop?e=>{e.preventDefault(); e.currentTarget.style.background='#EDF5FA';}:null,
+   onDragLeave:onDrop?e=>e.currentTarget.style.background='#FAFCFD':null,
+   onDrop:onDrop?e=>{e.preventDefault(); e.currentTarget.style.background='#FAFCFD'; onDrop(e.dataTransfer.getData('text/plain'), L);}:null,
+   style:{minWidth:'210px', flex:'1 0 210px', background:'#FAFCFD', border:'1px solid '+C.bd, borderRadius:'10px', transition:'background .15s'}},
+  h('div',{style:{padding:'9px 11px', borderBottom:'1px solid '+C.bd, fontFamily:BAR, fontSize:'11px', fontWeight:600,
+   letterSpacing:'.07em', textTransform:'uppercase', color:C.priD, background:C.priL, borderRadius:'9px 9px 0 0'}}, L),
+  h('div',{style:{padding:'8px', display:'flex', flexDirection:'column', gap:'8px'}}, ...cardsFor(L)))));
+
+const KCard = (o) => h('div', {key:o.key, draggable:!!o.drag, onDragStart:o.drag?e=>e.dataTransfer.setData('text/plain', o.drag):null,
+ onClick:o.onClick||null, style:{background:'#fff', border:'1px solid '+C.bd, borderRadius:'9px', padding:'10px 11px',
+  cursor:o.drag?'grab':'pointer', transition:'all .16s', animation:'rise .3s ease both'},
+ onMouseEnter:e=>{e.currentTarget.style.borderColor=C.pri; e.currentTarget.style.boxShadow='0 6px 14px rgba(14,42,59,.08)';},
+ onMouseLeave:e=>{e.currentTarget.style.borderColor=C.bd; e.currentTarget.style.boxShadow='none';}},
+ h('div',{style:{fontSize:'12.5px', fontWeight:600, marginBottom:'3px'}}, o.title),
+ h('div',{style:{fontSize:'11.5px', color:C.mut, lineHeight:1.5}}, o.meta),
+ o.foot || null);
+
+const Page = (o) => h('div', {key:o.key||'', style:{padding:'22px 24px 60px', display:'flex', flexDirection:'column',
+  gap:'16px', maxWidth:'1560px', minWidth:'980px', animation:'rise .28s ease both'}},
+ o.crumb ? h('div',{style:{fontSize:'12px', color:C.faint, display:'flex', gap:'6px', alignItems:'center'}},
+   h('a',{onClick:o.crumb[1], style:{cursor:'pointer', color:C.pri, fontWeight:600}}, o.crumb[0]), '›', h('span',null,o.crumb[2])) : null,
+ h('div',{style:{display:'flex', alignItems:'flex-end', gap:'16px', flexWrap:'wrap'}},
+  h('div',{style:{minWidth:0}},
+   h('h1',{style:{fontFamily:BAR, fontSize:'25px', fontWeight:600, margin:0, letterSpacing:'-.01em'}},
+    h('span',{dangerouslySetInnerHTML:{__html:o.title}})),
+   o.sub ? h('div',{style:{fontSize:'12.5px', color:C.mut, marginTop:'4px', maxWidth:'860px'}},
+    h('span',{dangerouslySetInnerHTML:{__html:o.sub}})) : null),
+  Sp(), ...(o.actions||[])),
+ ...(o.children||[]).filter(Boolean));
+
+const SCREENS = {};
+
+/* ================= the component ================= */
+const GRP = "display:flex;align-items:center;gap:7px;padding:8px 10px;margin-top:6px;border-radius:7px;cursor:pointer;font-family:'Barlow',sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.11em;text-transform:uppercase;transition:background .15s;";
+const ITEM = "display:flex;align-items:center;gap:6px;padding:7px 10px 7px 26px;margin-top:1px;border-radius:7px;cursor:pointer;font-size:12.5px;transition:all .15s;";
+
+class Component extends DCLogic {
+  state = {
+    open:{g_intake:1,g_est:1,g_prop:1,g_rec:0,g_sub:0,g_bill:0,g_field:0,g_set:1,x1:0,x2:0,x3:0,x4:0,x5:0},
+    cur:'dashboard', param:null, tab:0, arm:'All', hotView:'table', eqView:'table',
+    leads:LEADS.map(l=>({...l})), modal:null, toasts:[], palette:false, rail:false, flow:null
+  };
+  componentDidMount(){
+    APP = this;
+    this._key = e => {
+      if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); this.setState(s=>({palette:!s.palette})); }
+      if(e.key==='Escape') this.setState({palette:false, modal:null});
+    };
+    document.addEventListener('keydown', this._key);
+  }
+  componentWillUnmount(){ document.removeEventListener('keydown', this._key); }
+
+  go(id, p){
+    const act = OWNER[id] || id;
+    const open = {...this.state.open};
+    for(const n of NAV){
+      if(n.k==='grp'||n.k==='lock'){ if((n.items||[]).some(i=>Array.isArray(i)&&i[0]===act)) open[n.id]=1; }
+      if(n.k==='sec') for(const s of n.subs) if(s.items.some(i=>i[0]===act)){ open[n.id]=1; open[s.id]=1; }
+    }
+    this.setState({cur:id, param:p===undefined?null:p, tab:0, open, palette:false});
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  toast(msg, kind){
+    const id = Date.now()+Math.random();
+    this.setState(s=>({toasts:[...s.toasts, {id, msg, kind:kind||'ok'}]}));
+    setTimeout(()=>this.setState(s=>({toasts:s.toasts.filter(t=>t.id!==id)})), 3400);
+  }
+  openModal(title, body, foot){ this.setState({modal:{title, body, foot}}); }
+  closeModal(){ this.setState({modal:null}); }
+  setLeadStage(id, stage){
+    this.setState(s=>({leads:s.leads.map(l=>l.id===id?{...l, stage}:l)}));
+    this.toast(id+' → '+stage);
+  }
+  pickFile(after){ this._after = after; this.fileEl && this.fileEl.click(); }
+  onFile(e){
+    const f = e.target.files && e.target.files[0];
+    e.target.value='';
+    if(!f) return;
+    const cb = this._after || 'estimate';
+    const kb = f.size>1048576 ? (f.size/1048576).toFixed(1)+' MB' : Math.max(1,Math.round(f.size/1024))+' KB';
+    if(cb==='photos') this.runFlow('Uploading photos — '+f.name+' · '+kb,
+      [['Uploading the file',700],['Reading capture metadata — timestamp, device orientation, GPS',700],
+       ['Classifying the photo',900],['Assigning elevation and direction',700],['Detecting interior space and condition',800],['Attaching to L-2026-0415',500]],
+      Stack(h('div',{style:{fontSize:'13px', fontWeight:600}}, f.name+' added to L-2026-0415.'),
+        Tbl(['Auto-assigned','Result'], [['Interior space','Kitchen · confidence 0.91'],['Condition','Fire damage · confidence 0.88'],['Direction','— (no device orientation → inferred)'],['Review needed','No']])),
+      [Btn('Close',{onClick:()=>closeM()}), Btn('Open the photo set',{kind:'pri', onClick:()=>{closeM(); go('photos');}})]);
+    else this.runFlow('Upload Xactimate PDF — '+f.name+' · '+kb,
+      [['Uploading the file',700],['Reading pages',900],['Detecting the estimate header — number, date, claim, insured, property',800],
+       ['Extracting line items',1100],['Scoring confidence per line',700],['Matching descriptions against the mapping dictionary',800],
+       ['Reconciling the line total against the PDF grand total',700]],
+      Stack(h('div',{style:{fontSize:'13px', fontWeight:600}}, 'Extraction finished — '+f.name),
+        Tbl(['Result','Value'], [['Pages read','11'],['Line items found','42'],['Auto-mapped from the dictionary','31 of 42'],
+          ['Low confidence — needs confirmation','<b>1</b> (line 20, R&R Load bearing header)'],['Sum of extracted lines','$62,118.40'],
+          ['PDF grand total','$62,300.00'],['Reconciliation','<b style="color:#C8442E">Δ $181.60 — does not reconcile</b>']])),
+      [Btn('Discard',{onClick:()=>closeM()}), Btn('Open the review screen',{kind:'pri', onClick:()=>{closeM(); go('estimate');}})]);
+  }
+  runFlow(title, steps, doneBody, doneFoot){
+    let i = 0;
+    const draw = () => {
+      const pct = Math.round(i/steps.length*100);
+      this.openModal(title, Stack(
+        h('div',{style:{height:'8px', borderRadius:'99px', background:'#EDF3F7', overflow:'hidden'}},
+          h('div',{style:{height:'100%', width:pct+'%', background:'linear-gradient(90deg,'+C.pri+','+C.cy+')', transition:'width .5s ease'}})),
+        h('div',{style:{fontSize:'12px', color:C.mut}}, pct+'% — step '+Math.min(i+1,steps.length)+' of '+steps.length),
+        Tbl(['','Stage','Status'], steps.map((s,n)=>[
+          n<i?'✓':(n===i?'▶':'·'), s[0], n<i?'done':(n===i?'<b>running…</b>':'queued')]))),
+        [Btn('Working…',{disabled:true})]);
+    };
+    draw();
+    const tick = () => {
+      if(i>=steps.length){ this.openModal(title, doneBody, doneFoot); return; }
+      const wait = steps[i][1]; i++; draw(); setTimeout(tick, wait);
+    };
+    setTimeout(tick, 500);
+  }
+
+  navRows(){
+    const act = OWNER[this.state.cur] || this.state.cur, rail = this.state.rail, out = [];
+    const badgeStyle = "font-size:10px;font-weight:700;color:#0B5C88;background:#E7F2F9;border-radius:999px;padding:1px 6px;";
+    for(const n of NAV){
+      if(n.k==='top'){
+        const on = act===n.id;
+        out.push({isItem:true, label:rail?'▦':n.l, onClick:()=>this.go(n.id),
+          style:"display:flex;align-items:center;padding:9px 10px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:600;transition:all .15s;"+
+            (on?"background:"+C.pri+";color:#fff;box-shadow:0 2px 8px rgba(8,123,178,.28);":"color:"+C.ink+";")});
+        continue;
+      }
+      const open = this.state.open[n.id];
+      if(n.k==='grp'||n.k==='lock'){
+        const locked = n.k==='lock';
+        out.push({isGroup:true, label:rail?'':n.l, phase:rail?'':(locked?n.ph+' 🔒':n.ph), arrow:open?'▼':'▶',
+          onClick:()=>this.setState(s=>({open:{...s.open,[n.id]:s.open[n.id]?0:1}})),
+          style:GRP+(locked?"color:#9DB2C1;":"color:"+C.mut+";")});
+        if(open) for(const it of n.items){
+          if(locked) out.push({isItem:true, label:rail?'·':it, onClick:()=>this.lockedModal(n.l, n.ph),
+            style:ITEM+"color:#B4C4CF;"});
+          else { const on = act===it[0];
+            out.push({isItem:true, label:rail?it[1][0]:it[1], badge:rail?null:it[2], badgeStyle,
+              onClick:()=>this.go(it[0]),
+              style:ITEM+(on?"background:"+C.priL+";color:"+C.priD+";font-weight:600;":"color:#3D586B;")}); }
+        }
+      }
+      if(n.k==='sec'){
+        out.push({isGroup:true, label:rail?'':n.l, phase:'', arrow:open?'▼':'▶',
+          onClick:()=>this.setState(s=>({open:{...s.open,[n.id]:s.open[n.id]?0:1}})), style:GRP+"color:"+C.mut+";"});
+        if(open) for(const s2 of n.subs){
+          const so = this.state.open[s2.id];
+          out.push({isItem:true, label:(so?'▼  ':'▶  ')+(rail?'':s2.l),
+            onClick:()=>this.setState(s=>({open:{...s.open,[s2.id]:s.open[s2.id]?0:1}})),
+            style:"padding:7px 10px 7px 18px;margin-top:1px;border-radius:7px;cursor:pointer;font-size:12px;color:"+C.faint+";transition:all .15s;"});
+          if(so) for(const it of s2.items){
+            const on = act===it[0];
+            out.push({isItem:true, label:rail?it[1][0]:it[1], onClick:()=>this.go(it[0]),
+              style:"display:flex;padding:6px 10px 6px 34px;margin-top:1px;border-radius:7px;cursor:pointer;font-size:12px;transition:all .15s;"+
+                (on?"background:"+C.priL+";color:"+C.priD+";font-weight:600;":"color:#3D586B;")});
+          }
+        }
+      }
+    }
+    return out;
+  }
+  lockedModal(name, ph){
+    const items = LOCKED[name] || [];
+    this.openModal(name+' — Phase '+ph.replace('F',''),
+      Stack(h('div',{style:{fontSize:'13px', fontWeight:600}}, 'This part of the platform is on the roadmap and is not switched on yet. It is shown here so the full shape of the system is visible from the start.'),
+        h('ul',{style:{margin:0, paddingLeft:'18px', fontSize:'12.5px', color:C.mut, lineHeight:1.9}}, ...items.map(i=>h('li',{key:i},i)))),
+      [Btn('Understood',{kind:'pri', onClick:()=>closeM()})]);
+  }
+
+  renderVals(){
+    const st = this.state;
+    const screen = (SCREENS[st.cur] || (()=>Page({title:'Not built', children:[]})))(st.param, st);
+    const modal = st.modal ? h('div',{onClick:e=>{if(e.target===e.currentTarget) this.closeModal();},
+      style:{position:'fixed', inset:0, background:'rgba(14,42,59,.42)', backdropFilter:'blur(3px)', zIndex:150,
+        display:'flex', alignItems:'flex-start', justifyContent:'center', padding:'56px 16px', overflow:'auto', animation:'fade .18s ease'}},
+      h('div',{style:{background:'#fff', borderRadius:'14px', width:'100%', maxWidth:'880px',
+        boxShadow:'0 24px 60px rgba(14,42,59,.28)', animation:'pop .24s cubic-bezier(.2,.9,.3,1) both', overflow:'hidden'}},
+        h('div',{style:{display:'flex', alignItems:'center', gap:'12px', padding:'15px 20px', borderBottom:'1px solid '+C.line}},
+          h('h3',{style:{fontFamily:BAR, fontSize:'16px', fontWeight:600, margin:0, flex:1}},
+            h('span',{dangerouslySetInnerHTML:{__html:st.modal.title}})),
+          h('div',{onClick:()=>this.closeModal(), style:{cursor:'pointer', color:C.faint, fontSize:'16px', lineHeight:1}}, '✕')),
+        h('div',{style:{padding:'18px 20px', maxHeight:'62vh', overflow:'auto'}}, st.modal.body),
+        h('div',{style:{display:'flex', justifyContent:'flex-end', gap:'8px', padding:'13px 20px', borderTop:'1px solid '+C.line, background:'#FAFCFD'}},
+          ...(st.modal.foot || [Btn('Cancel',{onClick:()=>this.closeModal()}), Btn('Save',{kind:'pri', onClick:()=>{this.closeModal(); this.toast('Saved');}})])))) : null;
+
+    const palette = st.palette ? h('div',{onClick:e=>{if(e.target===e.currentTarget) this.setState({palette:false});},
+      style:{position:'fixed', inset:0, background:'rgba(14,42,59,.35)', backdropFilter:'blur(3px)', zIndex:180,
+        display:'flex', alignItems:'flex-start', justifyContent:'center', padding:'96px 16px', animation:'fade .16s ease'}},
+      h(Palette, {leads:st.leads})) : null;
+
+    const toastList = st.toasts.map(t => h('div',{key:t.id,
+      style:{display:'flex', alignItems:'center', gap:'10px', background:'#0E2A3B', color:'#fff', borderRadius:'10px',
+        padding:'11px 15px', fontSize:'12.5px', fontWeight:600, boxShadow:'0 12px 28px rgba(14,42,59,.3)', animation:'slidein .22s ease both'}},
+      h('span',{style:{width:'7px', height:'7px', borderRadius:'50%', background:t.kind==='dg'?C.dg:'#5CC6EC'}}), t.msg));
+
+    return {
+      navRows:this.navRows(), screen, modal, palette, toastList,
+      asideStyle:"width:"+(st.rail?'68px':'250px')+";flex:none;background:#fff;border-right:1px solid "+C.bd+
+        ";display:flex;flex-direction:column;position:sticky;top:0;height:100vh;transition:width .22s ease;z-index:40",
+      logoStyle:"width:"+(st.rail?'34px':'150px')+";object-fit:cover;object-position:left center;height:"+(st.rail?'34px':'auto')+";display:block;transition:width .2s",
+      userMetaStyle:"line-height:1.25;min-width:0;overflow:hidden;display:"+(st.rail?'none':'block'),
+      toggleRail:()=>this.setState(s=>({rail:!s.rail})),
+      openPalette:()=>this.setState({palette:true}),
+      openAlerts:()=>this.openModal('Notifications', Stack(
+        Tbl(['When','What','Where'],[
+          ['5 h','<b style="color:#C8442E">Emergency transfer not answered</b> — Sarah Mitchell', '<a>L-2026-0417</a>'],
+          ['12 h','Qualification incomplete — Linda Vasquez','<a>L-2026-0413</a>'],
+          ['21 d','Certificate of insurance expires Aug 28, 2026','Company documents']])),
+        [Btn('Close',{onClick:()=>closeM()})]),
+      fileRef:el=>this.fileEl=el,
+      onFilePicked:e=>this.onFile(e)
+    };
+  }
+}
+
+function Palette(props){
+  const [q, setQ] = React.useState('');
+  const items = [];
+  Object.keys(TITLES).forEach(k => items.push({t:TITLES[k], s:'Screen', go:()=>go(k)}));
+  props.leads.forEach(l => items.push({t:l.client+' · '+l.id, s:'Lead · '+l.arm, go:()=>go('lead', l.id)}));
+  CONTACTS.forEach((c,i) => items.push({t:c.n, s:'Contact', go:()=>go('contact', i)}));
+  const f = q ? items.filter(i => (i.t+i.s).toLowerCase().includes(q.toLowerCase())).slice(0,9) : items.slice(0,8);
+  return h('div',{style:{width:'100%', maxWidth:'620px', background:'#fff', borderRadius:'14px', overflow:'hidden',
+    boxShadow:'0 24px 60px rgba(14,42,59,.3)', animation:'pop .2s ease both'}},
+    h('input',{autoFocus:true, value:q, onChange:e=>setQ(e.target.value), placeholder:'Jump to a screen, lead or contact…',
+      style:{width:'100%', border:'none', borderBottom:'1px solid '+C.line, padding:'16px 18px', fontSize:'15px', outline:'none', fontFamily:'inherit'}}),
+    h('div',{style:{maxHeight:'320px', overflow:'auto'}}, ...f.map((i,n)=>
+      h('div',{key:n, onClick:i.go, style:{display:'flex', alignItems:'center', gap:'10px', padding:'11px 18px', cursor:'pointer', fontSize:'13px'},
+        onMouseEnter:e=>e.currentTarget.style.background='#F4F8FB', onMouseLeave:e=>e.currentTarget.style.background='transparent'},
+        h('span',{style:{flex:1}}, i.t), h('span',{style:{fontSize:'11px', color:C.faint}}, i.s)))),
+    h('div',{style:{padding:'9px 18px', fontSize:'11px', color:C.faint, background:'#FAFCFD', borderTop:'1px solid '+C.line}},
+      '⌘K to toggle · Esc to close'));
+}
+
+const LOCKED={
+ 'SUBCONTRACTORS':['Subcontractor database with trades, COIs and a 1–5 rating per trade','Bid management — RFP / Invitation to Bid, issued against the scope packages built in Phase 2','Bid intake by PDF upload with AI extraction, and side-by-side comparison','Work orders — the restoration path, where 99% of the time there is no RFP at all','Accept / deny with rebuttal, chased every 24 hours until answered','Contract and agreement generation with digital signature','Project scheduling and milestone tracking','Change orders','Subcontractor portal — progress photos, documents, approvals','Client portal — payments, files, updates, progress photos'],
+ 'BILLING':['Invoices (AR) generated from the Phase 2 milestone triggers','Payment links, collections and the stern in-production cadence','Vendor invoices (AP) with OCR extraction','QuickBooks two-way sync','Payment runs — replacing the spreadsheet between BuilderTrend and PNC Pinnacle'],
+ 'FIELD & PAYROLL':['Mobile clock in / clock out against a specific job and cost code','Timesheets with AI validation of irregular or missing entries','Labour cost allocation feeding the Actual column of the Phase 2 budget','Payroll preparation — aggregation, overtime, structured summaries','Gusto sync — batch prepared here, payment executed manually by the client']};
+
+/* ================= DASHBOARD ================= */
+SCREENS.dashboard = (p, st) => Page({key:'dash', title:'Good morning, Joshua',
+ sub:'Owner / Admin · Thursday, Aug 7 — 4 items need a human right now, 2 site visits booked today',
+ actions:[h('div',{style:{display:'flex', gap:'4px', background:'#fff', border:'1px solid '+C.bd, borderRadius:'9px', padding:'4px'}},
+   ...['All','Commercial GC','Restoration'].map(a=>h('div',{key:a, onClick:()=>APP.setState({arm:a}),
+     style:{padding:'7px 13px', borderRadius:'6px', cursor:'pointer', fontSize:'12.5px', fontWeight:600, transition:'all .15s',
+       background:st.arm===a?C.pri:'transparent', color:st.arm===a?'#fff':C.mut}}, a)))],
+ children:[
+  Tiles([['2','New / unassigned','hotlist',C.pri],['2','Emergency open','hotlist',C.dg],['1','Awaiting first contact','hotlist',C.cy],
+    ['2','Visits today','appointments',C.cy],['1','Awaiting proposal reply','proposals','#5CC6EC'],['1','Stalled / no reply','hotlist','#E0A63C']]),
+  h('div',{style:{display:'grid', gridTemplateColumns:'minmax(560px,1fr) minmax(280px,330px)', gap:'16px', alignItems:'start'}},
+   Stack(
+    Card('Needs a human', Tbl(['Lead','Client · why it stopped','Since',''],[
+      {c:['<b style="color:#087BB2">L-2026-0417</b>','<b>Sarah Mitchell</b><div style="color:#A5503F;font-size:12px">Emergency transfer not answered</div>','5 h',
+        Btn('Open',{kind:'danger', sm:true, onClick:()=>go('lead','L-2026-0417')})], style:{background:'#FDF6F4'}, hover:'#FBEDE9'},
+      ['<b style="color:#087BB2">L-2026-0415</b>','<b>Robert Chen</b><div style="color:#5B7387;font-size:12px">Cadence exhausted — no reply after 4 touches</div>','3 d',
+        Btn('Open',{sm:true, onClick:()=>go('lead','L-2026-0415')})],
+      ['<b style="color:#087BB2">L-2026-0413</b>','<b>Linda Vasquez</b><div style="color:#5B7387;font-size:12px">Qualification incomplete — AI could not confirm budget</div>','12 h',
+        Btn('Open',{sm:true, onClick:()=>go('lead','L-2026-0413')})],
+      ['—','<b>jhoward@example.com</b><div style="color:#5B7387;font-size:12px">Inbound email could not be parsed</div>','2 h',
+        Btn('Review',{sm:true, onClick:()=>go('inbox')})]], {flush:true}), {flush:true, hard:true}),
+    Card("Today's visits", Tbl(['Time','Estimator','Client','Address','Arm'],
+      APPTS.filter(a=>a.d==='Thu Aug 7'||a.d==='Fri Aug 8').map(a=>({
+        c:[a.t, a.est, '<b>'+a.client+'</b>', a.addr, Tag(a.arm, a.arm==='Restoration'?'ai':null)],
+        onClick:()=>go('lead', a.lead)})), {flush:true}), {flush:true,
+      actions:[Btn('Appointments →',{sm:true, onClick:()=>go('appointments')})]}),
+    Card('Jobs in estimating', Tbl(['Lead','Client','Estimator','Days since visit','What is missing'],[
+      ['<b style="color:#087BB2">L-2026-0408</b>','Northside Dental','Marcus Hale', Tag('13 days','dg'),'Estimate not uploaded'],
+      ['<b style="color:#087BB2">L-2026-0414</b>','Westmoreland Retail',"Jathan D'Antonio", Tag('6 days','wn'),'Estimate in review'],
+      ['<b style="color:#087BB2">L-2026-0415</b>','Robert Chen','Jason Reed', Tag('0 days','ok'),'Awaiting client signature']], {flush:true}),
+      {flush:true, actions:[Btn('Estimating queue →',{sm:true, onClick:()=>go('equeue')})]})),
+   Stack(
+    h('section',{style:{background:'linear-gradient(160deg,#0B5C88 0%,#087BB2 60%,#30A5DE 100%)', borderRadius:'12px', padding:'18px', color:'#fff'}},
+     h('div',{style:{fontFamily:BAR, fontSize:'10.5px', fontWeight:600, letterSpacing:'.12em', textTransform:'uppercase', opacity:.82}}, 'On call right now'),
+     h('div',{style:{fontFamily:BAR, fontSize:'21px', fontWeight:600, marginTop:'8px'}}, 'Joshua Tohey'),
+     h('div',{style:{fontSize:'13px', opacity:.9}}, '(412) 555-0100'),
+     h('div',{style:{height:'1px', background:'rgba(255,255,255,.25)', margin:'14px 0'}}),
+     h('div',{style:{display:'flex', justifyContent:'space-between', fontSize:'12.5px'}}, h('span',{style:{opacity:.85}},'Backup'), h('b',null,'Byron Tohey')),
+     h('div',{style:{display:'flex', justifyContent:'space-between', fontSize:'12.5px', marginTop:'6px'}},
+       h('span',{style:{opacity:.85}},'Coverage this week'), h('b',null,'⚠ 1 gap')),
+     h('button',{onClick:()=>go('s_oncall'), style:{font:'inherit', fontSize:'12.5px', fontWeight:600, color:C.priD, background:'#fff',
+       border:'none', borderRadius:'7px', padding:'9px 12px', width:'100%', marginTop:'16px', cursor:'pointer'}}, 'Manage on-call schedule')),
+    Card('Intake today', Stack(...[['AI calls answered','7'],['Leads created','4'],['Emails captured','3'],['Transfers failed','1']].map(r=>
+      h('div',{key:r[0], style:{display:'flex', justifyContent:'space-between', alignItems:'center', paddingBottom:'8px', borderBottom:'1px solid '+C.line}},
+        h('span',{style:{fontSize:'12.5px', color:C.mut}}, r[0]),
+        h('b',{style:{fontFamily:BAR, fontSize:'16px', color:r[0]==='Transfers failed'?C.dg:C.ink}}, r[1]))))),
+    Card('Quick actions', h('div',{style:{display:'flex', flexDirection:'column', gap:'8px'}},
+      Btn('+ New lead',{kind:'pri', onClick:()=>go('newlead')}),
+      Btn('Book a site visit',{onClick:()=>go('appointments')}),
+      Btn('Upload an estimate',{onClick:()=>APP.pickFile('estimate')})))))]});
+
+/* ================= PHASE 1 — INTAKE ================= */
+const armTag = a => Tag(a, a === 'Restoration' ? 'ai' : null);
+
+SCREENS.hotlist = (p, st) => {
+ const leads = st.leads;
+ const rows = leads.map(l => ({
+   c:[ l.emg ? Tag('EMG','dg') : '', '<b style="color:#087BB2">'+l.id+'</b>', '<b>'+l.client+'</b>', l.ctype, armTag(l.arm), l.job, l.src,
+       Tag(l.stage, l.stage==='Won'?'ok':l.stage==='Lost'?'dg':null), l.assigned || '<i style="color:#9DB2C1">unassigned</i>',
+       l.created, l.last, l.next, l.cad, {t: l.value ? '$'+l.value : '—', n:true} ],
+   onClick:()=>go('lead', l.id), style: l.emg ? {background:'#FDF6F4'} : null, hover: l.emg ? '#FBEDE9' : null }));
+ const table = Tbl(['!','Lead ID','Client','Type','Arm','Job type','Source','Stage','Assigned','Created','Last contact','Next action','Cadence',{t:'Value',n:true}], rows, {min:'1500px'});
+ const kanban = Kanban(HOT_STAGES,
+   L => leads.filter(l=>l.stage===L).map(l => KCard({key:l.id, drag:l.id, onClick:()=>go('lead',l.id), title:l.client,
+     meta:l.id+' · '+l.arm+' · '+l.job, foot: l.emg ? h('div',{style:{marginTop:'6px'}}, Tag('EMERGENCY','dg')) : null})),
+   (id, lane) => APP.setLeadStage(id, lane));
+ return Page({key:'hot', title:'Hotlist', sub:'All incoming and active opportunities — every channel, one queue',
+  actions:[Btn('Export CSV',{onClick:()=>toast('CSV exported — current filter and sort')}), Btn('+ New lead',{kind:'pri', onClick:()=>go('newlead')})],
+  children:[
+   Bar(Fld('',{ph:'Search client, phone, address, lead ID…', w:'260px'}),
+     Sel('Arm: All',['Arm: All','Commercial GC','Restoration'],{w:'140px'}),
+     Sel('Emergency: All',['Emergency: All','Yes','No'],{w:'145px'}),
+     Sel('Stage: All',['Stage: All'].concat(HOT_STAGES),{w:'140px'}),
+     Sel('Assigned: All',['Assigned: All'].concat(USERS.map(u=>u.name)),{w:'160px'}),
+     Sel('Source: All',['Source: All','AI Call','Manual Call','Email','Web form','Referral','Bid invitation'],{w:'150px'}),
+     Sel('Saved views',['Saved views','My leads','Unassigned','Emergencies','Stalled > 3 days','Visits this week'],{w:'150px'}),
+     Sp(),
+     Grp(Btn('Table',{kind: st.hotView==='table'?'pri':'ghost', onClick:()=>APP.setState({hotView:'table'})}),
+       Btn('Kanban',{kind: st.hotView==='kanban'?'pri':'ghost', onClick:()=>APP.setState({hotView:'kanban'})}))),
+   st.hotView === 'table' ? table : kanban,
+   Bar(h('span',{style:{fontSize:'12.5px', color:C.mut}},'Selected: 0 —'), Btn('Assign',{sm:true}), Btn('Change stage',{sm:true}),
+     Btn('Start cadence',{sm:true, onClick:()=>APP.mStartCadence()}), Btn('Archive',{sm:true, onClick:()=>APP.mArchive()}))]});
+};
+
+SCREENS.lead = (id, st) => {
+ const l = st.leads.find(x=>x.id===id) || st.leads[0];
+ const T = ['Overview','Qualification','Communications','Schedule','Files &amp; Photos','Automation','Activity'];
+ const tab = st.tab;
+ let pane = null;
+ if(tab===0) pane = Stack(
+   Row(Card('Contact', Stack(Lbl('Client type'), Sel(l.ctype,['Individual','Organization']),
+       Lbl('Company name'), Fld(l.company), Lbl('Contact name'), Fld(l.client),
+       Lbl('Phone'), Fld(l.phone), Lbl('Alt phone'), Fld(l.phone2), Lbl('Email'), Fld(l.email),
+       Lbl('Preferred contact method'), Sel(l.pref,['Phone','Email','Text']))),
+     Card('Job site / property', Stack(Lbl('Address'), Fld(l.addr),
+       Lbl('City / State / ZIP'), h('div',{style:{display:'flex', gap:'8px'}}, Fld(l.city), Sel(l.state,['PA','OH','WV']), Fld(l.zip)),
+       Lbl('Billing address same as job site'), Sel('Yes',['Yes','No']),
+       Lbl('Property type'), Sel(l.ptype,[l.ptype,'Single family','Duplex','Multi-family','Commercial office','Retail strip','Warehouse']),
+       Lbl('Access notes'), Ta(l.access))),
+     Card('The job', Stack(Lbl('Business arm — drives everything downstream'), Sel(l.arm,['Commercial GC','Restoration']),
+       Lbl('Emergency'), Sel(l.emg?'Yes':'No',['Yes','No']),
+       Lbl('Job type'), Sel(l.job,[l.job,'Water damage','Fire damage','Mold','Storm damage','Tenant buildout','Renovation','Roof replacement','Other']),
+       Lbl('Loss / damage description'), Ta(l.desc),
+       Lbl(l.arm==='Restoration' ? 'Insurance carrier (Restoration only)' : 'Bid reference (Commercial GC only)'),
+       Fld(l.arm==='Restoration' ? l.carrier : l.bidref),
+       Lbl(l.arm==='Restoration' ? 'Claim number' : 'Bid due date'),
+       Fld(l.arm==='Restoration' ? l.claim : l.biddue)))),
+   Card('Availability for a visit — read this before you call', Ta(l.avail), {hard:true}),
+   
+   Card('Intake notes', Ta(l.notes)),
+   Card('Internal notes', Stack(Ta('',{ph:'Type a note… use @name to notify someone'}),
+     h('div',null, Btn('Add note',{kind:'pri', onClick:()=>toast('Note added')})))));
+ if(tab===1) pane = Stack(
+   Tbl(['Criterion','Captured value','Assessment','Notes'],[
+     ['<b>SCOPE</b><div style="color:#7C93A5;font-size:11.5px">What are we doing?</div>', Ta(l.q.scope,{min:52}), Sel(l.q.sa,['Qualified','Not qualified','Unclear']), Ta('',{min:52})],
+     ['<b>BUDGET</b><div style="color:#7C93A5;font-size:11.5px">Investment expectation</div>', Ta(l.q.budget,{min:52}), Sel(l.q.ba,['Qualified','Not qualified','Unclear']), Ta('',{min:52})],
+     ['<b>TIMELINE</b><div style="color:#7C93A5;font-size:11.5px">When must it start / finish?</div>', Ta(l.q.time,{min:52}), Sel(l.q.ta,['Qualified','Not qualified','Unclear','—']), Ta('',{min:52})]]),
+   Card('Outcome', Stack(h('div',{style:{display:'flex', gap:'12px', flexWrap:'wrap'}},
+       h('div',{style:{flex:'1 1 240px'}}, Lbl('Overall'), Sel(l.q.out,['Qualified','Not qualified','Needs more info'])),
+       h('div',{style:{flex:'1 1 240px'}}, Lbl('Reason (required if not qualified)'),
+         Sel('—',['—','Out of service area','Budget too low','Timeline not workable','Job type not offered','Went with a competitor','No response']))),
+     h('div',{style:{fontSize:'12px', color:C.mut}}, 'AI-filled values carry the AI tag and stay editable — every human correction is stored as training feedback.'))));
+ if(tab===2){
+   const thread = (icon, head, body, kind) => h('div',{key:head, style:{border:'1px solid '+C.bd, borderRadius:'10px', padding:'12px 14px', background:'#fff'}},
+     h('div',{style:{display:'flex', gap:'8px', alignItems:'center', fontSize:'12.5px', fontWeight:600, marginBottom:'6px'}},
+       h('span',null,icon), h('span',{style:{flex:1}, dangerouslySetInnerHTML:{__html:head}}), Tag(kind, kind==='SYSTEM'?'ai':null)),
+     h('div',{style:{fontSize:'12.5px', color:C.mut, lineHeight:1.6}, dangerouslySetInnerHTML:{__html:body}}));
+   pane = Stack(
+     Bar(Btn('All',{kind:'pri', sm:true}), Btn('Calls',{sm:true}), Btn('Email',{sm:true}), Btn('SMS',{sm:true}), Sp(),
+       Btn('Log a call',{sm:true, onClick:()=>APP.mLogCall()}), Btn('Send email',{sm:true, onClick:()=>APP.mSendMsg('Email')}),
+       Btn('Send SMS',{sm:true, onClick:()=>APP.mSendMsg('SMS')})),
+     thread('📞','<b>Inbound call · AI Receptionist</b> · Aug 7, 02:14 · 3:12',
+       'Classified <b>EMERGENCY</b> · Transferred to Byron Tohey — <b>not answered</b>','SYSTEM'),
+     thread('💬','<b>SMS sent</b> · Aug 7, 02:18 · Emergency Response · step 1 · Delivered',
+       '"We received your emergency call. A 3Rivers technician has been alerted and will contact you shortly. Ref L-2026-0417."','SYSTEM'),
+     thread('✉️','<b>Email sent</b> · Aug 7, 02:18 · Emergency Response · step 2 · Delivered · <i>not opened</i>',
+       'Subject: 3Rivers — emergency intake confirmation (L-2026-0417)','SYSTEM'),
+     thread('📞','<b>Outbound call</b> · Aug 7, 07:05 · 6:40',
+       'Notes: Reached the client. Water shut off at main. Dispatching mitigation crew for 9am. Confirmed carrier and claim number.','HUMAN — Joshua Tohey'));
+ }
+ if(tab===3){
+   const mine = APPTS.filter(a=>a.lead===l.id);
+   pane = Stack(
+     Card('Scheduled appointments', Tbl(['Date','Time','Type','Estimator','Status','Booked by',''],
+       (mine.length ? mine : [{d:'—',t:'—',est:'—',st:'No appointment booked',by:'—'}]).map(a=>[
+         a.d, a.t, 'On-site estimate visit', a.est, a.st, a.by,
+         h('div',{style:{display:'flex',gap:'6px'}}, Btn('Reschedule',{sm:true}), Btn('Cancel',{sm:true}))]), {flush:true}), {flush:true}),
+     Card('Book a visit', Stack(Lbl('Appointment type'), Sel('On-site estimate visit',['On-site estimate visit','Re-inspection','Follow-up meeting']),
+       Lbl('Estimator'), Sel(l.assigned||'—',['—'].concat(EST)),
+       Lbl('Available slots — live from Google Calendar, respecting the booking rules'),
+       h('div',{style:{display:'flex', gap:'8px', flexWrap:'wrap'}},
+         ...['Fri Aug 8 · 10:00','Fri Aug 8 · 14:00','Mon Aug 11 · 09:00','Mon Aug 11 · 13:30'].map(s=>Btn(s,{onClick:()=>toast('Slot held — '+s)}))),
+       h('div',null, Btn('Book & notify client',{kind:'pri', onClick:()=>toast('Visit booked · client and estimator notified')})))));
+ }
+ if(tab===4) pane = Stack(
+   Bar(Sel('Category: All',['Category: All','Site photos','Architectural drawings','Insurance documents','Estimate','Agreement','Other'],{w:'220px'}),
+     Sp(), Btn('+ Upload',{kind:'pri', onClick:()=>APP.pickFile('estimate')})),
+   Card('Documents', Tbl(['File','Category','Uploaded by','When','Size',''],[
+     ['claim_SF-2026-88413.pdf','Insurance documents','Inbox Capture (AI)','Aug 6, 16:31','412 KB', Btn('View',{sm:true})],
+     ['site_notes_0807.txt','Other','Joshua Tohey','Aug 7, 07:20','2 KB', Btn('View',{sm:true})]], {flush:true}), {flush:true}),
+   Card('Photos', Stack(Ph('Photos arrive from the Phase 2 inspection session, or can be uploaded here.'),
+     h('div',{style:{display:'flex', gap:'8px'}}, Btn('Upload photos',{onClick:()=>APP.pickFile('photos')}),
+       Btn('Open the photo set for this job →',{kind:'pri', onClick:()=>go('photos')})))));
+ if(tab===5) pane = Stack(
+   Card('Active cadence', Stack(
+     h('div',{style:{fontSize:'13px'}}, h('b',null,'Emergency Response'), ' · step 3 of 3 · status: ', h('b',{style:{color:C.dg}},'Escalated')),
+     h('div',{style:{fontSize:'12.5px', color:C.mut}}, 'Stopped reason: transfer not answered → escalated to Operations Manager'),
+     h('div',{style:{display:'flex', gap:'8px', flexWrap:'wrap'}}, Btn('Pause',{onClick:()=>toast('Cadence paused')}),
+       Btn('Resume',{onClick:()=>toast('Cadence resumed')}), Btn('Stop',{onClick:()=>toast('Cadence stopped')}),
+       Sel('Switch cadence…',['Switch cadence…'].concat(CADENCES.map(c=>c.n)),{w:'250px'}))), {hard:true}),
+   Tbl(['Step','Channel','When','Template','Status','Sent at'],[
+     ['1','SMS','Immediately','Emergency acknowledgement', Tag('Sent','ok'),'Aug 7, 02:18'],
+     ['2','Email','Immediately','Emergency intake confirmation', Tag('Sent','ok'),'Aug 7, 02:18'],
+     ['3','AI voice call','After 30 minutes','Status check', Tag('Skipped','wn'),'— (human took over)']]));
+ if(tab===6) pane = Stack(
+   Bar(Sel('Actor: All',['Actor: All','Human','AI','System'],{w:'150px'}),
+     Sel('Action: All',['Action: All','Created','Updated','Assigned','Sent','Stage changed'],{w:'170px'}), Sp(),
+     Btn('Export CSV',{onClick:()=>toast('CSV exported')})),
+   Tbl(['Timestamp','Actor','Type','Action','Detail'],[
+     ['Aug 7, 02:14','AI Receptionist', Tag('AI','ai'),'Lead created from call','Source: AI Call · classified EMERGENCY'],
+     ['Aug 7, 02:16','AI Receptionist', Tag('AI','ai'),'Transfer attempted','→ Byron Tohey (on-call primary) · not answered'],
+     ['Aug 7, 02:17','AI Receptionist', Tag('AI','ai'),'Escalated','Notified primary + backup + Operations Manager'],
+     ['Aug 7, 02:18','System', Tag('AI','ai'),'SMS sent','Template "Emergency acknowledgement" · delivered'],
+     ['Aug 7, 07:05','Joshua Tohey', Tag('Human'),'Call logged','Outbound · 6:40'],
+     ['Aug 7, 07:12','Joshua Tohey', Tag('Human'),'Field corrected','Insurance carrier: (blank) → State Farm']]));
+ return Page({key:'lead'+l.id, crumb:['Hotlist', ()=>go('hotlist'), l.id],
+   title:l.client, sub:l.id+' · '+l.addr+', '+l.city+', '+l.state+' '+l.zip,
+   actions:[Btn('Reassign',{onClick:()=>APP.mReassign()}), Btn('Start cadence',{onClick:()=>APP.mStartCadence()}),
+     Btn('Archive',{onClick:()=>APP.mArchive()}),
+     Btn('Open estimating workflow →',{onClick:()=>go('estimate'), disabled:l.id!=='L-2026-0415'}),
+     Btn('Convert to job',{kind:'pri', disabled:true, title:'Enabled once the proposal is signed and the binder is paid'})],
+   children:[
+    h('div',{style:{display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center'}},
+      armTag(l.arm), l.emg ? Tag('EMERGENCY','dg') : null, Tag(l.ctype),
+      h('span',{style:{flex:1}}),
+      h('div',{style:{display:'flex', gap:'8px', alignItems:'center'}},
+        h('span',{style:{fontSize:'12px', color:C.faint}},'Stage'),
+        Sel(l.stage, HOT_STAGES, {w:'170px'}),
+        h('span',{style:{fontSize:'12px', color:C.faint}},'Assigned'),
+        Sel(l.assigned||'unassigned',['unassigned'].concat(USERS.map(u=>u.name)),{w:'180px'}))),
+    Tabs(T, tab), pane]});
+};
+
+SCREENS.newlead = () => Page({key:'newlead', crumb:['Hotlist', ()=>go('hotlist'), 'New lead'], title:'New lead',
+ sub:'Manual intake — captures exactly the same fields the AI receptionist captures, so the record is identical regardless of channel',
+ actions:[Btn('Cancel',{onClick:()=>go('hotlist')}), Btn('Save as draft',{onClick:()=>toast('Draft saved')}),
+   Btn('Create lead',{kind:'pri', onClick:()=>{toast('Lead created'); go('hotlist');}})],
+ children:[
+  Card('1 · Who', Stack(Lbl('Search for an existing contact — duplicate detection runs while you type'),
+    Fld('',{ph:'Phone, email or name…'}),
+    Row(Stack(Lbl('Client type'), Sel('Individual',['Individual','Organization']), Lbl('Company name'), Fld(''), Lbl('Contact person'), Fld('')),
+      Stack(Lbl('First name'), Fld(''), Lbl('Last name'), Fld(''), Lbl('Preferred contact method'), Sel('Phone',['Phone','Email','Text'])),
+      Stack(Lbl('Phone'), Fld(''), Lbl('Alt phone'), Fld(''), Lbl('Email'), Fld(''))))),
+  Card('2 · What', Row(
+    Stack(Lbl('Business arm — required, drives everything downstream'), Sel('— select —',['— select —','Commercial GC','Restoration']),
+      Lbl('Is this an emergency?'), Sel('No',['No','Yes']),
+      h('div',{style:{fontSize:'11.5px', color:C.faint}},'Selecting Yes opens the emergency routing panel below.')),
+    Stack(Lbl('Job type'), Sel('— select —',['— select —','Water damage','Fire damage','Mold','Storm damage','Tenant buildout','Renovation','Roof replacement','Other']),
+      Lbl('Loss / damage description'), Ta('')),
+    Stack(Lbl('Insurance carrier (arm = Restoration)'), Fld(''), Lbl('Claim number'), Fld(''),
+      Lbl('Bid reference (arm = Commercial GC)'), Fld(''), Lbl('Bid due date'), Fld('')))),
+  Card('Emergency routing', Stack(
+    h('div',{style:{fontSize:'13px'}}, h('b',null,'On call right now: Joshua Tohey'), ' · (412) 555-0100'),
+    h('div',{style:{display:'flex', gap:'8px', flexWrap:'wrap'}},
+      Btn('📞 Call / transfer now',{kind:'pri', onClick:()=>toast('Dialling on-call primary…')}),
+      Btn('Call backup — Byron Tohey',{onClick:()=>toast('Dialling backup…')}))), {hard:true}),
+  
+  Card('3 · Where', Stack(Lbl('Job site address'), Fld(''),
+    Lbl('City / State / ZIP'), h('div',{style:{display:'flex', gap:'8px'}}, Fld(''), Sel('PA',['PA','OH','WV']), Fld('')),
+    Lbl('Billing address same as job site'), Sel('Yes',['Yes','No']),
+    Lbl('Property type'), Sel('— select —',['— select —','Single family','Duplex','Multi-family','Commercial office','Retail strip','Warehouse','Other']),
+    Lbl('Access notes'), Ta(''))),
+  Card('4 · Qualify — scope, budget, timeline', Stack(Lbl('Scope — what are we doing?'), Ta(''),
+    Lbl('Budget — investment expectation'), Ta(''), Lbl('Timeline — must start / must finish by'), Ta(''),
+    Lbl('Outcome'), Sel('Needs more info',['Qualified','Not qualified','Needs more info']))),
+  Card('5 · Next', Stack(Lbl('Availability for a visit — always ask; the estimator reads this before calling'), Ta(''),
+    Lbl('Assign to'), Sel('Auto-assign',['Auto-assign'].concat(EST)),
+    Lbl('Start cadence'), Sel('Default Lead Cadence',['None'].concat(CADENCES.map(c=>c.n))),
+    Lbl('Internal notes'), Ta(''))),
+  Card('+ Custom fields', Stack(Ph('Admin-defined fields render here, each scoped to Commercial GC, Restoration, or both.'),
+    h('div',null, Btn('Manage custom fields',{onClick:()=>go('s_fields')}))))]});
+
+SCREENS.calls = () => Page({key:'calls', title:'Calls', sub:'Every inbound call handled by the AI receptionist — whether or not it became a lead',
+ actions:[Btn('Export CSV',{onClick:()=>toast('CSV exported')})],
+ children:[
+  Bar(Fld('',{ph:'Caller number, name…', w:'230px'}),
+    Sel('Outcome: All',['Outcome: All','Lead created','Not qualified','Abandoned','Existing lead updated'],{w:'190px'}),
+    Sel('Classification: All',['Classification: All','EMERGENCY','Non-emergency'],{w:'190px'}),
+    Sel('Last 7 days',['Today','Last 7 days','Last 30 days','Custom…'],{w:'150px'})),
+  Tbl(['Time','Caller','Duration','Classification','Outcome','Transferred to','Result','Lead',''],
+    CALLS.map((c,i)=>({c:[c.t, c.from, c.dur, c.cls==='EMERGENCY'?Tag('EMERGENCY','dg'):c.cls, c.out, c.to,
+      c.res==='Not answered'?Tag('Not answered','dg'):c.res, c.lead ? '<b style="color:#087BB2">'+c.lead+'</b>' : '—',
+      Btn('▶ Open',{sm:true, onClick:()=>go('call', i)})],
+      onClick:()=>go('call', i), style: c.cls==='EMERGENCY'?{background:'#FDF6F4'}:null, hover: c.cls==='EMERGENCY'?'#FBEDE9':null})), {min:'1180px'})]});
+
+SCREENS.call = (i) => {
+ const c = CALLS[i||0];
+ const line = (who, t, txt) => h('div',{key:t, style:{marginBottom:'12px'}},
+   h('div',{style:{fontSize:'11px', color:C.faint, marginBottom:'2px'}}, who+' · '+t),
+   h('div',{style:{fontSize:'12.5px', lineHeight:1.6}}, txt));
+ return Page({key:'call', crumb:['Calls', ()=>go('calls'), c.t], title:'Call · '+c.from+' · '+c.dur,
+  sub:c.t+' · classified <b>'+c.cls+'</b>',
+  actions:[Btn('Download recording',{onClick:()=>toast('Recording downloaded')})],
+  children:[
+   Card(null, h('div',{style:{display:'flex', alignItems:'center', gap:'14px'}},
+     h('div',{onClick:()=>toast('Playing recording…'), style:{width:'38px', height:'38px', borderRadius:'50%', background:C.pri, color:'#fff',
+       display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', flex:'none'}},'▶'),
+     h('div',{style:{flex:1, height:'6px', borderRadius:'99px', background:'#EDF3F7', position:'relative'}},
+       h('div',{style:{position:'absolute', inset:'0 62% 0 0', background:C.cy, borderRadius:'99px'}})),
+     h('span',{style:{fontSize:'12px', color:C.mut}}, '01:47 / '+c.dur))),
+   Row(Card('Transcript', h('div',{style:{maxHeight:'320px', overflow:'auto'}},
+       line('AI','00:00',"Thank you for calling 3Rivers General Contracting. This line is monitored twenty-four hours. Can you tell me what's happening?"),
+       line('Caller','00:06',"There's water coming through my kitchen ceiling, it's pouring, I don't know what to do."),
+       line('AI','00:11','I understand, that sounds urgent. Have you been able to shut the water off at the main?'),
+       line('Caller','00:16',"No, I don't know where it is."),
+       line('AI','00:19',"That's alright. I'm flagging this as an emergency and connecting you to our on-call technician. First, can I confirm the address?"),
+       line('Caller','00:26','412 Sycamore Street, Pittsburgh, 15201.'),
+       line('AI','00:34','And your name and a callback number?'),
+       line('Caller','00:37','Sarah Mitchell, 412 555 0142.'),
+       line('AI','00:44',"Do you have homeowner's insurance, and do you know the carrier?"),
+       line('Caller','00:48','State Farm.'),
+       line('AI','02:58',"I'm connecting you now. Please stay on the line. (transfer attempted 02:16 — not answered)"))),
+     Card('Extracted data — every field editable', Stack(
+       Lbl('Name'), Fld('Sarah Mitchell'), Lbl('Phone'), Fld('(412) 555-0142'),
+       Lbl('Address'), Fld('412 Sycamore St, Pittsburgh, PA 15201'),
+       Lbl('Business arm'), Sel('Restoration',['Commercial GC','Restoration']),
+       Lbl('Emergency — correctable'), Sel('Yes',['Yes','No']),
+       Lbl('Job type'), Sel('Water damage',['Water damage','Fire damage','Mold','Storm damage','Other']),
+       Lbl('Insurance carrier'), Fld('State Farm'),
+       Lbl('Description'), Ta('Water pouring through kitchen ceiling. Client could not locate the water main shutoff.'),
+       Lbl('Availability for a visit'), Fld('Immediate — client is home'),
+       h('div',{style:{display:'flex', gap:'8px', marginTop:'6px'}}, Btn('Discard'),
+         Btn('Save corrections → update lead',{kind:'pri', onClick:()=>toast('Corrections saved as training feedback')}))),
+       {actions:[Tag('AI','ai')]})),
+   Card('Transfer', Stack(
+     h('div',{style:{fontSize:'12.5px'}},'Attempted 02:16 → ', h('b',null,'Byron Tohey'),' (on-call primary) · rang 30s · ', h('b',{style:{color:C.dg}},'Not answered')),
+     h('div',{style:{fontSize:'12.5px', color:C.mut}},'Backup Joshua Tohey · not attempted'),
+     h('div',{style:{display:'flex', gap:'8px', flexWrap:'wrap'}},
+       Btn('📞 Call back now',{kind:'pri', onClick:()=>toast('Dialling (412) 555-0142…')}),
+       Btn('Review on-call schedule',{onClick:()=>go('s_oncall')}),
+       Btn('Mark handled',{onClick:()=>toast('Marked handled')}))), {hard:true})]});
+};
+
+SCREENS.inbox = (p, st) => {
+ const T = ['Queue','Monitored inboxes','Web forms','Parsing rules'];
+ let pane = null;
+ if(st.tab===0) pane = Stack(
+   Tbl(['Received','From','Subject','Source','Parse status','Lead',''],
+     INBOX.map(m=>[m.t, m.from, m.subj, m.src,
+       m.st.startsWith('COULD') ? Tag(m.st,'dg') : m.st,
+       m.lead ? '<b style="color:#087BB2">'+m.lead+'</b>' : '—', Btn('Review',{sm:true, onClick:()=>toast('Review panel open')})]), {min:'1080px'}),
+   Card('Review panel — message 3 of 4', Stack(
+     Row(Card('Original message', Ph('From: jhoward@example.com · Aug 7, 10:05 · (no subject)\n\nhey — got your number from a friend. we had some kind of leak upstairs and there\'s a stain spreading on the ceiling downstairs. can someone come look? im in bethel park. thanks — J', {left:true, mono:true, h:'180px'})),
+       Card('Extracted → lead fields', Stack(Lbl('Name'), Fld('J. Howard'), Lbl('Email'), Fld('jhoward@example.com'),
+         Lbl('Phone — missing'), Fld('',{ph:'not found'}), Lbl('Address (incomplete)'), Fld('Bethel Park, PA'),
+         Lbl('Business arm'), Sel('Restoration',['Commercial GC','Restoration']),
+         Lbl('Job type'), Sel('Water damage',['Water damage','Fire damage','Mold','Other']),
+         Lbl('Budget — missing'), Fld('',{ph:'not found'}), Lbl('Timeline — missing'), Fld('',{ph:'not found'})))),
+     Card('Missing information — send an automated request', Stack(
+       h('div',{style:{fontSize:'12.5px'}},'Requesting: ', h('b',null,'phone number · full address · budget expectation · timeline')),
+       h('div',{style:{display:'flex', gap:'8px', alignItems:'center', flexWrap:'wrap'}},
+         Sel('Missing info request',['Missing info request','Custom…'],{w:'220px'}), Btn('Preview'),
+         Btn('Send request',{kind:'pri', onClick:()=>toast('Request sent — the reply merges back into this lead')})))),
+     Bar(Sp(), Btn('Ignore'), Sel('Attach to existing lead…',['Attach to existing lead…'].concat(LEADS.map(l=>l.id+' — '+l.client)),{w:'280px'}),
+       Btn('Create lead',{kind:'pri', onClick:()=>toast('Lead created from message')})))));
+ if(st.tab===1) pane = Stack(
+   Tbl(['Address','Purpose','Auto-create leads','Default arm','Status',''],[
+     ['info@3riversgc.com','General enquiries','☑','— (AI decides)', Tag('Connected','ok'), Btn('Edit',{sm:true})],
+     ['estimates@3riversgc.com','Bid invitations','☑','Commercial GC', Tag('Connected','ok'), Btn('Edit',{sm:true})],
+     ['claims@3riversgc.com','Carrier assignments','☑','Restoration', Tag('Connected','ok'), Btn('Edit',{sm:true})]]),
+   h('div',null, Btn('+ Connect a Gmail inbox',{kind:'pri', onClick:()=>toast('Google consent screen would open here')})));
+ if(st.tab===2) pane = Stack(
+   Tbl(['Form','Where it lives','Fields mapped','Auto-create','Status',''],[
+     ['Website contact form','3riversgc.com/contact','9 of 9','☑', Tag('Active','ok'), Btn('Edit mapping',{sm:true})],
+     ['Emergency request form','3riversgc.com/emergency','7 of 7 · sets Emergency = Yes','☑', Tag('Active','ok'), Btn('Edit mapping',{sm:true})]]),
+   Card('Field mapping', Tbl(['Form field','→ Lead field','Transform'],[
+     ['full_name','Contact name','—'],['phone','Phone','Normalise to E.164'],['email','Email','—'],
+     ['address','Job site address','Geocode'],['damage_type','Job type','Map to enum'],
+     ['message','Loss / damage description','—'],['urgency','Emergency','"Right now" → Yes']], {flush:true}), {flush:true}));
+ if(st.tab===3) pane = Stack(
+   Card('Extraction rules', Stack(Lbl('Required fields before a lead is auto-created'),
+     h('div',null, Chk('Contact name'), Chk('Phone or email'), Chk('Job site address'), Chk('Business arm'), Chk('Budget', false), Chk('Timeline', false)),
+     Lbl('When required fields are missing'),
+     Sel('Create lead + send automated request',['Create lead + send automated request','Hold in queue for a human','Create lead, no request']),
+     Lbl('Auto-reply template for missing information'), Sel(TEMPLATES[0].n, TEMPLATES.map(t=>t.n)),
+     Lbl('Thread handling'), h('div',null, Chk('Later messages in the same thread attach to the same lead')))));
+ return Page({key:'inbox', title:'Inbox Capture', sub:'Monitored Gmail inboxes and website form submissions, parsed into structured leads',
+   children:[Tabs(T, st.tab), pane]});
+};
+
+SCREENS.appointments = (p, st) => {
+ const T = ['Calendar','List','Booking rules','Connected calendars'];
+ let pane = null;
+ if(st.tab===0){
+   const slot = (txt, meta) => txt ? h('div',{style:{background:C.priL, borderLeft:'3px solid '+C.pri, borderRadius:'6px', padding:'7px 9px'}},
+     h('b',{style:{fontSize:'12px'}}, txt), h('div',{style:{fontSize:'11px', color:C.mut, marginTop:'2px'}}, meta)) : '';
+   pane = Stack(
+     Bar(Sel('Week',['Day','Week','Month'],{w:'110px'}), Sel('All estimators',['All estimators'].concat(EST),{w:'180px'}),
+       Sel('All arms',['All arms','Commercial GC','Restoration'],{w:'150px'}), Sp(),
+       Btn('+ Book visit',{kind:'pri', onClick:()=>toast('Booking dialog')})),
+     Tbl(['','Mon Aug 4','Tue Aug 5','Wed Aug 6','Thu Aug 7','Fri Aug 8'],[
+       ['08:00','','','', slot('Robert Chen','Jason Reed · Restoration · 88 Hillcrest Dr'), ''],
+       ['09:00','','','','', h('span',{style:{fontSize:'11px', color:C.faint}},'travel buffer')],
+       ['10:00','','','','', slot('Allegheny Property Group',"Jathan D'Antonio · Comm. GC · 2200 Liberty Ave")],
+       ['11:00','','','','',''],['13:00','','','','',''],
+       ['14:00','','','','', slot('Linda Vasquez','Jason Reed · Restoration · 19 Beechwood Blvd')],
+       ['15:00','','','','','']]));
+ }
+ if(st.tab===1) pane = Tbl(['Date','Time','Estimator','Client','Address','Arm','Lead','Status','Booked by',''],
+   APPTS.map(a=>({c:[a.d, a.t, a.est, a.client, a.addr, armTag(a.arm), '<b style="color:#087BB2">'+a.lead+'</b>', a.st,
+     a.by==='AI'?Tag('AI','ai'):'Human', h('div',{style:{display:'flex',gap:'6px'}}, Btn('Reschedule',{sm:true}), Btn('Cancel',{sm:true}))],
+     onClick:()=>go('lead', a.lead)})), {min:'1220px'});
+ if(st.tab===2) pane = Stack(
+   Card('Booking rules', Tbl(['Rule','Value'],[
+     ['Working hours per estimator', h('div',{style:{display:'flex',gap:'8px'}}, Sel('7:00 AM',['6:00 AM','7:00 AM','8:00 AM'],{w:'120px'}), Sel('6:00 PM',['4:00 PM','5:00 PM','6:00 PM'],{w:'120px'}))],
+     ['Minimum notice before a visit', Fld('2 hours',{w:'150px'})],
+     ['Buffer between appointments', Fld('30 minutes',{w:'150px'})],
+     ['Travel time allowance', Sel('By distance',['By distance','Fixed'],{w:'150px'})],
+     ['Max visits per estimator per day', Fld('4',{w:'80px'})],
+     ['Default visit duration', Fld('90 minutes',{w:'150px'})],
+     ['Appointment types','On-site estimate visit · Re-inspection · Follow-up meeting']], {flush:true}), {flush:true}),
+   Card('The AI books during the call', h('div',{style:{fontSize:'12.5px', color:C.mut, lineHeight:1.6}},
+     'While the AI receptionist is on the phone it queries real availability and offers concrete slots — "We have Thursday at 10, or Friday at 2 — which works?" — and the appointment lands on the estimator\'s Google Calendar before the caller hangs up.')),
+   Card('Automatic messages', Tbl(['Event','To client','To estimator'],[
+     ['Booked','Confirmation email + SMS','Push + email + calendar invite'],
+     ['24 h before','Reminder SMS','Reminder push'],
+     ['Rescheduled / cancelled','Notice','Notice + calendar update'],
+     ['<b>No-show</b>','—','Task created · <b>available as a cadence trigger</b>']], {flush:true}), {flush:true}));
+ if(st.tab===3) pane = Tbl(['User','Google account','Sync','Calendar','Last sync','Status',''],
+   USERS.filter(u=>u.role==='Sales Estimator'||u.role==='Operations Manager').map(u=>[
+     u.name, u.name.toLowerCase().replace(/[^a-z]/g,'.')+'@3riversgc.com','Two-way','Primary','2 min ago', Tag('Connected','ok'), Btn('Reconnect',{sm:true})]));
+ return Page({key:'appts', title:'Appointments', sub:'Estimator site visits — synced two-way with Google Calendar (Gmail, not Outlook)',
+   children:[Tabs(T, st.tab), pane]});
+};
+
+SCREENS.contacts = () => Page({key:'contacts', title:'Contacts', sub:'Individuals and organizations — 3Rivers does business with both',
+ actions:[Btn('Export CSV',{onClick:()=>toast('CSV exported')}), Btn('+ New contact',{kind:'pri', onClick:()=>toast('New contact form')})],
+ children:[
+  Bar(Fld('',{ph:'Search name, phone, email…', w:'240px'}), Sel('Type: All',['Type: All','Individual','Organization'],{w:'160px'}),
+    Sel('State: All',['State: All','PA','OH','WV'],{w:'130px'}), Sel('All',['All','Has open leads','No open leads'],{w:'170px'})),
+  Tbl(['Name','Type','Primary contact person','Phone','Email','City / State',{t:'Leads',n:true},{t:'Jobs',n:true},'Last activity'],
+    CONTACTS.map((c,i)=>({c:['<b>'+c.n+'</b>', c.t, c.p, c.ph, c.e, c.loc, {t:c.l,n:true}, {t:c.j,n:true}, c.last], onClick:()=>go('contact', i)})), {min:'1180px'})]});
+
+SCREENS.contact = (i, st) => {
+ const c = CONTACTS[i==null?1:i];
+ const T = ['Details','People','Properties','Leads','Jobs','Communications','Payments'];
+ let pane = null;
+ if(st.tab===0) pane = Row(
+   Card('Identity', Stack(Lbl('Type'), Sel(c.t,['Individual','Organization']), Lbl('Name / company'), Fld(c.n),
+     Lbl('Main phone'), Fld(c.ph), Lbl('Main email'), Fld(c.e), Lbl('Preferred contact method'), Sel('Email',['Phone','Email','Text']))),
+   Card('Classification', Stack(Lbl('Source'), Sel('Referral',['Web form','Referral','Google','Repeat customer','Bid list']),
+     Lbl('Tags'), h('div',{style:{display:'flex', gap:'6px', flexWrap:'wrap'}}, Tag('Repeat customer ✕'), Tag('Commercial ✕'), Btn('+ Tag',{sm:true})),
+     Lbl('Notes'), Ta(''))));
+ if(st.tab===1) pane = Stack(
+   Tbl(['Name','Role','Phone','Email','Primary',''],[
+     ['Rachel Owens','Facilities Director','(412) 555-0900','r.owens@alleghenypg.com','●', Btn('Edit',{sm:true})],
+     ['Tom Bricker','Accounts Payable','(412) 555-0903','ap@alleghenypg.com','', Btn('Edit',{sm:true})]]),
+   h('div',null, Btn('+ Add person',{kind:'pri'})));
+ if(st.tab===2) pane = Stack(
+   Tbl(['Label','Address','Type','Billing address',''],[
+     ['HQ','2200 Liberty Ave, Suite 300, Pittsburgh, PA 15222','Commercial office','☑', Btn('Edit',{sm:true})],
+     ['Site B','915 Penn Ave, Pittsburgh, PA 15222','Commercial office','☐', Btn('Edit',{sm:true})]]),
+   h('div',null, Btn('+ Add property',{kind:'pri'})));
+ if(st.tab===3) pane = Tbl(['Lead','Job type','Arm','Stage',{t:'Value',n:true},'Created'],
+   LEADS.filter(l=>l.client===c.n||l.company===c.n).map(l=>({c:['<b style="color:#087BB2">'+l.id+'</b>', l.job, armTag(l.arm), l.stage,
+     {t:l.value?'$'+l.value:'—',n:true}, l.created], onClick:()=>go('lead', l.id)})));
+ if(st.tab===4) pane = Ph('Job records arrive in Phase 3. This tab shows every job for this contact with its status and value.');
+ if(st.tab===5) pane = Ph('Full communication history across every lead and job for this contact — calls, emails, SMS.');
+ if(st.tab===6) pane = Ph('Payment history arrives in Phase 4 — invoices, amounts, methods, dates.');
+ return Page({key:'contact', crumb:['Contacts', ()=>go('contacts'), c.n], title:c.n,
+   sub:c.loc+' · '+c.l+' leads · '+c.j+' jobs · last activity '+c.last,
+   children:[h('div',null, Tag(c.t)), Tabs(T, st.tab), pane]});
+};
+
+SCREENS.properties = () => Page({key:'props', title:'Properties', sub:'Every job site and billing address on file — one contact can own several',
+ actions:[Btn('+ New property',{kind:'pri'})],
+ children:[
+  Bar(Fld('',{ph:'Search address…', w:'240px'}), Sel('State: All',['State: All','PA','OH','WV'],{w:'130px'}),
+    Sel('Type: All',['Type: All','Single family','Duplex','Commercial office','Retail strip','Warehouse'],{w:'190px'})),
+  Tbl(['Address','City','State','ZIP','Property type','Owner / contact','Billing address',{t:'Leads',n:true}],
+    PROPS.map(r=>[r[0],r[1],r[2],r[3],r[4],r[5],r[6],{t:r[7],n:true}]))]});
+
+/* ================= PHASE 2 — ESTIMATING & PROPOSALS ================= */
+const STEPS=[['estimate','Estimate intake','done'],['mapping','Line item mapping','done'],['scope','Scope structuring','done'],
+ ['budget','Budget & cost','locked'],['narrative','Scope narrative','done'],['photos','Photos','63'],
+ ['photoreport','Photo report','done'],['proposal','Proposal builder','v2'],['schedule','Payment schedule','done'],
+ ['versions','Send & versions','Sent'],['acceptance','Acceptance','—']];
+
+const jobHeader = (cur) => {
+ const done = STEPS.filter(s=>s[2]!=='—').length, total = STEPS.length, pct = Math.round(done/total*100);
+ const next = STEPS.findIndex(s=>s[2]==='—');
+ return h('div',{style:{background:'#fff', border:'1px solid '+C.bd, borderRadius:'12px', overflow:'hidden'}},
+  h('div',{style:{display:'flex', gap:'12px', alignItems:'center', flexWrap:'wrap', padding:'13px 16px', borderBottom:'1px solid '+C.line}},
+   h('b',{style:{fontFamily:BAR, fontSize:'16px'}}, JOB.client), armTag(JOB.arm), Tag(JOB.job),
+   h('span',{style:{fontSize:'12px', color:C.mut}}, JOB.id+' · '+JOB.addr+' · claim '+JOB.claim),
+   h('span',{style:{flex:1}}), h('b',{style:{fontFamily:BAR, fontSize:'17px'}}, '$'+JOB.total),
+   Btn('Open lead record',{sm:true, onClick:()=>go('lead','L-2026-0415')})),
+  h('div',{style:{display:'flex', gap:'14px', alignItems:'center', flexWrap:'wrap', padding:'10px 16px', background:'#F8FBFD', borderBottom:'1px solid '+C.line, fontSize:'12px'}},
+   h('span',{style:{color:C.faint}},'Status'), h('b',null, eqLane(QUEUE[0])), h('span',{style:{flex:1}}),
+   h('span',{style:{color:C.faint}},'Progress'),
+   h('div',{style:{width:'180px', height:'7px', borderRadius:'99px', background:'#E3ECF2', overflow:'hidden'}},
+    h('div',{style:{width:pct+'%', height:'100%', background:'linear-gradient(90deg,'+C.pri+','+C.cy+')', transition:'width .6s ease'}})),
+   h('b',null, done+' of '+total+' steps'),
+   h('span',{style:{color:C.mut}},'Next: '+(next>=0 ? (next+1)+' · '+STEPS[next][1] : 'job complete'))),
+  h('div',{style:{display:'flex', flexWrap:'wrap'}},
+   ...STEPS.map((s,i)=>h('div',{key:s[0], onClick:()=>go(s[0]),
+     style:{flex:'1 0 128px', padding:'9px 11px', cursor:'pointer', borderRight:'1px solid '+C.line, borderTop:'1px solid '+C.line,
+      background:cur===s[0]?C.pri:'#fff', color:cur===s[0]?'#fff':C.ink, transition:'all .16s'},
+     onMouseEnter:e=>{ if(cur!==s[0]) e.currentTarget.style.background='#F4F8FB'; },
+     onMouseLeave:e=>{ if(cur!==s[0]) e.currentTarget.style.background='#fff'; }},
+    h('div',{style:{fontSize:'11.5px', fontWeight:600}}, (i+1)+' · '+s[1]),
+    h('div',{style:{fontSize:'10.5px', opacity:.7, marginTop:'2px'}}, s[2]==='done'?'✓ complete':s[2])))));
+};
+const jobPage = (o) => Page(Object.assign({}, o, {children:[jobHeader(o.step)].concat(o.children||[])}));
+
+SCREENS.equeue = (p, st) => {
+ const table = Tbl(['Lead','Client','Arm','Job type','Estimator','Visit',{t:'Days since',n:true},'Estimate','Scope','Budget',{t:'Photos',n:true},'Proposal',{t:'Value',n:true}],
+   QUEUE.map(q=>({c:['<b style="color:#087BB2">'+q.id+'</b>', q.client, armTag(q.arm), q.job, q.est, q.visit,
+     {t: q.days>5 ? '<b style="color:#C8442E">'+q.days+' ⚠</b>' : q.days, n:true},
+     q.e==='MISSING' ? Tag('MISSING','dg') : q.e, q.s, q.b, {t:q.p,n:true}, q.pr, {t:q.v,n:true}],
+     onClick:()=>go('estimate'), style: q.days>5 ? {background:'#FFFCF5'} : null})), {min:'1420px'});
+ const kanban = Kanban(EQLANES, L => QUEUE.filter(q=>eqLane(q)===L).map(q=>KCard({key:q.id, onClick:()=>go('estimate'),
+   title:q.client, meta:q.id+' · '+q.arm+' · '+q.job+' · '+q.est,
+   foot:h('div',{style:{marginTop:'6px', display:'flex', gap:'6px', alignItems:'center', flexWrap:'wrap'}},
+     q.v!=='—' ? h('b',{style:{fontSize:'12px'}}, '$'+q.v) : null,
+     q.days>5 ? Tag(q.days+' d since visit','dg') : Tag('visit '+q.visit))})));
+ return Page({key:'equeue', title:'Estimating queue', sub:'Every lead with a completed site visit — this is what the weekly operations meeting reviews',
+  actions:[Btn('Export CSV',{onClick:()=>toast('CSV exported')})],
+  children:[
+   Bar(Fld('',{ph:'Search lead, client…', w:'220px'}), Sel('Estimator: All',['Estimator: All'].concat(EST),{w:'180px'}),
+     Sel('Arm: All',['Arm: All','Commercial GC','Restoration'],{w:'150px'}),
+     Sel('Status: All',['Status: All'].concat(EQLANES),{w:'200px'}),
+     Sel('Saved views',['Saved views','My jobs','Awaiting estimate','Ageing > 5 days','Proposal awaiting reply'],{w:'190px'}), Sp(),
+     Grp(Btn('Table',{kind: st.eqView==='table'?'pri':'ghost', onClick:()=>APP.setState({eqView:'table'})}),
+       Btn('Kanban',{kind: st.eqView==='kanban'?'pri':'ghost', onClick:()=>APP.setState({eqView:'kanban'})}))),
+   st.eqView==='table' ? table : kanban]});
+};
+
+SCREENS.estimate = (p, st) => {
+ const T = ['Review extraction','Source PDF','Versions'];
+ let pane = null;
+ if(st.tab===0) pane = Stack(
+   Bar(Sel('Show: all lines',['Show: all lines','Low confidence first','Unconfirmed only'],{w:'200px'}), Sp(),
+     h('span',{style:{fontSize:'12.5px'}},'Showing ', h('b',null,'22 of 42'),' line items'),
+     Btn('+ Add line',{sm:true}), Btn('Confirm all high-confidence',{sm:true, onClick:()=>toast('21 lines confirmed')})),
+   h('div',{style:{display:'grid', gridTemplateColumns:'minmax(320px,.85fr) minmax(520px,1.15fr)', gap:'14px', alignItems:'start'}},
+    Card('Source PDF — page 3 of 11', Ph('CHEN_R_FIRE_08-2026.pdf\nAllstate · Claim AL-772104\n88 Hillcrest Dr, Mt Lebanon PA 15228\n\nKITCHEN — Height 8\'\n1. Tear out wet drywall, cut & bag   320.00 SF   0.68   217.60\n2. Drywall 1/2" hung, taped, floated  320.00 SF  2.42  774.40\n3. Seal then paint walls and ceiling  480.00 SF  1.12  537.60\n4. R&R Cabinetry - lower units  18.00 LF  268.00  4,824.00\n…\n20. R&R Load bearing header - engineered\n     1.00 EA  3,2??.00  3,2??.00   ← OCR could not resolve these digits',
+      {left:true, mono:true, h:'400px'})),
+    Card('Extracted line items', Tbl(['⚠','Area / room','Description',{t:'Qty',n:true},'UoM',{t:'Unit $',n:true},{t:'Total $',n:true},'Conf.',''],
+      LINES.map((l,i)=>({c:[ l[9]<1 ? Tag('!','dg') : '', l[0], l[1], {t:l[2],n:true}, l[3], {t:l[4],n:true}, {t:l[5],n:true},
+        Math.round(l[9]*100)+'%', h('div',{style:{display:'flex',gap:'4px'}}, Btn('Edit',{sm:true}), Btn('🗑',{sm:true}))],
+        style: l[9]<1 ? {background:'#FFFCF5'} : null})), {flush:true, min:'760px'}), {flush:true})),
+   Card('Reconciliation', h('div',{style:{fontSize:'13px', lineHeight:1.8}},
+     'Sum of extracted lines ', h('b',null,'$62,118.40'), ' vs PDF grand total ', h('b',null,'$62,300.00'), ' → ',
+     h('b',{style:{color:C.dg}},'Δ $181.60'),
+     h('div',{style:{fontSize:'12px', color:C.mut}},'A non-zero delta blocks "Mark reviewed". Resolve line 20 (low confidence) or add the missing line.')), {hard:true}),
+   Bar(Btn('Save draft'), Btn('Mark reviewed → continue to mapping',{kind:'pri', disabled:true, title:'Blocked: reconciliation delta $181.60'}), Sp(),
+     Btn('Upload a revised estimate (creates v3)',{onClick:()=>APP.pickFile('estimate')})));
+ if(st.tab===1) pane = Stack(
+   Card('Upload', h('div',{onDragOver:e=>{e.preventDefault(); e.currentTarget.style.borderColor=C.pri;},
+     onDragLeave:e=>e.currentTarget.style.borderColor='#CBD9E3',
+     onDrop:e=>{e.preventDefault(); e.currentTarget.style.borderColor='#CBD9E3';
+       const f=e.dataTransfer.files[0]; if(f) APP.onFile({target:{files:[f], value:''}});},
+     style:{border:'2px dashed #CBD9E3', borderRadius:'12px', padding:'34px', textAlign:'center', transition:'border-color .15s', background:'#FAFCFD'}},
+     h('div',{style:{fontSize:'26px', marginBottom:'8px'}},'⬆'),
+     h('div',{style:{fontSize:'13px', fontWeight:600}},'Drag & drop the Xactimate PDF here'),
+     h('div',{style:{fontSize:'12px', color:C.mut, margin:'6px 0 14px'}},'or forward it to estimates@3riversgc.com'),
+     Btn('Browse…',{kind:'pri', onClick:()=>APP.pickFile('estimate')}))),
+   Card('Extracted header', Stack(
+     Tbl(['Estimate #','Date','Claim / job reference','Insured / client','Property address'],
+       [[Fld('CHEN-R-08-2026'), Fld('Aug 7, 2026'), Fld('AL-772104'), Fld('Robert Chen'), Fld('88 Hillcrest Dr, Mt Lebanon, PA 15228')]]),
+     Tbl([{t:'Subtotal',n:true},{t:'Overhead',n:true},{t:'Profit',n:true},{t:'Sales tax',n:true},{t:'GRAND TOTAL',n:true}],
+       [[{t:'48,650.00',n:true},{t:'4,865.00',n:true},{t:'4,865.00',n:true},{t:'3,920.00',n:true},{t:'<b>62,300.00</b>',n:true}]]))),
+   Card('Source file', Ph('CHEN_R_FIRE_08-2026.pdf · 11 pages · 2.4 MB · uploaded Aug 7, 14:22 by Jason Reed')));
+ if(st.tab===2) pane = Tbl(['Version','Source','Uploaded','By',{t:'Grand total',n:true},'Status','Δ vs previous',''],[
+   ['<b>v2</b> (current)','Xactimate PDF','Aug 7, 14:22','Jason Reed',{t:'$62,300.00',n:true}, Tag('In review','wn'),'+$4,180.00 · 3 lines added',
+     h('div',{style:{display:'flex',gap:'6px'}}, Btn('View',{sm:true}), Btn('Compare',{sm:true}))],
+   ['v1','Xactimate PDF','Aug 5, 09:10','Jason Reed',{t:'$58,120.00',n:true},'Superseded','—', Btn('View',{sm:true})]]);
+ return jobPage({key:'estimate', step:'estimate', title:'1 · Estimate intake', sub:'Xactimate PDF ingestion · version 2',
+   children:[Tabs(T, st.tab), pane]});
+};
+
+SCREENS.mapping = () => jobPage({key:'mapping', step:'mapping', title:'2 · Line item mapping',
+ sub:"Xactimate speaks its own language. This is where it becomes 3Rivers' language — cost codes, trades and cost types.",
+ children:[
+  Bar(Sel('Show: unmapped first',['Show: unmapped first','Show: all','Show: AI-mapped only'],{w:'210px'}),
+    Btn('Auto-map all with AI',{onClick:()=>toast('21 of 22 lines auto-mapped')}), Btn('Bulk assign…',{onClick:()=>APP.mBulk()}), Sp(),
+    h('span',{style:{fontSize:'12.5px'}}, h('b',{style:{color:C.dg}},'Unmapped: 1 of 22')),
+    Btn('Mapping dictionary',{onClick:()=>go('s_cost')})),
+  Tbl(['☐','Description (from Xactimate)',{t:'Qty',n:true},'Cost code','Trade','Cost type','Source'],
+    LINES.map((l,i)=>({c:['☐', l[1], {t:l[2]+' '+l[3],n:true},
+      Sel(l[6],['— unmapped —'].concat(COSTCODES.map(c=>c[0]+' '+c[1])),{w:'190px'}),
+      Sel(l[7],['— unmapped —'].concat(TRADES),{w:'140px'}),
+      Sel(l[8],['— select —','Labour','Material','Equipment','Sub'],{w:'120px'}),
+      i===19 ? Tag('unmapped','dg') : (i<8 ? Tag('AI · remembered','ai') : Tag('AI','ai'))],
+      style: i===19 ? {background:'#FFFCF5'} : null})), {min:'1180px'}),
+  Bar(Sp(), Btn('Continue to scope structuring',{kind:'pri', disabled:true, title:'Blocked: 1 line still unmapped'})),
+  
+  Card('Mapping dictionary — learned from confirmed mappings', Tbl(['Xactimate description','→ Cost code','→ Trade','→ Cost type',{t:'Times confirmed',n:true},''],[
+    ['Drywall - 1/2" - hung, taped, floated, ready for paint','09-250 Drywall','Drywall','Sub',{t:'14',n:true}, Btn('Edit',{sm:true})],
+    ['Seal then paint the walls and ceiling (2 coats)','09-900 Painting','Painting','Sub',{t:'11',n:true}, Btn('Edit',{sm:true})],
+    ['R&R Cabinetry - lower (base) units','06-400 Millwork','Carpentry','Sub',{t:'6',n:true}, Btn('Edit',{sm:true})],
+    ['Thermal fogging','02-300 Odour control','Mitigation','Labour',{t:'9',n:true}, Btn('Edit',{sm:true})],
+    ['HEPA air scrubber (per 24 hour period)','02-150 Equipment','Mitigation','Equipment',{t:'12',n:true}, Btn('Edit',{sm:true})]], {flush:true}), {flush:true})]});
+
+SCREENS.scope = () => jobPage({key:'scope', step:'scope', title:'3 · Scope structuring',
+ sub:'Line items grouped into scope packages — the unit Phase 3 issues an RFP or a work order against',
+ children:[
+  Bar(Btn('Group by trade',{kind:'pri'}), Btn('Group by area / room'), Sp(),
+    h('span',{style:{fontSize:'12.5px'}},'9 packages · $33,914.00 allocated · ', h('b',null,'$0.00 unassigned')),
+    Btn('+ New scope package',{onClick:()=>APP.mScopePkg()}))
+  ].concat(SCOPEPKGS.map(pk => Card(pk.c+' · '+pk.n, Stack(
+    h('div',{style:{display:'flex', gap:'10px', flexWrap:'wrap', alignItems:'center'}},
+      h('div',{style:{flex:'1 1 220px'}}, Lbl('Execution'), Sel(pk.ex,['Self-perform','Subcontracted'])),
+      h('div',{style:{flex:'1 1 220px'}}, Lbl('Trade'), Sel(pk.t, TRADES)),
+      h('div',{style:{flex:'1 1 120px'}}, Lbl('Target start'), Fld(pk.start)),
+      h('div',{style:{flex:'1 1 120px'}}, Lbl('Finish'), Fld(pk.fin))),
+    Tbl(['Line item',{t:'Qty',n:true},'Cost code',{t:'Value',n:true},''],
+      pk.items.map(ix=>[LINES[ix][1], {t:LINES[ix][2]+' '+LINES[ix][3],n:true}, LINES[ix][6], {t:'$'+LINES[ix][5],n:true},
+        Btn('Move ▾',{sm:true, onClick:()=>APP.mMove()})]))),
+    {actions:[Tag(pk.t), Tag(pk.ex.toUpperCase(), pk.ex==='Self-perform'?'ok':null),
+      h('b',{key:'v', style:{fontFamily:BAR, fontSize:'14px'}}, '$'+pk.v), Btn('Edit',{sm:true, onClick:()=>APP.mScopePkg()})]})))
+  .concat([
+  Card('Unassigned line items', Ph('All 22 line items are assigned. Any unassigned line blocks the budget from being finalised.'))])});
+
+SCREENS.budget = () => jobPage({key:'budget', step:'budget', title:'4 · Budget & cost modeling',
+ sub:'Version 3 · baseline locked Aug 7, 16:40 by Jason Reed — the estimate is what the client pays, this is what we expect it to cost',
+ children:[
+  Tiles([['$62,300','Revenue — estimate total'],['$32,692','Budgeted cost'],['$29,608','Gross margin'],['47.5%','Margin %'],['98 h','Budgeted labour'],['$1,635','Contingency (5%)']]),
+  Bar(Sel('Group by cost code',['Group by cost code','Group by scope package','Group by cost type'],{w:'230px'}), Sp(),
+    Btn('Export CSV / XLSX',{onClick:()=>toast('Budget exported')}), Btn('Save draft'), Btn('Revise baseline…',{kind:'pri', onClick:()=>toast('Baseline revision v4 started')})),
+  Tbl(['Cost code','Scope pkg','Cost type',{t:'Qty',n:true},{t:'Unit rate',n:true},{t:'Est. hours',n:true},'Labour category',{t:'Budget cost',n:true},{t:'Actual',n:true},{t:'Variance',n:true}],
+    BUDGET.map(b=>[b[0],b[1],b[2],{t:b[3],n:true},{t:b[4],n:true},{t:b[5],n:true},b[6],
+      {t:'$'+b[7]+(b[8]?' <span style="color:#7C93A5;font-size:11px">placeholder</span>':''),n:true},{t:'—',n:true},{t:'—',n:true}]),
+    {min:'1180px', foot:['<b>TOTAL</b>','','','','',{t:'<b>98</b>'},'',{t:'<b>$32,692.00</b>'},{t:'—'},{t:'—'}]}),
+  
+  Row(Card('Markup, overhead & profit', Tbl(['Rule','Default','This job'],[
+      ['Markup on materials','12%', Fld('12%',{w:'90px'})],['Markup on subcontracted','18%', Fld('18%',{w:'90px'})],
+      ['Markup on labour','—', Fld('—',{w:'90px'})],['Overhead','10%', Fld('10%',{w:'90px'})],['Profit','10%', Fld('10%',{w:'90px'})]], {flush:true}), {flush:true}),
+    Card('Contingency', Stack(Lbl('Type'), Sel('Percentage',['Percentage','Fixed amount']), Lbl('Value'), Fld('5'),
+      h('div',{style:{fontSize:'13px'}},'→ ', h('b',null,'$1,634.60')),
+      Lbl('Notes'), Ta('Structural header quantity unconfirmed on the source estimate — carrying contingency until the sub walks it.'))),
+    Card('Baseline & versions', Tbl(['Version','Locked','By',{t:'Budget cost',n:true},'Reason'],[
+      ['<b>v3</b>','Aug 7, 16:40','Jason Reed',{t:'$32,692.00',n:true},'Baseline'],
+      ['v2','Aug 6, 11:05','Jason Reed',{t:'$30,410.00',n:true},'Structural header added'],
+      ['v1','Aug 5, 15:20','Jason Reed',{t:'$29,880.00',n:true},'Initial from estimate v1']], {flush:true}), {flush:true}))]});
+
+SCREENS.narrative = () => jobPage({key:'narrative', step:'narrative', title:'5 · Scope narrative — AI-assisted drafting',
+ sub:'The client-facing scope of work, generated from everything the system already knows',
+ children:[
+  Card('Generate from', h('div',{style:{display:'flex', gap:'10px', flexWrap:'wrap', alignItems:'center'}},
+    Chk('Estimate line items (22)'), Chk('Inspection voice session (14 min)'), Chk('Photo labels (63)'), Chk('Phase 1 intake notes'),
+    Btn('Generate draft',{kind:'pri', onClick:()=>APP.runFlow('Generating the scope narrative',
+      [['Reading 22 estimate line items',700],['Reading the voice transcript (14:22)',900],['Reading 63 photo labels',800],['Drafting the narrative',1000]],
+      Ph('Draft regenerated — 6 sections, 412 words.'), [Btn('Done',{kind:'pri', onClick:()=>closeM()})])}))),
+  Card('Draft — editable, this is a starting point not an output', Ta(
+'SCOPE OF WORK — 88 Hillcrest Dr, Mt Lebanon, PA 15228\nFire and smoke restoration · Claim AL-772104 (Allstate)\n\n1. MITIGATION AND ODOUR CONTROL\nSet and monitor HEPA air scrubbers throughout the affected first floor for a five-day period. Perform thermal fogging across approximately 1,850 square feet to neutralise smoke odour. Heavy-clean all affected surfaces in the living and dining rooms.\n\n2. DEMOLITION AND DEBRIS REMOVAL\nTear out, cut and bag approximately 320 square feet of fire-damaged drywall in the kitchen. Remove and dispose of damaged cabinetry, countertop, flooring and trim. Two 30-yard dumpster loads included.\n\n3. STRUCTURAL REPAIR\nRemove and replace the engineered load-bearing header above the kitchen opening. Final quantity to be confirmed on site prior to fabrication.\n\n4. MECHANICAL, ELECTRICAL AND ROUGH-IN\nRewire the kitchen branch circuit and replace three light fixtures. Clean the full duct system to remove smoke residue.\n\n5. FINISHES\nHang, tape and float new drywall in the kitchen. Seal and paint all affected walls and ceilings. Install new cabinetry, solid-surface countertop, engineered hardwood flooring, carpet, baseboard and interior doors.\n\n6. CLOSEOUT\nConstruction clean of approximately 1,850 square feet, punch list walk with the homeowner, and final sign-off.', {min:300}), {actions:[Tag('AI','ai')]}),
+  Bar(Fld('',{ph:'Regenerate with instructions — "more detail on the mitigation work", "plain language for a homeowner"'}),
+    Btn('Regenerate',{onClick:()=>toast('Narrative regenerated')}), Sp(), Btn('Save'),
+    Btn('Use in proposal →',{kind:'pri', onClick:()=>go('proposal')}))]});
+
+SCREENS.photos = () => jobPage({key:'photos', step:'photos', title:'6 · Photos & AI labelling',
+ sub:'63 photos · auto-labelled on upload · 1 needs review',
+ children:[
+  Bar(Sel('Category: All',['Category: All','Pre-job','Overview','Elevation','Affected area','Detail','Post-job'],{w:'190px'}),
+    Sel('Room: All',['Room: All','Exterior','Kitchen','Living room','Dining room','Hallway'],{w:'160px'}),
+    Sel('Condition: All',['Condition: All','Fire damage','Smoke','Water damage','Mold','Structural','Undamaged'],{w:'180px'}),
+    Sel('All',['All','Needs review (1)','AI-labelled','Human-confirmed'],{w:'170px'}), Sp(),
+    Btn('Bulk re-label',{onClick:()=>APP.mBulkLabel()}), Btn('+ Upload',{onClick:()=>APP.pickFile('photos')}),
+    Btn('Generate photo report →',{kind:'pri', onClick:()=>go('photoreport')})),
+  h('div',{style:{display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(210px,1fr))', gap:'12px'}},
+    ...PHOTOS.map((ph,i)=>h('div',{key:i, style:{background:'#fff', border:'1px solid '+(ph[6]<1?'#F0D6D1':C.bd), borderRadius:'10px', overflow:'hidden',
+      animation:'rise .3s ease both', animationDelay:(i*25)+'ms'}},
+      h('div',{style:{height:'92px', background:'repeating-linear-gradient(135deg,#EEF3F7,#EEF3F7 8px,#E6EDF3 8px,#E6EDF3 16px)',
+        display:'flex', alignItems:'center', justifyContent:'center', color:C.faint, fontSize:'11.5px'}}, ph[6]<1?'⚠ needs review':'photo '+(i+1)),
+      h('div',{style:{padding:'10px 11px'}},
+        h('div',{style:{display:'flex', gap:'6px', alignItems:'center', marginBottom:'6px'}},
+          h('b',{style:{fontSize:'12px', flex:1}}, ph[0]), ph[6]<1 ? Tag('REVIEW','dg') : Tag('AI','ai')),
+        Lbl('Room / area'), Sel(ph[3],['— select —','Exterior','Kitchen','Living room','Dining room','Hallway','Basement']),
+        Lbl('Category'), Sel(ph[2],['— select —','Pre-job','Overview','Elevation','Affected area','Detail','Post-job']),
+        ph[2]==='Elevation' ? Lbl('Direction · '+ph[5]) : null,
+        ph[2]==='Elevation' ? Sel(ph[1],['North','South','East','West']) : null,
+        ph[4]!=='—' ? Lbl('Condition') : null,
+        ph[4]!=='—' ? Sel(ph[4],['Fire damage','Smoke','Water damage','Mold','Structural','Undamaged']) : null,
+        Lbl('Caption 🎙'), Fld('',{ph:'spoken or typed'})))))]});
+
+SCREENS.photoreport = () => jobPage({key:'photoreport', step:'photoreport', title:'7 · Photo report',
+ sub:'Insurance-ready PDF, generated from the labelled photo set',
+ children:[
+  Row(Card('Content', Stack(Lbl('Cover page'),
+      h('div',null, Chk('Client name'), Chk('Property address'), Chk('Claim number'), Chk('Date'), Chk('3Rivers license')),
+      Lbl('Structure'), Sel('Group by area / room',['Group by area / room','Group by category','Chronological']),
+      Lbl('Per photo'), h('div',null, Chk('Label'), Chk('Caption'), Chk('Capture timestamp'), Chk('GPS coordinates', false)),
+      Lbl('Layout'), Sel('2 per page',['1 per page','2 per page','4 per page','6 per page']),
+      Lbl('Photos included'), h('div',{style:{display:'flex', gap:'8px', alignItems:'center'}},
+        Fld('63 of 63',{w:'130px'}), Btn('Select…',{sm:true, onClick:()=>APP.mSelectPhotos()}), Btn('Reorder',{sm:true})))),
+    Card('Preview', Ph('page 1 — Cover: Robert Chen · 88 Hillcrest Dr · Claim AL-772104 · Aug 7, 2026\n\npage 2 — Exterior elevations (4)\npage 3–5 — Kitchen (18)\npage 6–7 — Living room (12)\npage 8 — Dining room (9)\npage 9 — Hallway (7)\npage 10–12 — Details & overviews (13)\n\n12 pages · est. 4.1 MB', {left:true, mono:true, h:'260px'}))),
+  Bar(Sp(), Btn('Download PDF',{onClick:()=>toast('Photo report downloaded')}),
+    Btn('Save to lead & make available to the proposal',{kind:'pri', onClick:()=>toast('Report saved to L-2026-0415')})),
+  Card('Generated reports', Tbl(['Generated','By',{t:'Photos',n:true},{t:'Pages',n:true},'Used in',''],[
+    ['Aug 7, 17:02','Jason Reed',{t:'63',n:true},{t:'12',n:true},'Proposal v2', h('div',{style:{display:'flex',gap:'6px'}}, Btn('Download',{sm:true}), Btn('Regenerate',{sm:true}))],
+    ['Aug 5, 10:30','Jason Reed',{t:'41',n:true},{t:'8',n:true},'Proposal v1', Btn('Download',{sm:true})]], {flush:true}), {flush:true})]});
+
+SCREENS.proposal = () => jobPage({key:'proposal', step:'proposal', title:'8 · Proposal builder',
+ sub:'Version 2 · draft — a proposal is a <b>package</b>, not a document. It is sent as one item to review and sign.',
+ children:[
+  Card('Total proposal amount', h('div',{style:{display:'flex', gap:'14px', alignItems:'center', flexWrap:'wrap'}},
+    h('b',{style:{fontFamily:BAR, fontSize:'26px'}},'$62,300.00'),
+    h('span',{style:{fontSize:'12.5px', color:C.mut}},'→ contract template band $50,001 – $250,000 → '),
+    h('b',{style:{fontSize:'12.5px'}},'Standard Agreement — large · v3'),
+    Btn('Override template…',{sm:true, onClick:()=>APP.mOverrideTpl()})), {hard:true}),
+  Tbl(['☑','Component','Content','Order',''],[
+    ['☑','<b>Introductory statement</b>','Cover message stating what is enclosed','1 ↕', Btn('Edit',{sm:true, onClick:()=>APP.mIntro()})],
+    ['☑','<b>Contract</b>','Standard Agreement — large · v3 · includes all legal verbiage and payment terms','2 ↕', Btn('Preview',{sm:true})],
+    ['☑','<b>Scope of work</b>', Sel('AI narrative + structured table + original Xactimate PDF',['AI narrative only','Structured line item table only','Original Xactimate PDF only','AI narrative + structured table','AI narrative + structured table + original Xactimate PDF'],{w:'340px'}),'3 ↕', Btn('Edit',{sm:true, onClick:()=>go('narrative')})],
+    ['☑','<b>Payment schedule</b>','6 payments · binder $500 · deposit 40% · milestones 15/15/25 · final 5%','4 ↕', Btn('Edit schedule',{sm:true, onClick:()=>go('schedule')})],
+    ['☑','<b>GC license</b>','PA HIC #PA-118442 · expires Mar 31, 2027 · valid','5 ↕', Btn('Replace',{sm:true, onClick:()=>go('s_docs')})],
+    ['☑','<b>Proof of insurance</b>','COI — Erie Insurance · <b style="color:#C8442E">⚠ expires in 21 days</b>','6 ↕', Btn('Replace',{sm:true, onClick:()=>go('s_docs')})],
+    ['☑','<b>Photo report</b>','12 pages · 63 photos · generated Aug 7, 17:02','7 ↕', Btn('Select',{sm:true, onClick:()=>go('photoreport')})],
+    ['☐','<b>References / past work</b>','Optional — not included on this proposal','8 ↕', Btn('Select',{sm:true})]], {min:'980px'}),
+  Card('Preview — exactly as the client will see it', Ph('3RIVERS GENERAL CONTRACTING — PROPOSAL\nPrepared for: Robert Chen · 88 Hillcrest Dr, Mt Lebanon, PA 15228\nDate: Aug 7, 2026 · Proposal L-2026-0415 v2 · Claim AL-772104\nTOTAL: $62,300.00\n\n[ intro ] → [ scope of work ] → [ payment schedule ] → [ agreement & legal terms ] → [ GC license ] → [ certificate of insurance ] → [ photo report ]\n\nAssembled package preview · 24 pages · signature block on page 9', {left:true, mono:true})),
+  Bar(Btn('Save draft'), Btn('Download PDF',{onClick:()=>toast('Package PDF downloaded')}), Sp(),
+    Btn('Review & send →',{kind:'pri', onClick:()=>go('versions')}))]});
+
+SCREENS.schedule = () => jobPage({key:'schedule', step:'schedule', title:'9 · Payment schedule & milestones',
+ sub:'Contract value <b>$62,300.00</b> · 6 payments · defines every invoice Phase 4 will create',
+ children:[
+  Bar(Sel('Apply a schedule template…',['Apply a schedule template…','Standard restoration — 6 payments','Standard commercial — 5 payments','Small job — 3 payments'],{w:'320px'}),
+    Sp(), Btn('+ Add milestone',{onClick:()=>APP.mMilestone()})),
+  Tbl(['#','Payment','Trigger / milestone','Type',{t:'Amount',n:true},{t:'%',n:true},'Invoice trigger','Status',''],
+    MILESTONES.map(m=>[m[0],'<b>'+m[1]+'</b>', m[8]?m[2]:Fld(m[2]), m[3], {t:'$'+m[4],n:true},
+      {t: m[5]==='—' ? '—' : Fld(m[5],{w:'64px'}), n:true}, m[6], Tag(m[7]),
+      m[8] ? '🔒' : h('div',{style:{display:'flex',gap:'5px'}}, Btn('↑↓',{sm:true}), Btn('🗑',{sm:true}))]),
+    {min:'1180px', foot:['','<b>TOTAL</b>','','',{t:'<b>$62,800.00</b>'},{t:'<b>100%</b>'},'($500 binder + 100% of contract value)','','']}),
+  Card('Validation', h('div',{style:{fontSize:'12.5px', lineHeight:2}},
+    h('div',null,'✓ Percentages total ', h('b',null,'100%'),' — saving is blocked otherwise'),
+    h('div',null,'✓ Final payment ', h('b',null,'5%'),' ≤ policy threshold — the final payment is standardised so the customer cannot delay closeout'),
+    h('div',null,'✓ Payment count ', h('b',null,'6'),' ≤ default cap without change orders'),
+    h('div',null,'✓ Deposit clock ', h('b',null,'5 calendar days'),' from acceptance')), {hard:true})]});
+
+SCREENS.versions = () => jobPage({key:'versions', step:'versions', title:'10 · Send & versions',
+ sub:'The signed proposal is the contract — there is no separate agreement created afterwards',
+ children:[
+  Tbl(['Version',{t:'Amount',n:true},'Sent','Status','Viewed','Signed','Template used',''],[
+    ['<b>v2</b> (current)',{t:'$62,300.00',n:true},'Aug 7, 17:40', Tag('Sent','ai'),'Aug 7, 19:02','—','Standard Agreement — large · v3',
+      h('div',{style:{display:'flex',gap:'6px'}}, Btn('View',{sm:true}), Btn('Resend',{sm:true, onClick:()=>toast('Proposal resent')}), Btn('Revise → v3',{sm:true}))],
+    ['v1',{t:'$58,120.00',n:true},'Aug 5, 11:15','Superseded','Aug 5, 13:44','—','Standard Agreement — large · v3',
+      h('div',{style:{display:'flex',gap:'6px'}}, Btn('View',{sm:true}), Btn('Compare',{sm:true}))]], {min:'1080px'}),
+  Card('Send', Stack(Lbl('To'), Fld('rchen@example.com'), Lbl('CC'), Fld('',{ph:'adjuster, spouse, property manager…'}),
+    Lbl('Cover email'), Ta('Robert,\n\nAttached is our proposal for the fire restoration at 88 Hillcrest Drive, along with our scope of work, licensing, insurance certificate and photo documentation.\n\nThe total is $62,300.00. A $500 binder is due on acceptance, and you can pay it directly from the link in the proposal.\n\nHappy to walk through any of it.\n\nJason Reed\n3Rivers General Contracting',{min:170}),
+    Lbl('Options'),
+    h('div',{style:{display:'flex', flexDirection:'column', gap:'6px'}},
+      Chk('Include a payment link for the $500 binder'), Chk('Request a digital signature — the signed proposal is the contract'),
+      Chk('Expire this proposal after 30 days'), Chk('Store a PDF snapshot at the moment of sending')),
+    Lbl('Start cadence'), Sel('Proposal Follow-Up — friendly',['Proposal Follow-Up — friendly','Invoice Follow-Up — job in production','None']))),
+  Bar(Sp(), Btn('Cancel'), Btn('Preview package'), Btn('Send package',{kind:'pri', onClick:()=>APP.mSendProp()})),
+  Card('Status timeline — v2', Tbl(['Status','When','Detail'],[
+    ['Draft','Aug 7, 16:55','Assembled by Jason Reed'],['Sent','Aug 7, 17:40','One package · 24 pages · payment link included'],
+    ['Viewed','Aug 7, 19:02','Opened from 71.62.x.x · 6 min on page'],['Signed','—','—'],['Declined','—','—'],['Expired','—','Would expire Sep 6, 2026']], {flush:true}), {flush:true})]});
+
+SCREENS.acceptance = () => jobPage({key:'acceptance', step:'acceptance', title:'11 · Acceptance, binder & deposit',
+ sub:'What happens the moment the client signs',
+ children:[
+  Card('1 · Client accepts', Stack(Lbl('Signature'), Fld('',{ph:'— not signed yet —'}),
+    h('div',{style:{display:'flex', gap:'12px', flexWrap:'wrap'}},
+      h('div',{style:{flex:'1 1 220px'}}, Lbl('Signed by'), Fld('')),
+      h('div',{style:{flex:'1 1 220px'}}, Lbl('Signed at'), Fld(''))),
+    h('div',{style:{fontSize:'12px', color:C.mut}},'IP address and timestamp recorded on signing. On acceptance the team is notified: "client accepted, payment initiated".'))),
+  Card('2 · Binder — $500.00', Stack(
+    h('div',{style:{display:'flex', gap:'12px', flexWrap:'wrap'}},
+      h('div',{style:{flex:'1 1 200px'}}, Lbl('Method'), Sel('— awaiting payment —',['— awaiting payment —','Credit card','ACH','Check','Cash'])),
+      h('div',{style:{flex:'1 1 140px'}}, Lbl('Received'), Fld('')),
+      h('div',{style:{flex:'1 1 180px'}}, Lbl('Reference'), Fld(''))),
+    Tbl(['Method','Tracked automatically','Behaviour'],[
+      ['Credit card', Tag('Yes','ok'),'Confirmed automatically · cadence stops · deposit clock starts'],
+      ['ACH', Tag('Yes','ok'),'Confirmed automatically · cadence stops · deposit clock starts'],
+      ['Check', Tag('No','dg'),'Tagged as check · reminder after N days to confirm receipt manually'],
+      ['Cash', Tag('No','dg'),'Same as check']]))),
+  Card('3 · Deposit clock', Stack(
+    h('div',{style:{fontSize:'12.5px', color:C.mut}},'Accepted — → deposit invoice due 5 calendar days later (configurable).'),
+    h('div',null, Btn('Draft deposit invoice — $24,920.00',{kind:'pri', disabled:true}))), {hard:true}),
+  Card('4 · Ready to convert to a Job → Phase 3', Stack(
+    h('div',null, Chk('Proposal signed', false), Chk('Binder paid', false), Chk('Deposit invoice issued', false)),
+    h('div',null, Btn('Convert to Job',{kind:'pri', disabled:true, title:'All three conditions must be met'})),
+    h('div',{style:{fontSize:'12px', color:C.mut}},'On conversion every lead document, photo, the estimate and the agreement transfer into the job profile automatically — nothing is re-uploaded.')), {hard:true}),
+  Card('Declined or expired', Stack(
+    h('div',{style:{fontSize:'12.5px'}},'→ Move the lead to ', h('b',null,'Lost'),' · loss reason required · all running cadences stop'),
+    h('div',{style:{display:'flex', gap:'8px', alignItems:'center', flexWrap:'wrap'}},
+      Sel('— select —',['— select —','Price','Timeline','Went with a competitor','Insurance denied the claim','Client postponed','No response'],{w:'260px'}),
+      Btn('Mark declined',{kind:'danger', onClick:()=>toast('Lead moved to Lost','dg')}))))]});
+
+SCREENS.sessions = () => Page({key:'sessions', title:'Inspection sessions',
+ sub:'Field capture sessions recorded by estimators on site — the screen that replaces the paper sketch and the paper notes',
+ actions:[Btn('Open the mobile capture screen →',{kind:'pri', onClick:()=>go('inspection')})],
+ children:[
+  Bar(Sel('Estimator: All',['Estimator: All'].concat(EST),{w:'180px'}), Sel('Mode: All',['Mode: All','Voice','Silent'],{w:'140px'}),
+    Sel('Sync: All',['Sync: All','Synced','Pending'],{w:'140px'})),
+  Tbl(['Started','Lead','Client','Mode','Duration',{t:'Photos',n:true},{t:'Scope items',n:true},'Sync',''],
+    SESSIONS.map(s=>({c:[s[0],'<b style="color:#087BB2">'+s[1]+'</b>', s[2], Tag(s[3], s[3]==='Voice'?'ai':null), s[4],
+      {t:s[5],n:true},{t:s[6],n:true}, Tag(s[7],'ok'), Btn('Open',{sm:true, onClick:()=>go('inspection')})],
+      onClick:()=>go('inspection')})), {min:'1020px'})]});
+
+SCREENS.inspection = () => Page({key:'inspection', crumb:['Inspection sessions', ()=>go('sessions'), 'Aug 7, 08:12 · L-2026-0415'],
+ title:'Inspection session', sub:'Robert Chen · 88 Hillcrest Dr · Jason Reed · mobile capture',
+ children:[
+  h('div',{style:{display:'grid', gridTemplateColumns:'380px minmax(0,1fr)', gap:'18px', alignItems:'start'}},
+   h('div',{style:{background:'#0E2A3B', borderRadius:'26px', padding:'12px', boxShadow:'0 18px 40px rgba(14,42,59,.22)'}},
+    h('div',{style:{background:'#F4F7FA', borderRadius:'18px', overflow:'hidden'}},
+     h('div',{style:{background:C.priD, color:'#fff', padding:'12px 14px'}},
+      h('div',{style:{fontFamily:BAR, fontSize:'12px', letterSpacing:'.12em'}},'INSPECTION · L-2026-0415'),
+      h('div',{style:{fontSize:'12px', opacity:.85, marginTop:'2px'}},'Robert Chen · 88 Hillcrest Dr')),
+     h('div',{style:{padding:'12px', display:'flex', flexDirection:'column', gap:'12px'}},
+      Card('Mode', h('div',{style:{display:'flex', gap:'8px', flexWrap:'wrap'}},
+        Btn('🎙 Voice session',{kind:'pri'}), Btn('🔇 Silent'))),
+      Card('● Recording — 04:12', Stack(
+        h('div',{style:{display:'flex', gap:'8px', alignItems:'center'}}, Btn('Pause',{sm:true}), Btn('Stop',{sm:true}), Tag('offline — will sync','wn')),
+        Ph('…thirty-two square foot of drywall on the ceiling here, seal and paint, insulation, and we\'ll need mildewcide on that whole north wall…',{left:true, pad:'12px'}))),
+      Card('Rooms / areas', Stack(
+        h('div',{style:{display:'flex', gap:'6px', flexWrap:'wrap'}}, Tag('Kitchen ✓','ok'), Tag('Living room ✓','ok'), Tag('Dining room'), Tag('Exterior'), Btn('+ Add',{sm:true})),
+        h('div',{style:{display:'flex', gap:'6px', alignItems:'center'}},
+          h('span',{style:{fontSize:'12px', color:C.mut}},'Kitchen'), Fld('14',{w:'56px'}), Fld('11',{w:'56px'}), Fld('8',{w:'56px'}),
+          h('span',{style:{fontSize:'11.5px', color:C.faint}},'ft')),
+        h('div',{style:{fontSize:'11.5px', color:C.faint}},'Manual dimensions — a lightweight replacement for the paper sketch. NOT an AR scan.'))),
+      Card('Scope items extracted', Tbl(['Material','Action',{t:'Qty',n:true},'Room'],[
+        ['Drywall','Replace',{t:'32 SF',n:true},'Kitchen'],['Paint','Seal & paint',{t:'32 SF',n:true},'Kitchen'],
+        ['Insulation','Replace',{t:'32 SF',n:true},'Kitchen'],['<b>★ Mildewcide</b>','Apply',{t:'—',n:true},'Kitchen'],
+        ['Cabinetry','R&R',{t:'18 LF',n:true},'Kitchen']], {flush:true}), {flush:true, actions:[Tag('AI','ai')]}),
+      Card('Photos · 28 this session', Stack(Ph('📷 Capture — tagged to Kitchen automatically'),
+        h('div',null, Btn('Upload from device',{onClick:()=>APP.pickFile('photos')})))),
+      Btn('End session → attach everything to the lead',{kind:'pri', onClick:()=>{toast('Session ended · 28 photos and 17 scope items attached'); go('sessions');}})))),
+   Stack(
+    Card('What the session produces and where it goes', Tbl(['Artefact','Attaches to','Used by'],[
+      ['Audio recording + transcript','Lead','Scope narrative (step 5)'],
+      ['Extracted scope items','Lead','Scope narrative · cross-check against the Xactimate estimate'],
+      ['Room list + dimensions','Lead','Scope structuring · sanity check on estimate quantities'],
+      ['Photos, tagged by room','Lead','Photo labelling · photo report · proposal · Phase 3 job profile'],
+      ['Highlighted keyword items','Lead','Surfaced at the top of the notes so nothing gets missed']], {flush:true}), {flush:true}),
+    Card('Scope boundary', Tbl(['Idea','Status'],[
+      ['<b>AR / LiDAR room scan</b>', Tag('OUT OF SCOPE','dg')],
+      ['Ambient audio capture, AI extracts the scope', Tag('Built — opt-in per session','ok')],
+      ['Keyword-driven highlighted notes', Tag('Built','ok')],
+      ['Photo capture in the same flow', Tag('Built','ok')]], {flush:true}), {flush:true})))]});
+
+SCREENS.photolib = () => Page({key:'photolib', title:'Photo library', sub:'Every photo across every job — filterable, and the source for photo reports',
+ actions:[Btn('+ Upload',{kind:'pri', onClick:()=>APP.pickFile('photos')})],
+ children:[
+  Bar(Sel('Job: All',['Job: All'].concat(QUEUE.map(q=>q.id+' — '+q.client)),{w:'280px'}),
+    Sel('Category: All',['Category: All','Pre-job','Overview','Elevation','Affected area','Detail','Post-job'],{w:'190px'}),
+    Sel('Condition: All',['Condition: All','Fire damage','Smoke','Water damage','Mold','Structural'],{w:'180px'}),
+    Sel('All',['All','Needs review (3)','AI-labelled','Human-confirmed'],{w:'170px'})),
+  Tbl(['Job','Client',{t:'Photos',n:true},{t:'Needs review',n:true},'Last capture','Report',''],[
+    ['<b style="color:#087BB2">L-2026-0415</b>','Robert Chen',{t:'63',n:true},{t:'1',n:true},'Aug 7, 08:40','12 pages · Aug 7', Btn('Open',{sm:true, onClick:()=>go('photos')})],
+    ['<b style="color:#087BB2">L-2026-0414</b>','Westmoreland Retail',{t:'22',n:true},{t:'2',n:true},'Aug 1, 10:30','—', Btn('Open',{sm:true, onClick:()=>go('photos')})],
+    ['<b style="color:#087BB2">L-2026-0408</b>','Northside Dental',{t:'8',n:true},{t:'0',n:true},'Jul 25, 09:40','—', Btn('Open',{sm:true, onClick:()=>go('photos')})]])]});
+
+SCREENS.proposals = () => Page({key:'proposals', title:'Proposals', sub:'Every proposal sent, across every job, with its version history and signature status',
+ actions:[Btn('Export CSV',{onClick:()=>toast('CSV exported')})],
+ children:[
+  Bar(Fld('',{ph:'Search client, lead…', w:'230px'}), Sel('Status: All',['Status: All','Draft','Sent','Viewed','Signed','Declined','Expired'],{w:'170px'}),
+    Sel('Estimator: All',['Estimator: All'].concat(EST),{w:'180px'})),
+  Tbl(['Lead','Client','Version',{t:'Amount',n:true},'Contract template','Sent','Status','Viewed','Signed',''],
+    PROPOSALS.map(p=>({c:['<b style="color:#087BB2">'+p[0]+'</b>', p[1], p[2], {t:'$'+p[3],n:true}, p[4], p[5],
+      Tag(p[6], p[6]==='Sent'?'ai':p[6]==='Declined'?'dg':null), p[7], p[8], Btn('Open',{sm:true, onClick:()=>go('versions')})],
+      onClick:()=>go('versions')})), {min:'1280px'}),
+  Card('Awaiting a reply', Tbl(['Lead','Client','Sent',{t:'Days out',n:true},'Cadence','Next touch'],[
+    ['<b style="color:#087BB2">L-2026-0415</b>','Robert Chen','Aug 7',{t:'0',n:true},'Proposal Follow-Up — friendly','Email · Aug 9']], {flush:true}), {flush:true})]});
+
+SCREENS.schedules = () => Page({key:'schedules', title:'Payment schedules', sub:'The milestone structure of every job — this is what Phase 4 turns into invoices',
+ actions:[Btn('Policy defaults',{onClick:()=>go('s_markup')})],
+ children:[
+  Bar(Sel('Status: All',['Status: All','Draft','Active','Complete'],{w:'160px'}), Sel('Arm: All',['Arm: All','Commercial GC','Restoration'],{w:'160px'})),
+  Tbl(['Lead','Client',{t:'Contract value',n:true},{t:'Payments',n:true},{t:'Binder',n:true},{t:'Deposit',n:true},{t:'Final',n:true},'Validation',''],[
+    ['<b style="color:#087BB2">L-2026-0415</b>','Robert Chen',{t:'$62,300.00',n:true},{t:'6',n:true},{t:'$500',n:true},{t:'40%',n:true},{t:'5%',n:true},
+      Tag('✓ 100% · final ≤5% · ≤6 payments','ok'), Btn('Open',{sm:true, onClick:()=>go('schedule')})],
+    ['<b style="color:#087BB2">L-2026-0411</b>','Gregory Palmer',{t:'$8,940.00',n:true},{t:'3',n:true},{t:'$500',n:true},{t:'50%',n:true},{t:'10%',n:true},
+      Tag('⚠ final 10% > 5% policy','dg'), Btn('Open',{sm:true, onClick:()=>go('schedule')})]], {min:'1120px'}),
+  Card('Schedule templates', Tbl(['Template',{t:'Payments',n:true},'Structure','Used by',''],[
+    ['Standard restoration — 6 payments',{t:'6',n:true},'$500 binder · 40% deposit · 15/15/25 milestones · 5% final','4 jobs', Btn('Edit',{sm:true})],
+    ['Standard commercial — 5 payments',{t:'5',n:true},'$500 binder · 30% deposit · 30/30 milestones · 10% final','2 jobs', Btn('Edit',{sm:true})],
+    ['Small job — 3 payments',{t:'3',n:true},'$500 binder · 50% deposit · 50% on completion','6 jobs', Btn('Edit',{sm:true})]], {flush:true}), {flush:true})]});
+
+/* ================= SETTINGS ================= */
+SCREENS.s_ai = (p, st) => {
+ const T = ['Business knowledge','Question sets','Qualification','Emergency &amp; transfer','Voice &amp; tone','Phone numbers'];
+ let pane = null;
+ if(st.tab===0) pane = Card('Business knowledge — what the AI knows about 3Rivers', Stack(
+   Lbl('Company name'), Fld('3Rivers General Contracting'),
+   Lbl('What we do'), Ta('Commercial general contracting, and insurance restoration & mitigation — fire, water, mould, storm.'),
+   Lbl('Service area'), Ta('Western Pennsylvania (primary). Eastern Ohio and West Virginia accepted case by case.'),
+   Lbl('Business hours'), Fld('Mon–Fri 7:00 AM – 5:00 PM'),
+   h('div',null, Chk('Emergency line answered 24/7')),
+   Lbl('What we do NOT do'), Ta('Residential new construction. Standalone landscaping. Anything outside the tri-state area.')));
+ if(st.tab===1) pane = Stack(
+   Tbl(['Scenario','Questions asked','Active',''],[
+     ['Water damage','1. Is water still flowing? 2. Has the main been shut off? 3. Which rooms/floors are affected? 4. How long has it been wet? 5. Insurance carrier?','☑', Btn('Edit',{sm:true, onClick:()=>APP.mQset('Water damage')})],
+     ['Fire damage','1. Has the fire department cleared the property? 2. Is it habitable? 3. Which areas are affected? 4. Smoke damage beyond the fire area?','☑', Btn('Edit',{sm:true, onClick:()=>APP.mQset('Fire damage')})],
+     ['Mold','1. Where is the visible growth? 2. How large an area? 3. Is anyone experiencing symptoms? 4. Known moisture source?','☑', Btn('Edit',{sm:true, onClick:()=>APP.mQset('Mold')})],
+     ['Storm damage','1. Is the building envelope breached? 2. Active water intrusion? 3. Which elevations? 4. Insurance carrier?','☑', Btn('Edit',{sm:true, onClick:()=>APP.mQset('Storm damage')})],
+     ['Commercial GC enquiry','1. What type of project? 2. Square footage? 3. Budget range? 4. Desired start and completion? 5. Out for competitive bid?','☑', Btn('Edit',{sm:true, onClick:()=>APP.mQset('Commercial GC')})]], {min:'900px'}),
+   h('div',null, Btn('+ Add scenario',{kind:'pri'})));
+ if(st.tab===2) pane = Card("Qualification — the criteria that live in Joshua's head today", Stack(
+   Lbl('SCOPE rules'), Ta('Accept: restoration/mitigation of any size; commercial GC over 1,000 sf. Decline: residential new build, standalone handyman work.'),
+   Lbl('BUDGET thresholds'), Ta('Commercial GC: minimum $25,000. Restoration: no minimum when insurance-backed.'),
+   Lbl('TIMELINE rules'), Ta('Decline if the client requires a start date inside 5 business days for non-emergency commercial work.'),
+   Lbl('Auto-disqualify when'),
+   h('div',null, Chk('Outside service area'), Chk('Job type not offered'), Chk('Budget below the arm minimum'), Chk('No insurance on a restoration claim', false))));
+ if(st.tab===3) pane = Stack(
+   Card('Emergency detection', Stack(
+     h('div',null, Chk('Natural language detection (always on)')),
+     Lbl('Forced keywords — these always classify as EMERGENCY'),
+     h('div',{style:{display:'flex', gap:'6px', flexWrap:'wrap'}},
+       ...['flooding','water pouring','sewage','fire','smoke','mold',"can't breathe",'ceiling collapsing'].map(k=>Tag(k+' ✕')),
+       Btn('+ Add keyword',{sm:true})))),
+   Card('Transfer rules', Stack(
+     Lbl('On EMERGENCY'), Sel('Transfer live to on-call primary',['Transfer live to on-call primary','Take a message only','Notify without transferring']),
+     Lbl('Ring the primary for'), Fld('30 seconds',{w:'160px'}),
+     Lbl('If the primary does not answer'), Sel('Try the backup',['Try the backup','Take a message','Call the Operations Manager']),
+     Lbl('If nobody answers'), Sel('Take a message + notify both + create callback task',['Take a message + notify both + create callback task','Voicemail only']),
+     Lbl('Non-emergency after hours'), Sel('Capture and schedule a callback',['Capture and schedule a callback','Transfer anyway','Take a message']),
+     h('div',null, Btn('Who is on call → On-Call Schedule',{onClick:()=>go('s_oncall')})))));
+ if(st.tab===4) pane = Card('Voice & tone', Stack(
+   Lbl('Voice'), h('div',{style:{display:'flex', gap:'8px'}}, Sel('Voice A — neutral female',['Voice A — neutral female','Voice B — neutral male','Voice C — warm female']), Btn('▶ Preview',{onClick:()=>toast('Playing sample…')})),
+   Lbl('Greeting'), Ta("Thank you for calling 3Rivers General Contracting. This line is monitored twenty-four hours. Can you tell me what's happening?"),
+   Lbl('Tone adaptation'), h('div',null, Chk('Adapt tone to the urgency and situation of the caller')),
+   Lbl('Escalation phrases — caller statements that force a human transfer'), Ta('"I want to speak to a person" · "this is an emergency" · "let me talk to someone"'),
+   Lbl('Maximum call length before offering a human'), Fld('8 minutes',{w:'160px'})));
+ if(st.tab===5) pane = Tbl(['Number','Purpose','Routes to','Hours','Status',''],[
+   ['(412) 555-0100','Primary business line','AI Receptionist','24/7', Tag('Active','ok'), Btn('Edit',{sm:true})],
+   ['(412) 555-0199','Emergency direct line','AI Receptionist → on-call','24/7', Tag('Active','ok'), Btn('Edit',{sm:true})]]);
+ return Page({key:'s_ai', title:'AI Receptionist', sub:'Configure what the AI knows, what it asks, and what it does',
+   children:[Tabs(T, st.tab), pane]});
+};
+
+SCREENS.s_oncall = () => Page({key:'s_oncall', title:'On-Call Schedule', sub:'Who the AI receptionist transfers emergencies to, right now',
+ children:[
+  Card('On call right now', h('div',{style:{display:'flex', gap:'14px', alignItems:'center', flexWrap:'wrap'}},
+    h('div',null, h('b',{style:{fontFamily:BAR, fontSize:'17px'}},'Joshua Tohey'),
+      h('div',{style:{fontSize:'12.5px', color:C.mut}},'(412) 555-0100 · Backup: Byron Tohey · (412) 555-0101')),
+    Sp(), Btn('Take over on-call now',{kind:'pri', onClick:()=>APP.mTakeOver()}), Btn('Change who is on call now',{onClick:()=>APP.mChangeNow()})), {hard:true}),
+  Bar(Sel('Week',['Week','Month'],{w:'110px'}), Sel('This week — Aug 4 to Aug 10',['This week — Aug 4 to Aug 10','Next week — Aug 11 to Aug 17'],{w:'260px'}),
+    Sp(), Sel('Apply rotation template…',['Apply rotation template…','Standard weekly','Holiday coverage'],{w:'220px'}), Btn('+ Override')),
+  Tbl(['Slot','Mon Aug 4','Tue Aug 5','Wed Aug 6','Thu Aug 7','Fri Aug 8','Sat Aug 9','Sun Aug 10'],
+    ONCALL.map(r=>r.map((c,i)=> i===0 ? '<b>'+c+'</b>' : (c.startsWith('⚠') ? Tag(c,'dg') : c))), {min:'1100px'}),
+  Card('⚠ Coverage gap detected', h('div',{style:{display:'flex', gap:'14px', alignItems:'center', flexWrap:'wrap'}},
+    h('div',{style:{fontSize:'12.5px'}}, h('b',null,'Sunday Aug 10, 00:00 – 08:00 has nobody on call.'),
+      h('div',{style:{color:C.mut}},'Emergency transfers during that window will fail. Coverage is 24/7 — the system must never let that silently break.')),
+    Sp(), Btn('Assign someone',{kind:'danger', onClick:()=>APP.mFixGap()})), {hard:true}),
+  Card('Rotation templates', Tbl(['Name','Pattern','Applies to','Active',''],[
+    ['Standard weekly','Joshua days · Byron / Dana nights · weekend rotation','All weeks','☑', h('div',{style:{display:'flex',gap:'6px'}}, Btn('Edit',{sm:true}), Btn('Apply',{sm:true}))],
+    ['Holiday coverage','Single person 24h, rotating daily','Holiday dates only','☑', h('div',{style:{display:'flex',gap:'6px'}}, Btn('Edit',{sm:true}), Btn('Apply',{sm:true}))]], {flush:true}), {flush:true}),
+  Card('On-call eligible staff', Tbl(['User','Role','Phone','Eligible','Currently'],
+    USERS.filter(u=>u.oncall).map((u,i)=>[u.name, u.role,'(412) 555-01'+(10+i),'☑', u.name==='Joshua Tohey'?Tag('ON CALL','ok'):'—']), {flush:true}), {flush:true})]});
+
+SCREENS.s_assign = () => Page({key:'s_assign', title:'Assignment Rules', sub:'How new leads are distributed across the sales estimators',
+ children:[
+  Card('Strategy', h('div',{style:{display:'flex', gap:'12px', flexWrap:'wrap', alignItems:'center'}},
+    Sel('Round-robin weighted by capacity',['Round-robin','Round-robin weighted by capacity','By capacity','Manual only'],{w:'320px'}),
+    Chk('Auto-assign on lead creation'), Chk('Skip estimators at their maximum'))),
+  Card('Estimators', Tbl(['Estimator','Active','Arms they receive',{t:'Max open leads',n:true},{t:'Currently open',n:true},'Level','Weight',''],
+    USERS.filter(u=>u.role==='Sales Estimator').map(u=>[u.name,'☑',
+      Sel(u.arms,['Both','Commercial GC','Restoration'],{w:'150px'}), {t:Fld(u.max,{w:'70px'}),n:true},
+      {t: u.name==="Jathan D'Antonio"?18:u.name==='Jason Reed'?11:3, n:true},
+      Sel(u.level,['Senior','Mid','Junior'],{w:'110px'}), Fld(u.level==='Junior'?'0.5':'1.0',{w:'70px'}), Btn('Remove',{sm:true})]), {flush:true}), {flush:true,
+    actions:[Btn('+ Add estimator',{sm:true, kind:'pri'})]}),
+  Card('Rules', Stack(
+    Tbl(['Priority','When','Then',''],[
+      ['1','Emergency = Yes','Route to on-call primary, notify backup', Btn('Edit',{sm:true, onClick:()=>APP.mRule()})],
+      ['2','Business arm = Commercial GC AND value > $150,000','Assign to level Senior only', Btn('Edit',{sm:true, onClick:()=>APP.mRule()})],
+      ['3','State = WV','Do not auto-assign — Operations Manager reviews', Btn('Edit',{sm:true, onClick:()=>APP.mRule()})]], {flush:true}),
+    h('div',null, Btn('+ New rule',{kind:'pri', onClick:()=>APP.mRule()}))), {flush:false})]});
+
+SCREENS.s_pipeline = (p, st) => {
+ const T = ['Restoration / Insurance','Commercial GC'];
+ const rows = (st.tab===0?STAGES_R:STAGES_C).map(s=>[s[0],'<b>'+s[1]+'</b>', s[2], s[3], s[4],
+   h('div',{style:{display:'flex',gap:'6px'}}, Btn('Edit',{sm:true, onClick:()=>APP.mStage()}), Btn('↑↓',{sm:true}))]);
+ return Page({key:'s_pipeline', title:'Pipeline & Stages', sub:'Separate stage sets per business arm — stages are data, not code',
+   actions:[Btn('+ New stage',{kind:'pri', onClick:()=>APP.mStage()})],
+   children:[Tabs(T, st.tab), Tbl(['#','Stage','Entry rule','SLA','Cadence on entry',''], rows, {min:'900px'})]});
+};
+
+SCREENS.s_cadences = (p, st) => {
+ const T = ['Builder','Monitor'];
+ let pane = null;
+ if(st.tab===0) pane = Stack.apply(null, [
+   Bar(h('span',{style:{fontSize:'12.5px', color:C.mut}},'Visual cadence builder — trigger, ordered steps, conditional branches.'), Sp(),
+     Btn('+ New automation',{kind:'pri', onClick:()=>go('cadence_new')}))
+   ].concat(CADENCES.map((c,i)=>Card(c.n, Stack(
+     h('div',{style:{fontSize:'12.5px', color:C.mut}}, c.d),
+     h('div',{style:{background:'#F8FBFD', border:'1px solid '+C.bd, borderRadius:'8px', padding:'9px 12px', fontSize:'12.5px'}},
+       h('b',{style:{fontFamily:BAR, letterSpacing:'.08em', marginRight:'8px'}},'TRIGGER'), c.trig),
+     Tbl(['Step','Channel','Send','Template'], c.steps),
+     h('div',{style:{fontFamily:BAR, fontSize:'10.5px', fontWeight:600, letterSpacing:'.09em', color:C.faint}},'CONDITIONAL BRANCHES'),
+     h('div',{style:{display:'flex', flexDirection:'column', gap:'6px'}},
+       ...c.br.map(b=>h('div',{key:b[0], style:{border:'1px dashed '+C.bd, borderRadius:'8px', padding:'8px 11px', fontSize:'12.5px'}},
+         h('b',null, b[0]), ' → ', b[1])))),
+     {actions:[c.def?Tag('DEFAULT','ai'):null, c.act?Tag('ACTIVE','ok'):null,
+       Btn('Edit',{sm:true, key:'e', onClick:()=>go('cadence', i)}), Btn('Duplicate',{sm:true, key:'d'})]}))
+   ).concat([]));
+ if(st.tab===1) pane = Stack(
+   Tbl(['Lead','Client','Cadence','Step','Last touch','Next touch','Status',''],[
+     ['<b style="color:#087BB2">L-2026-0416</b>','Allegheny Property Group','Default Lead Cadence','2 of 4','SMS · Aug 6','AI call · Aug 9', Tag('Running','ok'), h('div',{style:{display:'flex',gap:'6px'}}, Btn('Pause',{sm:true}), Btn('Stop',{sm:true}))],
+     ['<b style="color:#087BB2">L-2026-0413</b>','Linda Vasquez','Default Lead Cadence','1 of 4','Email · Aug 6','SMS · Aug 8', Tag('Running','ok'), h('div',{style:{display:'flex',gap:'6px'}}, Btn('Pause',{sm:true}), Btn('Stop',{sm:true}))],
+     ['<b style="color:#087BB2">L-2026-0417</b>','Sarah Mitchell','Emergency Response','3 of 3','Email · Aug 7','—', Tag('Escalated','dg'), Btn('Restart',{sm:true})],
+     ['<b style="color:#087BB2">L-2026-0415</b>','Robert Chen','Proposal Follow-Up — friendly','1 of 3','—','Email · Aug 9', Tag('Running','ok'), Btn('Pause',{sm:true})],
+     ['<b style="color:#087BB2">L-2026-0414</b>','Westmoreland Retail','Default Lead Cadence','2 of 4','—','—', Tag('Paused','wn'), Btn('Resume',{sm:true})],
+     ['<b style="color:#087BB2">L-2026-0411</b>','Gregory Palmer','Default Lead Cadence','2 of 4','Email · Aug 2','—', Tag('Stopped — declined'),'—']], {min:'1080px'}),
+   Card('Sent in the last 7 days', Tbl(['Channel',{t:'Sent',n:true},{t:'Delivered',n:true},{t:'Opened / answered',n:true},{t:'Replied',n:true},{t:'Failed',n:true}],[
+     ['Email',{t:'34',n:true},{t:'33',n:true},{t:'12',n:true},{t:'4',n:true},{t:'1',n:true}],
+     ['SMS',{t:'21',n:true},{t:'21',n:true},{t:'—',n:true},{t:'6',n:true},{t:'0',n:true}],
+     ['AI voice call',{t:'8',n:true},{t:'—',n:true},{t:'5',n:true},{t:'3',n:true},{t:'0',n:true}]], {flush:true}), {flush:true}));
+ return Page({key:'s_cad', title:'Automations & Cadences', sub:'One source of truth for follow-up — build them, monitor what goes out',
+   actions:[Btn('Sending Rules',{onClick:()=>go('s_rules')}), Btn('Templates',{onClick:()=>go('s_templates')})],
+   children:[Tabs(T, st.tab), pane]});
+};
+
+const cadenceEditor = (c) => Page({key:'cad', crumb:['Automations & Cadences', ()=>go('s_cadences'), c.n||'New automation'],
+ title:c.n||'New automation',
+ actions:[Btn('Cancel',{onClick:()=>go('s_cadences')}), Btn('Save',{kind:'pri', onClick:()=>{toast('Automation saved'); go('s_cadences');}})],
+ children:[
+  Bar(h('span',{style:{fontSize:'12px', color:C.faint}},'Name'), Fld(c.n,{ph:'Automation name', w:'260px'}), Chk('Active'), Chk('Set as default', false)),
+  Card('Description', Ta(c.d,{ph:'What does this cadence do and when should it be used?'})),
+  Card('Trigger', Stack(Lbl('When'),
+    Sel(c.trig.replace('When ',''),['a lead is created','a lead enters stage · New','a lead enters stage · Qualified','no reply for N days','a proposal is sent','a proposal is accepted','an invoice becomes overdue','an appointment is booked','an appointment is missed / no-show','Emergency = Yes']),
+    Lbl('Additional conditions (optional)'),
+    h('div',{style:{display:'flex', gap:'8px', flexWrap:'wrap'}},
+      Sel('Business arm: any',['Business arm: any','Commercial GC only','Restoration only'],{w:'220px'}),
+      Sel('Job status: any',['Job status: any','Not started','In production'],{w:'200px'})))),
+  Card('Steps', Stack.apply(null, c.steps.map((s,i)=>h('div',{key:i, style:{border:'1px solid '+C.bd, borderRadius:'10px', padding:'11px 13px'}},
+      h('div',{style:{display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center'}},
+        h('b',{style:{fontSize:'12.5px', minWidth:'54px'}},'Step '+s[0]),
+        Sel(s[1],['Email','SMS','AI voice call'],{w:'150px'}),
+        Sel(s[2],['Immediately','After 1 hour','After 4 hours','After 1 day','After 2 days','After 3 days','After 5 days','After 7 days','After 10 days','After 14 days'],{w:'180px'}),
+        Sel(s[3],['(write inline)'].concat(TEMPLATES.map(t=>t.n)),{w:'240px'}), Sp(),
+        Btn('↑',{sm:true}), Btn('↓',{sm:true}), Btn('🗑',{sm:true}))))
+    .concat([h('div',{key:'add'}, Btn('+ Add step',{kind:'pri'}))]))),
+  Card('Conditional branches', Stack.apply(null, c.br.map((b,i)=>h('div',{key:i, style:{display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center',
+      border:'1px dashed '+C.bd, borderRadius:'10px', padding:'10px 12px'}},
+      h('span',{style:{fontSize:'12px', color:C.faint}},'When'),
+      Sel(b[0],['If lead replies','If meeting booked','If declines','If payment received','If proposal signed','If no reply (3d)','If no reply (7d)','If no reply (14d)','If transfer not answered'],{w:'220px'}),
+      h('span',{style:{fontSize:'12px', color:C.faint}},'→ do'),
+      Sel(b[1].split(',')[0],['Move to stage','Stop follow-ups','Notify user','Flag for manual review','Escalate to Owner','Switch to another cadence','Require loss reason'],{w:'230px'}),
+      Btn('🗑',{sm:true})))
+    .concat([h('div',{key:'add'}, Btn('+ Add branch',{kind:'pri'}))]))),
+  Card('Exit conditions', h('div',{style:{display:'flex', gap:'10px', flexWrap:'wrap', alignItems:'center', fontSize:'12.5px'}},
+    'Stop after', Fld('4',{w:'70px'}),'touches or after', Fld('14',{w:'70px'}),'days, then',
+    Sel('Flag for manual review',['Flag for manual review','Move to stage','Switch to another cadence','Do nothing'],{w:'230px'})))]});
+SCREENS.cadence = (i) => cadenceEditor(CADENCES[i||0]);
+SCREENS.cadence_new = () => cadenceEditor({n:'', d:'', trig:'When a lead enters stage · New', steps:[['1','Email','Immediately','— select —']], br:[['If lead replies','Move to stage']]});
+
+SCREENS.s_rules = () => Page({key:'s_rules', title:'Sending Rules',
+ sub:'When follow-ups may go out: the daily window (Eastern), weekends, holidays, and call hours. Every cadence obeys these.',
+ actions:[Btn('Builder',{onClick:()=>go('s_cadences')}), Btn('Templates',{onClick:()=>go('s_templates')}),
+   Btn('Save changes',{kind:'pri', onClick:()=>toast('Sending rules saved')})],
+ children:[
+  Row(Card('Start delay', Stack(h('div',{style:{fontSize:'12px', color:C.mut}},'Hold this long after the trigger before the first touch goes out.'), Fld('1 hour',{w:'160px'}))),
+    Card('Sending window', Stack(h('div',{style:{fontSize:'12px', color:C.mut}},'Email and SMS only go out inside this window.'),
+      h('div',{style:{display:'flex', gap:'8px'}}, Sel('8:00 AM',['6:00 AM','7:00 AM','8:00 AM','9:00 AM'],{w:'120px'}),
+        Sel('5:00 PM',['4:00 PM','5:00 PM','6:00 PM','7:00 PM'],{w:'120px'}), Sel('Eastern (EST/EDT)',['Eastern (EST/EDT)'],{w:'190px'}))))),
+  Row(Card('Skip weekends', Stack(h('div',null, Chk('enabled')),
+      h('div',{style:{fontSize:'12px', color:C.mut}},'A touch that would land on a weekend rolls to the next working day.'))),
+    Card('Maximum attempts', Stack(h('div',{style:{fontSize:'12px', color:C.mut}},'Hard cap on total touches per contact across all channels.'), Fld('6 touches',{w:'160px'})))),
+  Card('Stop before due date', Stack(h('div',{style:{fontSize:'12px', color:C.mut}},'Timed against a due date rather than a fixed count — bid due dates and payment due dates.'),
+    h('div',{style:{display:'flex', gap:'8px', alignItems:'center', fontSize:'12.5px'}},'Stop', Fld('2',{w:'70px'}),'days before the due date'))),
+  Card('Holidays', Stack(h('div',{style:{display:'flex', gap:'8px', alignItems:'center'}}, Fld('',{ph:'yyyy-mm-dd', w:'170px'}), Btn('+ Add date')),
+    h('div',{style:{display:'flex', gap:'6px', flexWrap:'wrap'}},
+      ...['Jan 1, 2026','Jan 19, 2026','Feb 16, 2026','May 25, 2026','Jul 3, 2026','Sep 7, 2026','Nov 26, 2026','Nov 27, 2026','Dec 25, 2026'].map(d=>Tag(d+' ✕'))))),
+  Card('Call window — outbound AI calls obey their own hours', Stack(h('div',null, Chk('Use a separate window for calls')),
+    h('div',{style:{display:'flex', gap:'8px'}}, Sel('9:00 AM',['8:00 AM','9:00 AM','10:00 AM'],{w:'120px'}), Sel('4:00 PM',['4:00 PM','5:00 PM','6:00 PM'],{w:'120px'})),
+    h('div',{style:{fontSize:'12px', color:C.mut}},'This exists because of a real incident: a cadence triggered at 1am would otherwise place its follow-up call at 1am the next day.')), {hard:true})]});
+
+SCREENS.s_templates = () => Page({key:'s_templates', title:'Templates',
+ sub:'Email, SMS and AI call scripts used by your follow-up sequences — edit them yourself, any time',
+ actions:[Btn('Builder',{onClick:()=>go('s_cadences')}), Btn('Sending Rules',{onClick:()=>go('s_rules')}),
+   Btn('+ New template',{kind:'pri', onClick:()=>go('template')})],
+ children:[
+  Bar(Sel('Channel: All',['Channel: All','Email','SMS','AI call script'],{w:'180px'}), Fld('',{ph:'Search templates…', w:'220px'})),
+  Tbl(['Name','Channel','Used by','Last edited',''],
+    TEMPLATES.map(t=>({c:['<b>'+t.n+'</b>', Tag(t.c, t.c==='AI call script'?'ai':null), t.u, t.e,
+      h('div',{style:{display:'flex',gap:'6px'}}, Btn('Edit',{sm:true, onClick:()=>go('template')}), Btn('Preview',{sm:true}), Btn('Duplicate',{sm:true}))],
+      onClick:()=>go('template')})))]});
+
+SCREENS.template = () => Page({key:'template', crumb:['Templates', ()=>go('s_templates'),'Firm payment demand'], title:'Edit template',
+ actions:[Btn('Cancel',{onClick:()=>go('s_templates')}), Btn('Save',{kind:'pri', onClick:()=>{toast('Template saved'); go('s_templates');}})],
+ children:[
+  Bar(h('span',{style:{fontSize:'12px', color:C.faint}},'Name'), Fld('Firm payment demand',{w:'240px'}),
+    h('span',{style:{fontSize:'12px', color:C.faint}},'Channel'), Sel('Email',['Email','SMS','AI call script'],{w:'160px'})),
+  Card('Content', Stack(Lbl('Subject'), Fld('Overdue invoice {{invoice_number}} — {{job_type}} at {{property_address}}'),
+    Lbl('Body'), Ta('{{client_name}},\n\nInvoice {{invoice_number}} for {{invoice_amount}} was due on {{due_date}} and remains unpaid.\n\nWork on this project is in production. Materials have been purchased and labour has been performed against the scope you approved on {{proposal_date}}.\n\nPer section 7 of the signed agreement, payment is required within 5 business days of this notice. If payment is not received, work will be suspended and the balance referred for collection.\n\nYou can pay immediately here: {{payment_link}}\n\n3Rivers General Contracting\n{{company_phone}}',{min:220}))),
+  Card('Insert a variable', h('div',{style:{display:'flex', gap:'6px', flexWrap:'wrap'}},
+    ...['{{client_name}}','{{lead_id}}','{{job_type}}','{{property_address}}','{{estimator_name}}','{{appointment_datetime}}','{{proposal_amount}}','{{proposal_date}}','{{invoice_number}}','{{invoice_amount}}','{{payment_link}}','{{due_date}}','{{company_phone}}','{{company_license_no}}'].map(v=>
+      h('span',{key:v, onClick:()=>toast('Inserted '+v), style:{cursor:'pointer', fontSize:'11.5px', fontFamily:'ui-monospace,Menlo,monospace',
+        background:C.priL, color:C.priD, border:'1px solid #CFE4F2', borderRadius:'6px', padding:'3px 7px'}}, v)))),
+  Bar(Btn('Preview with sample data',{onClick:()=>toast('Preview rendered with sample data')}), Btn('Send test to me',{onClick:()=>toast('Test email sent')}))]});
+
+SCREENS.s_cost = (p, st) => {
+ const T = ['Cost codes','Trades','Labour categories','Mapping dictionary'];
+ let pane = null;
+ if(st.tab===0) pane = Stack(
+   Bar(Fld('',{ph:'Search…', w:'220px'}), Sel('Category: All',['Category: All','General','Mitigation','Demolition','Structure','Finishes','MEP'],{w:'190px'}),
+     Sp(), Btn('+ Add cost code',{kind:'pri', onClick:()=>APP.mCostCode()})),
+   Tbl(['Code','Name','Category','Cost type','Default rate','Active',''],
+     COSTCODES.map(c=>[c[0], c[1], c[2], Tag(c[3]), c[4],'☑', h('div',{style:{display:'flex',gap:'6px'}}, Btn('Edit',{sm:true}), Btn('Retire',{sm:true}))])));
+ if(st.tab===1) pane = Stack(
+   
+   Bar(Fld('',{ph:'Search…', w:'220px'}), Sp(), Btn('+ Add trade',{kind:'pri'})),
+   Tbl(['Trade','Subcontractors (Phase 3)',{t:'Scope packages using it',n:true},'Active',''],
+     TRADES.map(t=>[t,'—',{t:SCOPEPKGS.filter(x=>x.t===t).length||'—',n:true},'☑', Btn('Edit',{sm:true})])));
+ if(st.tab===2) pane = Stack(
+   
+   Bar(Fld('',{ph:'Search…', w:'220px'}), Sp(), Btn('+ Add category',{kind:'pri'})),
+   Tbl(['Category',{t:'Hourly rate',n:true},{t:'Overtime rate',n:true},'Active',''],
+     LABOUR.map(l=>[l[0], {t:Fld(l[1],{w:'100px'}),n:true}, {t:Fld(l[2],{w:'100px'}),n:true},'☑', Btn('Edit',{sm:true})])));
+ if(st.tab===3) pane = Stack(
+   Bar(Fld('',{ph:'Search source description…', w:'280px'}), Sp(),
+     h('span',{style:{fontSize:'12.5px', color:C.mut}},'142 learned mappings'), Btn('Export',{onClick:()=>toast('Dictionary exported')})),
+   Tbl(['Xactimate description','→ Cost code','→ Trade','→ Cost type',{t:'Confirmed',n:true},''],[
+     ['Drywall - 1/2" - hung, taped, floated, ready for paint','09-250 Drywall','Drywall','Sub',{t:'14',n:true}, Btn('Edit',{sm:true})],
+     ['Seal then paint the walls and ceiling (2 coats)','09-900 Painting','Painting','Sub',{t:'11',n:true}, Btn('Edit',{sm:true})],
+     ['R&R Cabinetry - lower (base) units','06-400 Millwork','Carpentry','Sub',{t:'6',n:true}, Btn('Edit',{sm:true})],
+     ['Thermal fogging','02-300 Odour control','Mitigation','Labour',{t:'9',n:true}, Btn('Edit',{sm:true})],
+     ['HEPA air scrubber (per 24 hour period)','02-150 Equipment','Mitigation','Equipment',{t:'12',n:true}, Btn('Edit',{sm:true})],
+     ['Tear out wet drywall, cut & bag - per LF','09-100 Demolition','Demolition','Sub',{t:'8',n:true}, Btn('Edit',{sm:true})]], {min:'900px'}));
+ return Page({key:'s_cost', title:'Cost codes & trades', sub:'One taxonomy shared across Phases 2, 3 and 5', children:[Tabs(T, st.tab), pane]});
+};
+
+SCREENS.s_markup = () => Page({key:'s_markup', title:'Markup defaults', sub:'Global defaults, overridable per job and per cost code',
+ children:[
+  Tbl(['Applies to','Commercial GC','Restoration / Insurance',''],[
+    ['Materials', Fld('12%',{w:'90px'}), Fld('12%',{w:'90px'}), Btn('Edit',{sm:true})],
+    ['Subcontracted', Fld('18%',{w:'90px'}), Fld('15%',{w:'90px'}), Btn('Edit',{sm:true})],
+    ['Labour', Fld('—',{w:'90px'}), Fld('—',{w:'90px'}), Btn('Edit',{sm:true})],
+    ['Equipment', Fld('10%',{w:'90px'}), Fld('10%',{w:'90px'}), Btn('Edit',{sm:true})],
+    ['Overhead', Fld('10%',{w:'90px'}), Fld('10%',{w:'90px'}), Btn('Edit',{sm:true})],
+    ['Profit', Fld('10%',{w:'90px'}), Fld('10%',{w:'90px'}), Btn('Edit',{sm:true})],
+    ['Default contingency', Fld('3%',{w:'90px'}), Fld('5%',{w:'90px'}), Btn('Edit',{sm:true})]]),
+  Card('Payment policy defaults', Tbl(['Setting','Value'],[
+    ['Binder amount', Fld('$500',{w:'120px'})],
+    ['Deposit — default percentage of contract value', Fld('40%',{w:'120px'})],
+    ['Deposit — days from acceptance to invoice', Fld('5 calendar days',{w:'170px'})],
+    ['Maximum final payment', Fld('5%',{w:'120px'})],
+    ['Maximum payments without change orders', Fld('6',{w:'120px'})],
+    ['Proposal expiry', Fld('30 days',{w:'120px'})]], {flush:true}), {flush:true})]});
+
+SCREENS.s_capture = () => Page({key:'s_capture', title:'Field capture settings', sub:'Controls the mobile inspection session',
+ children:[
+  Card('Keywords — a spoken match promotes the statement to a highlighted scope item', Stack(
+    h('div',{style:{display:'flex', gap:'6px', flexWrap:'wrap'}},
+      ...['mildewcide','mold','crown mold','structural','load bearing','asbestos','lead paint','ceiling','electrical hazard','code upgrade'].map(k=>Tag(k+' ✕'))),
+    h('div',{style:{display:'flex', gap:'8px'}}, Fld('',{ph:'Add a keyword…', w:'240px'}), Btn('+ Add',{kind:'pri'})))),
+  
+  Card('Session defaults', Stack(Lbl('Default mode'), Sel('Ask every time',['Ask every time','Voice session','Silent']),
+    h('div',{style:{fontSize:'12px', color:C.mut}},'Never default to recording.'),
+    Lbl('Offline behaviour'), h('div',null, Chk('Record and queue locally'), Chk('Auto-sync when connectivity returns')),
+    Lbl('Maximum session length'), Fld('90 minutes',{w:'160px'}),
+    Lbl('Dimension units'), Sel('Feet / inches',['Feet / inches','Metres']),
+    h('div',null, Chk('Require at least one photo per room before ending a session')))),
+  Card('Scope extraction', Stack(Lbl('Extract into'),
+    h('div',null, Chk('Material'), Chk('Action'), Chk('Quantity'), Chk('Unit'), Chk('Room')),
+    Lbl('Actions recognised'), Ta('Replace · Repair · Remove · Install · Clean · Seal · Paint · Detach & reset · R&R · Apply · Treat'),
+    h('div',null, Chk('Flag scope items captured in the field that do not appear in the estimate'))))]});
+
+SCREENS.s_labels = () => Page({key:'s_labels', title:'Photo label taxonomy', sub:'What the AI is allowed to assign — editable without a code change',
+ children:[
+  ['Elevation','Front · Rear · Left side · Right side'],['Direction','North · South · East · West'],
+  ['Interior space','Bedroom · Bathroom · Kitchen · Living room · Dining room · Hallway · Basement · Attic · Garage · Commercial space'],
+  ['Condition','Water damage · Fire damage · Smoke · Mold · Structural · Undamaged'],
+  ['Category','Pre-job · Overview · Elevation · Affected area · Detail · Post-job']
+ ].map(d => Card(d[0], Stack(
+   h('div',{style:{display:'flex', gap:'6px', flexWrap:'wrap'}}, ...d[1].split(' · ').map(v=>Tag(v+' ✕'))),
+   h('div',{style:{display:'flex', gap:'8px'}}, Fld('',{ph:'Add a value…', w:'220px'}), Btn('+ Add')))))
+ .concat([Card('Confidence threshold', h('div',{style:{display:'flex', gap:'8px', alignItems:'center', fontSize:'12.5px', flexWrap:'wrap'}},
+   'Photos labelled below', Fld('60',{w:'70px'}),'% confidence are flagged', Tag('Needs review','dg'),'and excluded from generated reports until confirmed.'))])});
+
+SCREENS.s_contracts = () => Page({key:'s_contracts', title:'Contract templates',
+ sub:'Templates banded by dollar amount — the correct one is selected automatically from the proposal total, and can be overridden',
+ actions:[Btn('+ Add template',{kind:'pri', onClick:()=>APP.mContract()})],
+ children:[
+  Tbl(['Template','Band from','Band to','Version','Active','Used by',''],
+    CONTRACTS.map(c=>[ '<b>'+c[0]+'</b>', Fld(c[1],{w:'110px'}), Fld(c[2],{w:'110px'}), c[3], c[4],
+      c[0].includes('large') ? '1 open proposal' : '—',
+      h('div',{style:{display:'flex',gap:'6px'}}, Btn('Edit',{sm:true}), Btn('Preview',{sm:true}), Btn('History',{sm:true}))]), {min:'1020px'}),
+  Card('Merge variables available in a contract template', h('div',{style:{display:'flex', gap:'6px', flexWrap:'wrap'}},
+    ...['{{client_name}}','{{client_type}}','{{property_address}}','{{billing_address}}','{{scope_summary}}','{{scope_table}}','{{total_amount}}','{{payment_schedule_table}}','{{proposal_date}}','{{proposal_version}}','{{estimator_name}}','{{company_license_no}}','{{claim_number}}','{{insurance_carrier}}'].map(v=>
+      h('span',{key:v, style:{fontSize:'11.5px', fontFamily:'ui-monospace,Menlo,monospace', background:C.priL, color:C.priD,
+        border:'1px solid #CFE4F2', borderRadius:'6px', padding:'3px 7px'}}, v)))),
+  Card('Version history — Standard Agreement — large', Tbl(['Version','Effective','Changed by','Change',{t:'Proposals using it',n:true}],[
+    ['<b>v3</b>','Jul 1, 2026','Joshua Tohey','Payment policy section 7 rewritten',{t:'4',n:true}],
+    ['v2','Mar 12, 2026','Joshua Tohey','Added change order clause',{t:'11',n:true}],
+    ['v1','Jan 2, 2026','Joshua Tohey','Initial',{t:'7',n:true}]], {flush:true}), {flush:true})]});
+
+SCREENS.s_docs = () => Page({key:'s_docs', title:'Company documents',
+ sub:'Attached automatically to every proposal — the system warns when one is about to expire',
+ actions:[Btn('+ Add document',{kind:'pri', onClick:()=>APP.pickFile('estimate')})],
+ children:[
+  Tbl(['Document','File','Issued','Expires','Status','Auto-attach',''],[
+    ['<b>GC License</b>','PA_HIC_118442.pdf','Apr 1, 2025','Mar 31, 2027', Tag('Valid','ok'),'☑', h('div',{style:{display:'flex',gap:'6px'}}, Btn('Replace',{sm:true}), Btn('Download',{sm:true}))],
+    ['<b>Certificate of Insurance</b>','COI_Erie_2026.pdf','Aug 28, 2025','<b>Aug 28, 2026</b>', Tag('⚠ Expires in 21 days','dg'),'☑', h('div',{style:{display:'flex',gap:'6px'}}, Btn('Replace',{sm:true}), Btn('Download',{sm:true}))],
+    ['Workers comp certificate','WC_2026.pdf','Jan 1, 2026','Dec 31, 2026', Tag('Valid','ok'),'☐', Btn('Replace',{sm:true})],
+    ['W-9','W9_3Rivers.pdf','Jan 1, 2024','—', Tag('Valid','ok'),'☐', Btn('Replace',{sm:true})]], {min:'1020px'}),
+  Card('Expiry reminders', Stack(h('div',{style:{display:'flex', gap:'8px', alignItems:'center', flexWrap:'wrap', fontSize:'12.5px'}},
+      'Notify', Fld('30',{w:'70px'}),'days before expiry to', Sel('Joshua Tohey',['Joshua Tohey','Byron Tohey','All admins'],{w:'190px'})),
+    h('div',null, Chk('Block sending a proposal when an auto-attached document has expired'))))]});
+
+SCREENS.s_team = () => Page({key:'s_team', title:'Team & Roles', sub:'Invite people, set their role, and control what each one can see',
+ actions:[Btn('+ Invite user',{kind:'pri', onClick:()=>APP.mInvite()})],
+ children:[
+  Bar(Sel('Role: All',['Role: All','Owner / Admin','Operations Manager','Sales Estimator','Project Manager','Intake','Field Employee'],{w:'220px'})),
+  Tbl(['User','Role','On-call eligible','Receives arms',{t:'Max open leads',n:true},'Level','Status',''],
+    USERS.map(u=>[ '<b>'+u.name+'</b>',
+      Sel(u.role,['Owner / Admin','Operations Manager','Sales Estimator','Project Manager','Intake','Field Employee'],{w:'200px'}),
+      u.oncall?'☑':'☐', u.arms, {t:u.max,n:true}, u.level, u.active?Tag('Active','ok'):Tag('Inactive'),
+      h('div',{style:{display:'flex',gap:'6px'}}, Btn('Edit',{sm:true}), Btn('Deactivate',{sm:true}))]), {min:'1180px'}),
+  Card('Role permissions', Tbl(['Module','Owner','Ops Mgr','Estimator','PM','Intake'],[
+    ['Hotlist','Full','Full','Own leads','View','Create + view'],['Lead detail','Full','Full','Own leads','View','Create + edit'],
+    ['Calls','Full','Full','Own leads','—','Full'],['Inbox Capture','Full','Full','—','—','Full'],
+    ['Appointments','Full','Full','Own calendar','View','Book'],['Estimating & budget','Full','Full','Own jobs','View','—'],
+    ['Proposals','Full','Full','Own jobs','View','—'],['Contacts','Full','Full','View','View','Create + edit'],
+    ['AI Receptionist settings','Full','Full','—','—','—'],['On-Call Schedule','Full','Full','View','View','View'],
+    ['Cadences & templates','Full','Full','View','—','—'],['Cost codes & markup','Full','Full','View','View','—'],
+    ['Team & Roles','Full','—','—','—','—'],['Audit Log','Full','Full','—','—','—']], {flush:true}), {flush:true})]});
+
+SCREENS.s_fields = () => Page({key:'s_fields', title:'Custom Fields', sub:'Admins add fields without a code change, scoped per business arm',
+ actions:[Btn('+ Add field',{kind:'pri', onClick:()=>APP.mField()})],
+ children:[
+  Bar(Sel('Entity: Lead',['Entity: Lead','Entity: Contact','Entity: Property'],{w:'190px'})),
+  Tbl(['Order','Label','Type','Options','Applies to arm','Required','Shown on',''],[
+    ['1','Referral source name','Text','—','Both','☐','Intake form · Lead detail', Btn('Edit',{sm:true})],
+    ['2','Adjuster name','Text','—','Restoration','☐','Intake form · Lead detail', Btn('Edit',{sm:true})],
+    ['3','Adjuster phone','Phone','—','Restoration','☐','Lead detail', Btn('Edit',{sm:true})],
+    ['4','Date of loss','Date','—','Restoration','☑','Intake form', Btn('Edit',{sm:true})],
+    ['5','Bid bond required','Yes/No','Yes · No','Commercial GC','☐','Intake form', Btn('Edit',{sm:true})],
+    ['6','Prevailing wage','Yes/No','Yes · No','Commercial GC','☐','Intake form', Btn('Edit',{sm:true})]], {min:'1080px'})]});
+
+SCREENS.s_cal = () => Page({key:'s_cal', title:'Calendars', sub:'Google Calendar connections — one per estimator',
+ actions:[Btn('+ Connect a Google account',{kind:'pri', onClick:()=>toast('Google consent screen would open here')})],
+ children:[
+  Tbl(['User','Google account','Sync direction','Calendar','Last sync','Status',''],
+    USERS.filter(u=>['Sales Estimator','Operations Manager','Owner / Admin'].includes(u.role)).map(u=>[
+      u.name, u.name.toLowerCase().replace(/[^a-z]/g,'.')+'@3riversgc.com','Two-way','Primary','2 min ago', Tag('Connected','ok'),
+      h('div',{style:{display:'flex',gap:'6px'}}, Btn('Reconnect',{sm:true}), Btn('Disconnect',{sm:true}))]), {min:'1020px'}),
+  Card('Shared calendars', Tbl(['Calendar','Purpose','Visible to'],[
+    ['3Rivers — Estimate visits','All booked site visits','Everyone'],['3Rivers — On-call','Current on-call roster','Everyone']], {flush:true}), {flush:true})]});
+
+SCREENS.s_integr = () => Page({key:'s_integr', title:'Integrations', sub:'What this platform connects to — and what it deliberately does not',
+ children:[
+  Tbl(['System','Used for','Phase','Status'],[
+    ['<b>Google Workspace (Gmail)</b>','Monitored inboxes, two-way calendar sync','1', Tag('Connected','ok')],
+    ['<b>Telephony / AI voice</b>','Inbound receptionist, outbound cadence calls, live transfer','1', Tag('Connected','ok')],
+    ['<b>SMS gateway</b>','Cadence SMS steps, appointment reminders','1', Tag('Connected','ok')],
+    ['<b>Website forms</b>','Web form submissions into the intake queue','1', Tag('Connected','ok')],
+    ['<b>E-signature</b>','Proposal signature — the signed proposal is the contract','2', Tag('Not connected yet','wn')],
+    ['QuickBooks','Invoices, payments, job-level financial tracking','4', Tag('Not connected yet','wn')],
+    ['Gusto','Payroll batch preparation — payment execution stays manual','5', Tag('Not connected yet','wn')],
+    ['PNC Pinnacle','Vendor ACH payments — assume data prep only','4', Tag('Not connected yet','wn')],
+    ['<b>Xactimate</b>','Estimates enter this platform as a PDF and are read by OCR','2', Tag('Not connectable','dg')],
+    ['BuilderTrend','Being replaced by this platform','—', Tag('Migration in progress')]], {min:'980px'})]});
+
+SCREENS.s_audit = () => Page({key:'s_audit', title:'Audit Log', sub:'Every action, human and AI, across the whole system',
+ actions:[Btn('Export CSV',{onClick:()=>toast('Audit log exported')})],
+ children:[
+  Bar(Sel('User: All',['User: All'].concat(USERS.map(u=>u.name)).concat(['AI Receptionist','System']),{w:'200px'}),
+    Sel('Record type: All',['Record type: All','Lead','Contact','Call','Appointment','Estimate','Budget','Proposal','Cadence','User','Settings'],{w:'200px'}),
+    Sel('Action: All',['Action: All','Created','Updated','Deleted','Assigned','Stage changed','Sent','Transferred','Logged in'],{w:'190px'}),
+    Sel('Actor: All',['Actor: All','Human','AI','System'],{w:'150px'}),
+    Sel('Last 7 days',['Today','Last 7 days','Last 30 days','Custom…'],{w:'160px'})),
+  Tbl(['Timestamp','Actor','Type','Record','Action','Detail'],[
+    ['Aug 7, 17:40','Jason Reed', Tag('Human'),'L-2026-0415','Proposal sent','v2 · $62,300.00 · 24 pages · cadence started'],
+    ['Aug 7, 16:40','Jason Reed', Tag('Human'),'L-2026-0415','Budget baseline locked','v3 · $32,692.00'],
+    ['Aug 7, 14:22','Jason Reed', Tag('Human'),'L-2026-0415','Estimate uploaded','Xactimate PDF v2 · 42 lines · 22 extracted'],
+    ['Aug 7, 10:05','Inbox Capture', Tag('AI','ai'),'—','Parse failed','jhoward@example.com — insufficient fields, queued for a human'],
+    ['Aug 7, 07:12','Joshua Tohey', Tag('Human'),'L-2026-0417','Field corrected','Insurance carrier: (blank) → State Farm'],
+    ['Aug 7, 02:18','System', Tag('AI','ai'),'L-2026-0417','Email sent','Template "Emergency intake confirmation" · delivered'],
+    ['Aug 7, 02:17','AI Receptionist', Tag('AI','ai'),'L-2026-0417','Escalated','Transfer not answered → notified primary, backup, Ops Manager'],
+    ['Aug 7, 02:14','AI Receptionist', Tag('AI','ai'),'L-2026-0417','Lead created','Source: AI Call · classified EMERGENCY'],
+    ['Aug 6, 19:48','AI Receptionist', Tag('AI','ai'),'L-2026-0413','Transfer completed','→ Byron Tohey · answered'],
+    ['Aug 6, 09:22','Byron Tohey', Tag('Human'),'Settings','On-call changed','Sun Aug 10 00:00–08:00 cleared — no replacement assigned']], {min:'1080px'})]});
+
+/* ================= MODALS ================= */
+const F = (label, ctl) => h('div',{key:label, style:{marginBottom:'2px'}}, Lbl(label), ctl);
+const okFoot = (msg) => [Btn('Cancel',{onClick:()=>closeM()}), Btn('Save',{kind:'pri', onClick:()=>{closeM(); toast(msg||'Saved');}})];
+
+Object.assign(Component.prototype, {
+ mLogCall(){ modal('Log a call', Stack(
+   F('Direction', Sel('Outbound',['Outbound','Inbound'])), F('Date & time', Fld('Aug 7, 2026 07:05')),
+   F('Duration', Fld('6:40')), F('Spoke with', Fld('Sarah Mitchell')),
+   F('Outcome', Sel('Connected',['Connected','No answer','Voicemail left','Wrong number','Call back requested'])),
+   F('Notes', Ta('')),
+   h('div',null, Chk('Create a task', false), Chk('Stop the running cadence', false))), okFoot('Call logged')); },
+ mSendMsg(ch){ modal('Send '+ch, Stack(
+   F('To', Fld('s.mitchell@example.com')),
+   F('Template', Sel('(write inline)',['(write inline)'].concat(TEMPLATES.filter(t=>t.c===ch).map(t=>t.n)))),
+   ch==='Email' ? F('Subject', Fld('')) : null, F('Message', Ta('',{min:120})),
+   h('div',{style:{display:'flex', gap:'6px', flexWrap:'wrap'}}, Tag('{{client_name}}'), Tag('{{lead_id}}'), Tag('{{estimator_name}}'), Tag('{{appointment_datetime}}'))),
+   [Btn('Cancel',{onClick:()=>closeM()}), Btn('Preview'), Btn('Send',{kind:'pri', onClick:()=>{closeM(); toast(ch+' sent');}})]); },
+ mReassign(){ modal('Reassign lead', Stack(
+   F('Currently assigned to', Fld('unassigned')),
+   F('Reassign to', Sel('— select —',['— select —'].concat(USERS.filter(u=>u.role==='Sales Estimator').map(u=>u.name+' — '+u.level+' · '+u.arms)))),
+   F('Reason (recorded in history)', Sel('— select —',['— select —','Complexity — needs a senior estimator','Workload balancing','Estimator unavailable','Client requested','Wrong arm'])),
+   F('Notes', Ta(''))), okFoot('Lead reassigned')); },
+ mStartCadence(){ modal('Start a cadence', Stack(
+   F('Cadence', Sel('Default Lead Cadence', CADENCES.map(c=>c.n))),
+   F('Start', Sel('Now (respecting sending rules)',['Now (respecting sending rules)','At the next sending window','On a specific date…'])),
+   F('If another cadence is already running', Sel('Stop it and start this one',['Stop it and start this one','Run both','Cancel']))), okFoot('Cadence started')); },
+ mArchive(){ modal('Archive lead', Stack(
+   F('Reason (required)', Sel('— select —',['— select —','Duplicate','Not a real enquiry','Out of service area','Client went elsewhere','No response after full cadence','Other'])),
+   F('Notes', Ta(''))),
+   [Btn('Cancel',{onClick:()=>closeM()}), Btn('Archive',{kind:'danger', onClick:()=>{closeM(); toast('Lead archived','dg');}})]); },
+ mQset(n){ modal('Question set — '+n, Stack(
+   F('Scenario', Fld(n)), F('Applies to business arm', Sel(n==='Commercial GC'?'Commercial GC':'Restoration',['Both','Commercial GC','Restoration'])),
+   Lbl('Questions — asked in this order'),
+   ...['Is water still flowing?','Has the main been shut off?','Which rooms or floors are affected?'].map((q,i)=>
+     h('div',{key:i, style:{display:'flex', gap:'8px', alignItems:'center', marginBottom:'6px'}},
+       h('span',{style:{fontSize:'12px', color:C.faint, width:'14px'}}, i+1), Fld(q), Btn('↑',{sm:true}), Btn('↓',{sm:true}), Btn('🗑',{sm:true}))),
+   h('div',null, Btn('+ Add question',{kind:'pri'}))), okFoot('Question set saved')); },
+ mTakeOver(){ modal('Take over on-call', Stack(
+   h('div',{style:{fontSize:'13px', fontWeight:600}},'You are about to become the on-call primary, effective immediately.'),
+   Tbl(['','Who'],[['Current primary','Joshua Tohey'],['New primary','Byron Tohey (you)']]),
+   F('Backup', Sel('Joshua Tohey', USERS.filter(u=>u.oncall).map(u=>u.name))),
+   F('Until', Sel('Until I hand it back',['Until I hand it back','End of this slot','End of today','Specific time…']))),
+   [Btn('Cancel',{onClick:()=>closeM()}), Btn('Confirm — I am on call now',{kind:'pri', onClick:()=>{closeM(); toast('You are now the on-call primary');}})]); },
+ mChangeNow(){ modal('Change who is on call now', Stack(
+   F('Primary', Sel('Joshua Tohey', USERS.filter(u=>u.oncall).map(u=>u.name))),
+   F('Backup', Sel('Byron Tohey', USERS.filter(u=>u.oncall).map(u=>u.name))),
+   F('Effective', Sel('Immediately',['Immediately','At the top of the next hour','Specific time…'])),
+   F('Until', Sel('End of the current slot',['End of the current slot','End of today','Specific time…'])),
+   h('div',null, Chk('Notify new primary'), Chk('Notify new backup'), Chk('Notify Operations Manager'))), okFoot('On-call updated')); },
+ mFixGap(){ modal('Assign coverage — Sun Aug 10, 00:00–08:00', Stack(
+   F('Primary', Sel('— select —',['— select —'].concat(USERS.filter(u=>u.oncall).map(u=>u.name)))),
+   F('Backup', Sel('— select —',['— select —'].concat(USERS.filter(u=>u.oncall).map(u=>u.name))))), okFoot('Coverage assigned — no gaps this week')); },
+ mRule(){ modal('Assignment rule', Stack(
+   Lbl('When — all conditions must match'),
+   h('div',{style:{display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center', marginBottom:'8px'}},
+     Sel('Business arm',['Business arm','Emergency','Value estimate','Job type','State','Source channel','Bid reference present'],{w:'190px'}),
+     Sel('is',['is','is not','is greater than','is less than','contains'],{w:'150px'}), Fld('',{w:'190px'}), Btn('🗑',{sm:true})),
+   h('div',null, Btn('+ Add condition')),
+   Lbl('Then'),
+   h('div',{style:{display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center', marginBottom:'8px'}},
+     Sel('Assign to',['Assign to','Assign to level','Route to on-call','Notify','Do not auto-assign'],{w:'190px'}),
+     Sel('— select —',['— select —'].concat(USERS.map(u=>u.name)).concat(['Senior only','Junior only']),{w:'220px'}), Btn('🗑',{sm:true})),
+   F('Priority — rules are evaluated in order, first match wins', Fld('5',{w:'90px'}))), okFoot('Rule saved')); },
+ mStage(){ modal('Pipeline stage', Stack(
+   F('Business arm', Sel('Restoration / Insurance',['Restoration / Insurance','Commercial GC'])),
+   F('Stage name', Fld('')),
+   F('Position', Sel('After · Assigned', STAGES_R.map(s=>'After · '+s[1]))),
+   F('Entry rule', Ta('',{ph:'What has to be true for a lead to enter this stage?'})),
+   F('SLA — flag the lead if it sits here longer than', h('div',{style:{display:'flex', gap:'8px'}}, Fld('',{w:'100px'}), Sel('hours',['minutes','hours','days'],{w:'130px'}))),
+   F('Start this cadence on entry', Sel('— none —',['— none —'].concat(CADENCES.map(c=>c.n)))),
+   h('div',null, Chk('Terminal stage — leads here are closed', false))), okFoot('Stage saved')); },
+ mInvite(){ modal('Invite a user', Stack(
+   F('Full name', Fld('')), F('Email', Fld('')), F('Mobile (for push and on-call transfers)', Fld('')),
+   F('Role', Sel('Sales Estimator',['Owner / Admin','Operations Manager','Sales Estimator','Project Manager','Intake','Field Employee'])),
+   F('Receives which arms', Sel('Both',['Both','Commercial GC','Restoration'])),
+   h('div',{style:{display:'flex', gap:'10px', flexWrap:'wrap'}},
+     h('div',{style:{flex:'1 1 120px'}}, Lbl('Max open leads'), Fld('10')),
+     h('div',{style:{flex:'1 1 120px'}}, Lbl('Level'), Sel('Junior',['Senior','Mid','Junior'])),
+     h('div',{style:{flex:'1 1 120px'}}, Lbl('Weight'), Fld('0.5'))),
+   h('div',null, Chk('On-call eligible', false), Chk('Mobile push'), Chk('Email'), Chk('In-app'))),
+   [Btn('Cancel',{onClick:()=>closeM()}), Btn('Send invite',{kind:'pri', onClick:()=>{closeM(); toast('Invitation sent');}})]); },
+ mField(){ modal('Custom field', Stack(
+   F('Entity', Sel('Lead',['Lead','Contact','Property'])), F('Label', Fld('')),
+   F('Type', Sel('Text',['Text','Long text','Number','Currency','Date','Yes/No','Single select','Multi select','Phone','Email','File'])),
+   F('Options (select types)', Ta('',{ph:'One option per line'})),
+   F('Applies to business arm', Sel('Both',['Both','Commercial GC','Restoration'])),
+   h('div',null, Chk('Required', false), Chk('Intake form'), Chk('Lead detail'), Chk('Hotlist column', false))), okFoot('Field created')); },
+ mBulk(){ modal('Bulk assign', Stack(
+   h('div',{style:{fontSize:'12.5px', color:C.mut}},'0 selected — tick rows in the table first'),
+   F('Set cost code', Sel('— leave unchanged —',['— leave unchanged —'].concat(COSTCODES.map(c=>c[0]+' '+c[1])))),
+   F('Set trade', Sel('— leave unchanged —',['— leave unchanged —'].concat(TRADES))),
+   F('Set cost type', Sel('— leave unchanged —',['— leave unchanged —','Labour','Material','Equipment','Sub'])),
+   h('div',null, Chk('Remember these mappings in the dictionary'))), okFoot('Mappings applied')); },
+ mScopePkg(){ modal('Scope package', Stack(
+   h('div',{style:{display:'flex', gap:'10px', flexWrap:'wrap'}},
+     h('div',{style:{flex:'1 1 120px'}}, Lbl('Code'), Fld('SP-10')),
+     h('div',{style:{flex:'2 1 240px'}}, Lbl('Name'), Fld(''))),
+   F('Trade', Sel('— select —',['— select —'].concat(TRADES))),
+   F('Execution', Sel('Subcontracted',['Subcontracted','Self-perform'])),
+   F('Description — this is what the subcontractor will be asked to price or perform', Ta('')),
+   h('div',{style:{display:'flex', gap:'10px'}},
+     h('div',{style:{flex:1}}, Lbl('Target start'), Fld('')), h('div',{style:{flex:1}}, Lbl('Finish'), Fld('')))), okFoot('Scope package saved')); },
+ mMove(){ modal('Move line item', Stack(
+   F('Move to scope package', Sel('— select —',['— select —'].concat(SCOPEPKGS.map(p=>p.c+' · '+p.n)).concat(['+ Create a new package'])))), okFoot('Line moved')); },
+ mBulkLabel(){ modal('Bulk re-label photos', Stack(
+   h('div',{style:{fontSize:'12.5px', color:C.mut}},'0 photos selected'),
+   F('Set room / area', Sel('— leave unchanged —',['— leave unchanged —','Exterior','Kitchen','Living room','Dining room','Hallway','Basement'])),
+   F('Set category', Sel('— leave unchanged —',['— leave unchanged —','Pre-job','Overview','Elevation','Affected area','Detail','Post-job'])),
+   F('Set condition', Sel('— leave unchanged —',['— leave unchanged —','Water damage','Fire damage','Smoke','Mold','Structural','Undamaged'])),
+   h('div',null, Chk('Mark as human-confirmed'))), okFoot('Photos re-labelled')); },
+ mSelectPhotos(){ modal('Select photos for the report', Stack(
+   Bar(Sel('All rooms',['All rooms','Exterior','Kitchen','Living room','Dining room','Hallway'],{w:'190px'}), Sp(), Btn('Select all',{sm:true}), Btn('Select none',{sm:true})),
+   h('div',{style:{display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(150px,1fr))', gap:'10px'}},
+     ...PHOTOS.slice(0,8).map((p,i)=>h('div',{key:i, style:{border:'1px solid '+C.bd, borderRadius:'9px', overflow:'hidden'}},
+       h('div',{style:{height:'64px', background:'repeating-linear-gradient(135deg,#EEF3F7,#EEF3F7 8px,#E6EDF3 8px,#E6EDF3 16px)'}}),
+       h('div',{style:{padding:'8px 9px', fontSize:'11.5px'}}, '☑ ', h('b',null,p[0]), h('div',{style:{color:C.faint}}, p[3])))))),
+   okFoot('Selection saved')); },
+ mOverrideTpl(){ modal('Override the contract template', Stack(
+   h('div',{style:{fontSize:'12.5px'}},'Automatically selected by amount ($62,300.00): ', h('b',null,'Standard Agreement — large · v3'),' — band $50,001 – $250,000'),
+   F('Use instead', Sel('Standard Agreement — large', CONTRACTS.map(c=>c[0]))),
+   F('Reason for the override (recorded on the proposal)', Ta(''))), okFoot('Template overridden')); },
+ mIntro(){ modal('Introductory statement', Stack(
+   Ta('Robert,\n\nThank you for having us out to 88 Hillcrest Drive. Enclosed is our complete proposal for the fire and smoke restoration, covering mitigation and odour control, demolition, structural repair, electrical and HVAC work, and the full finish package returning the first floor to pre-loss condition.\n\nIncluded with this proposal you will find our detailed scope of work, the payment schedule, our Pennsylvania contractor license, our certificate of insurance, and a full photo report documenting the current condition of the property.',{min:180}),
+   h('div',{style:{display:'flex', gap:'8px'}}, Btn('Regenerate',{onClick:()=>toast('Redrafted')}), Fld('',{ph:'with instructions…'}))), okFoot('Introduction saved')); },
+ mSendProp(){ modal('Send proposal package', Stack(
+   h('div',{style:{fontSize:'13px', fontWeight:600}},'You are about to send proposal v2 to rchen@example.com.'),
+   Tbl(['Included','Component'],[['☑','Introductory statement'],['☑','Standard Agreement — large · v3'],
+     ['☑','Scope of work — narrative + table + Xactimate PDF'],['☑','Payment schedule — 6 payments'],['☑','GC License'],
+     ['☑','Certificate of insurance <b style="color:#C8442E">⚠ expires in 21 days</b>'],['☑','Photo report — 12 pages']]),
+   h('div',null, Chk('Payment link for the $500 binder'), Chk('Request a digital signature'), Chk('Start "Proposal Follow-Up — friendly"'))),
+   [Btn('Cancel',{onClick:()=>closeM()}), Btn('Send now',{kind:'pri', onClick:()=>{closeM(); toast('Package sent · cadence started');}})]); },
+ mMilestone(){ modal('Add a milestone payment', Stack(
+   F('Name', Fld('')),
+   F('Milestone description — what has to be complete', Ta('',{ph:'e.g. rough-in complete: electrical, HVAC and drywall inspected and signed off'})),
+   F('Amount type', Sel('Percentage of contract value',['Percentage of contract value','Fixed amount'])),
+   F('Value', Fld('')),
+   F('Invoice trigger', Sel('On milestone marked complete',['On milestone marked complete','On acceptance','On a fixed date','Manually'])),
+   F('Position', Sel('After · Milestone 3', MILESTONES.map(m=>'After · '+m[1])))), okFoot('Milestone added')); },
+ mCostCode(){ modal('Add a cost code', Stack(
+   h('div',{style:{display:'flex', gap:'10px'}},
+     h('div',{style:{flex:1}}, Lbl('Code'), Fld('')), h('div',{style:{flex:2}}, Lbl('Name'), Fld(''))),
+   F('Category', Sel('— select —',['— select —','General','Mitigation','Demolition','Structure','Finishes','MEP','Site'])),
+   F('Cost type', Sel('Sub',['Labour','Material','Equipment','Sub'])),
+   F('Default labour rate (labour codes only)', Fld('')),
+   F('Default trade', Sel('— none —',['— none —'].concat(TRADES)))), okFoot('Cost code added')); },
+ mContract(){ modal('Add a contract template', Stack(
+   F('Name', Fld('')),
+   h('div',{style:{display:'flex', gap:'10px'}},
+     h('div',{style:{flex:1}}, Lbl('Band from'), Fld('')), h('div',{style:{flex:1}}, Lbl('Band to'), Fld(''))),
+   F('Business arm', Sel('Both',['Both','Commercial GC','Restoration'])),
+   F('Body', Ta('',{ph:'Paste the contract text. Use merge variables such as {{client_name}} and {{payment_schedule_table}}.', min:150})),
+   h('div',null, Chk('Include signature block'), Chk('Require the client to initial each page'))), okFoot('Template added')); }
+});
+</script>
+</body>
+</html>

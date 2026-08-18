@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;padding:0;background:#F4F7FA}
+  *{box-sizing:border-box}
+  a{color:#087BB2;text-decoration:none}
+  a:hover{color:#0B5C88}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:#D5E1EA;border-radius:8px}
+</style>
+</helmet>
+<div style="display:flex;min-height:100vh;font-family:'Public Sans',system-ui,sans-serif;color:#0E2A3B;background:#F4F7FA">
+
+  <aside style="width:252px;flex:none;background:#FFFFFF;border-right:1px solid #E2E9EF;display:flex;flex-direction:column;position:sticky;top:0;height:100vh">
+    <div style="padding:18px 18px 14px;border-bottom:1px solid #EEF3F7">
+      <img src="assets/3rivers-logo.png" alt="3Rivers General Contracting" style="width:168px;display:block">
+    </div>
+    <nav style="flex:1;overflow-y:auto;padding:10px 10px 28px">
+      <sc-for list="{{ navRows }}" as="row" hint-placeholder-count="14">
+        <sc-if value="{{ row.isGroup }}" hint-placeholder-val="{{ true }}">
+          <div onClick="{{ row.onClick }}" style="{{ row.style }}">
+            <span style="width:10px;font-size:9px;color:#9DB2C1">{{ row.arrow }}</span>
+            <span style="flex:1">{{ row.label }}</span>
+            <sc-if value="{{ row.phase }}">
+              <span style="font-family:'Barlow',sans-serif;font-size:10px;font-weight:600;letter-spacing:.06em;color:#7C93A5;border:1px solid #DFE8EF;border-radius:3px;padding:1px 5px">{{ row.phase }}</span>
+            </sc-if>
+          </div>
+        </sc-if>
+        <sc-if value="{{ row.isItem }}">
+          <div onClick="{{ row.onClick }}" style="{{ row.style }}">{{ row.label }}</div>
+        </sc-if>
+      </sc-for>
+    </nav>
+    <div style="border-top:1px solid #EEF3F7;padding:12px 18px;display:flex;align-items:center;gap:10px">
+      <div style="width:30px;height:30px;border-radius:50%;background:#E7F2F9;color:#087BB2;font-family:'Barlow',sans-serif;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center">JT</div>
+      <div style="line-height:1.25;min-width:0">
+        <div style="font-size:12.5px;font-weight:600">Joshua Tohey</div>
+        <div style="font-size:11px;color:#7C93A5">Owner / Admin</div>
+      </div>
+    </div>
+  </aside>
+
+  <main style="flex:1;min-width:0;display:flex;flex-direction:column">
+
+    <header style="position:sticky;top:0;z-index:20;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);border-bottom:1px solid #E2E9EF;padding:0 28px;height:60px;display:flex;align-items:center;gap:16px">
+      <div style="flex:1;max-width:420px;position:relative">
+        <input placeholder="Search leads, jobs, contacts, phone…" style="width:100%;font:inherit;font-size:13px;color:#0E2A3B;background:#F4F7FA;border:1px solid #E2E9EF;border-radius:7px;padding:8px 12px 8px 32px;outline:none" style-focus="border-color:#087BB2;background:#fff">
+        <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#9DB2C1;font-size:13px">⌕</span>
+      </div>
+      <span style="flex:1"></span>
+      <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:#5B7387;background:#F4F7FA;border:1px solid #E2E9EF;border-radius:7px;padding:6px 10px">
+        <span style="width:7px;height:7px;border-radius:50%;background:#2FA36B"></span>AI receptionist live
+      </div>
+      <div style="position:relative;width:34px;height:34px;border:1px solid #E2E9EF;border-radius:7px;display:flex;align-items:center;justify-content:center;cursor:pointer" style-hover="border-color:#087BB2">
+        <span style="font-size:14px;color:#5B7387">🔔</span>
+        <span style="position:absolute;top:-6px;right:-6px;min-width:17px;height:17px;border-radius:9px;background:#C8442E;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px">3</span>
+      </div>
+    </header>
+
+    <div style="padding:26px 28px 60px;display:flex;flex-direction:column;gap:20px;max-width:1440px;width:100%;min-width:1120px">
+
+      <div style="display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap">
+        <div>
+          <div style="font-family:'Barlow',sans-serif;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#087BB2;margin-bottom:6px">Dashboard · Thursday, Aug 7</div>
+          <h1 style="font-family:'Barlow',sans-serif;font-size:27px;font-weight:600;margin:0;letter-spacing:-.01em">Good morning, Joshua</h1>
+          <div style="font-size:13px;color:#5B7387;margin-top:4px">4 items need a human right now · 2 site visits booked today</div>
+        </div>
+        <span style="flex:1"></span>
+        <div style="display:flex;gap:4px;background:#FFFFFF;border:1px solid #E2E9EF;border-radius:9px;padding:4px">
+          <sc-for list="{{ arms }}" as="arm" hint-placeholder-count="3">
+            <div onClick="{{ arm.onClick }}" style="{{ arm.style }}">{{ arm.label }}</div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px">
+        <div style="background:#fff;border:1px solid #E2E9EF;border-top:3px solid #087BB2;border-radius:10px;padding:14px 15px;cursor:pointer" style-hover="border-color:#087BB2;box-shadow:0 6px 18px rgba(14,42,59,.07)">
+          <div style="font-family:'Barlow',sans-serif;font-size:30px;font-weight:600;line-height:1">2</div>
+          <div style="font-size:12px;color:#5B7387;margin-top:5px">New / unassigned</div>
+        </div>
+        <div style="background:#fff;border:1px solid #F0D6D1;border-top:3px solid #C8442E;border-radius:10px;padding:14px 15px;cursor:pointer" style-hover="border-color:#C8442E;box-shadow:0 6px 18px rgba(200,68,46,.10)">
+          <div style="font-family:'Barlow',sans-serif;font-size:30px;font-weight:600;line-height:1;color:#C8442E">2</div>
+          <div style="font-size:12px;color:#A5503F;margin-top:5px">Emergency open</div>
+        </div>
+        <div style="background:#fff;border:1px solid #E2E9EF;border-top:3px solid #30A5DE;border-radius:10px;padding:14px 15px;cursor:pointer" style-hover="border-color:#30A5DE;box-shadow:0 6px 18px rgba(14,42,59,.07)">
+          <div style="font-family:'Barlow',sans-serif;font-size:30px;font-weight:600;line-height:1">1</div>
+          <div style="font-size:12px;color:#5B7387;margin-top:5px">Awaiting first contact</div>
+        </div>
+        <div style="background:#fff;border:1px solid #E2E9EF;border-top:3px solid #30A5DE;border-radius:10px;padding:14px 15px;cursor:pointer" style-hover="border-color:#30A5DE;box-shadow:0 6px 18px rgba(14,42,59,.07)">
+          <div style="font-family:'Barlow',sans-serif;font-size:30px;font-weight:600;line-height:1">2</div>
+          <div style="font-size:12px;color:#5B7387;margin-top:5px">Visits today</div>
+        </div>
+        <div style="background:#fff;border:1px solid #E2E9EF;border-top:3px solid #5CC6EC;border-radius:10px;padding:14px 15px;cursor:pointer" style-hover="border-color:#5CC6EC;box-shadow:0 6px 18px rgba(14,42,59,.07)">
+          <div style="font-family:'Barlow',sans-serif;font-size:30px;font-weight:600;line-height:1">1</div>
+          <div style="font-size:12px;color:#5B7387;margin-top:5px">Awaiting proposal reply</div>
+        </div>
+        <div style="background:#fff;border:1px solid #E2E9EF;border-top:3px solid #E0A63C;border-radius:10px;padding:14px 15px;cursor:pointer" style-hover="border-color:#E0A63C;box-shadow:0 6px 18px rgba(14,42,59,.07)">
+          <div style="font-family:'Barlow',sans-serif;font-size:30px;font-weight:600;line-height:1">1</div>
+          <div style="font-size:12px;color:#5B7387;margin-top:5px">Stalled / no reply</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:minmax(520px,1fr) minmax(260px,320px);gap:20px;align-items:start">
+
+        <div style="display:flex;flex-direction:column;gap:20px;min-width:0">
+
+          <section style="background:#fff;border:1px solid #E2E9EF;border-radius:12px;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid #EEF3F7">
+              <span style="width:8px;height:8px;border-radius:50%;background:#C8442E"></span>
+              <h2 style="font-family:'Barlow',sans-serif;font-size:15px;font-weight:600;margin:0;flex:1">Needs a human</h2>
+              <span style="font-size:11.5px;color:#7C93A5">the automation stopped here</span>
+            </div>
+            <div style="display:grid;grid-template-columns:110px minmax(0,1fr) 70px 78px;gap:0 14px;align-items:center;padding:9px 18px;background:#F8FBFD;border-bottom:1px solid #EEF3F7;font-family:'Barlow',sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:#7C93A5">
+              <div>Lead</div><div>Client · why it stopped</div><div>Since</div><div></div>
+            </div>
+            <div style="display:grid;grid-template-columns:110px minmax(0,1fr) 70px 78px;gap:0 14px;align-items:center;padding:12px 18px;border-bottom:1px solid #F2F6F9;background:#FDF6F4" style-hover="background:#FBEDE9">
+              <div style="font-size:12px;font-weight:600;color:#087BB2">L-2026-0417</div>
+              <div><div style="font-size:13px;font-weight:600">Sarah Mitchell</div><div style="font-size:12px;color:#A5503F;margin-top:2px">Emergency transfer not answered</div></div>
+              <div style="font-size:12px;color:#5B7387">5 h</div>
+              <div><button style="font:inherit;font-size:12px;font-weight:600;color:#fff;background:#C8442E;border:none;border-radius:6px;padding:6px 12px;cursor:pointer" style-hover="background:#A5361F">Open</button></div>
+            </div>
+            <div style="display:grid;grid-template-columns:110px minmax(0,1fr) 70px 78px;gap:0 14px;align-items:center;padding:12px 18px;border-bottom:1px solid #F2F6F9" style-hover="background:#F8FBFD">
+              <div style="font-size:12px;font-weight:600;color:#087BB2">L-2026-0415</div>
+              <div><div style="font-size:13px;font-weight:600">Robert Chen</div><div style="font-size:12px;color:#5B7387;margin-top:2px">Cadence exhausted — no reply after 4 touches</div></div>
+              <div style="font-size:12px;color:#5B7387">3 d</div>
+              <div><button style="font:inherit;font-size:12px;font-weight:600;color:#0E2A3B;background:#fff;border:1px solid #DFE8EF;border-radius:6px;padding:6px 12px;cursor:pointer" style-hover="border-color:#087BB2;color:#087BB2">Open</button></div>
+            </div>
+            <div style="display:grid;grid-template-columns:110px minmax(0,1fr) 70px 78px;gap:0 14px;align-items:center;padding:12px 18px;border-bottom:1px solid #F2F6F9" style-hover="background:#F8FBFD">
+              <div style="font-size:12px;font-weight:600;color:#087BB2">L-2026-0413</div>
+              <div><div style="font-size:13px;font-weight:600">Linda Vasquez</div><div style="font-size:12px;color:#5B7387;margin-top:2px">Qualification incomplete — AI could not confirm budget</div></div>
+              <div style="font-size:12px;color:#5B7387">12 h</div>
+              <div><button style="font:inherit;font-size:12px;font-weight:600;color:#0E2A3B;background:#fff;border:1px solid #DFE8EF;border-radius:6px;padding:6px 12px;cursor:pointer" style-hover="border-color:#087BB2;color:#087BB2">Open</button></div>
+            </div>
+            <div style="display:grid;grid-template-columns:110px minmax(0,1fr) 70px 78px;gap:0 14px;align-items:center;padding:12px 18px" style-hover="background:#F8FBFD">
+              <div style="font-size:12px;color:#9DB2C1">—</div>
+              <div><div style="font-size:13px;font-weight:600">jhoward@example.com</div><div style="font-size:12px;color:#5B7387;margin-top:2px">Inbound email could not be parsed</div></div>
+              <div style="font-size:12px;color:#5B7387">2 h</div>
+              <div><button style="font:inherit;font-size:12px;font-weight:600;color:#0E2A3B;background:#fff;border:1px solid #DFE8EF;border-radius:6px;padding:6px 12px;cursor:pointer" style-hover="border-color:#087BB2;color:#087BB2">Review</button></div>
+            </div>
+          </section>
+
+          <section style="background:#fff;border:1px solid #E2E9EF;border-radius:12px;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid #EEF3F7">
+              <h2 style="font-family:'Barlow',sans-serif;font-size:15px;font-weight:600;margin:0;flex:1">Today's visits</h2>
+              <a href="#" style="font-size:12px;font-weight:600">Appointments →</a>
+            </div>
+            <div style="display:grid;grid-template-columns:118px 150px minmax(0,1fr) 170px 130px;gap:0 14px;padding:9px 18px;background:#F8FBFD;border-bottom:1px solid #EEF3F7;font-family:'Barlow',sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:#7C93A5">
+              <div>Time</div><div>Estimator</div><div>Client</div><div>Address</div><div>Arm</div>
+            </div>
+            <div style="display:grid;grid-template-columns:118px 150px minmax(0,1fr) 170px 130px;gap:0 14px;align-items:center;padding:12px 18px;border-bottom:1px solid #F2F6F9" style-hover="background:#F8FBFD">
+              <div style="font-size:12.5px;font-weight:600">08:00–09:00</div>
+              <div style="font-size:12.5px;color:#5B7387">Jason Reed</div>
+              <div style="font-size:12.5px;font-weight:600">Robert Chen</div>
+              <div style="font-size:12.5px;color:#5B7387">88 Hillcrest Dr</div>
+              <div><span style="font-size:11px;font-weight:600;color:#0B5C88;background:#E7F2F9;border-radius:999px;padding:3px 9px">Restoration</span></div>
+            </div>
+            <div style="display:grid;grid-template-columns:118px 150px minmax(0,1fr) 170px 130px;gap:0 14px;align-items:center;padding:12px 18px;border-bottom:1px solid #F2F6F9" style-hover="background:#F8FBFD">
+              <div style="font-size:12.5px;font-weight:600">10:00–11:30</div>
+              <div style="font-size:12.5px;color:#5B7387">Jathan D'Antonio</div>
+              <div style="font-size:12.5px;font-weight:600">Allegheny Property Group</div>
+              <div style="font-size:12.5px;color:#5B7387">2200 Liberty Ave</div>
+              <div><span style="font-size:11px;font-weight:600;color:#4A5C2B;background:#F0F4E6;border-radius:999px;padding:3px 9px">Commercial GC</span></div>
+            </div>
+            <div style="display:grid;grid-template-columns:118px 150px minmax(0,1fr) 170px 130px;gap:0 14px;align-items:center;padding:12px 18px" style-hover="background:#F8FBFD">
+              <div style="font-size:12.5px;font-weight:600">14:00–15:00</div>
+              <div style="font-size:12.5px;color:#5B7387">Jason Reed</div>
+              <div style="font-size:12.5px;font-weight:600">Linda Vasquez</div>
+              <div style="font-size:12.5px;color:#5B7387">19 Beechwood Blvd</div>
+              <div><span style="font-size:11px;font-weight:600;color:#0B5C88;background:#E7F2F9;border-radius:999px;padding:3px 9px">Restoration</span></div>
+            </div>
+          </section>
+
+          <section style="background:#fff;border:1px solid #E2E9EF;border-radius:12px;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid #EEF3F7">
+              <h2 style="font-family:'Barlow',sans-serif;font-size:15px;font-weight:600;margin:0;flex:1">Jobs in estimating</h2>
+              <a href="#" style="font-size:12px;font-weight:600">Estimating queue →</a>
+            </div>
+            <div style="display:grid;grid-template-columns:118px minmax(0,1fr) 150px 120px 210px;gap:0 14px;padding:9px 18px;background:#F8FBFD;border-bottom:1px solid #EEF3F7;font-family:'Barlow',sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:#7C93A5">
+              <div>Lead</div><div>Client</div><div>Estimator</div><div>Days since visit</div><div>What is missing</div>
+            </div>
+            <div style="display:grid;grid-template-columns:118px minmax(0,1fr) 150px 120px 210px;gap:0 14px;align-items:center;padding:12px 18px;border-bottom:1px solid #F2F6F9" style-hover="background:#F8FBFD">
+              <div style="font-size:12px;font-weight:600;color:#087BB2">L-2026-0408</div>
+              <div style="font-size:12.5px;font-weight:600">Northside Dental</div>
+              <div style="font-size:12.5px;color:#5B7387">Marcus Hale</div>
+              <div><span style="font-size:11.5px;font-weight:700;color:#C8442E;background:#FBEDE9;border-radius:5px;padding:3px 8px">13 days</span></div>
+              <div style="font-size:12.5px;color:#5B7387">Estimate not uploaded</div>
+            </div>
+            <div style="display:grid;grid-template-columns:118px minmax(0,1fr) 150px 120px 210px;gap:0 14px;align-items:center;padding:12px 18px;border-bottom:1px solid #F2F6F9" style-hover="background:#F8FBFD">
+              <div style="font-size:12px;font-weight:600;color:#087BB2">L-2026-0414</div>
+              <div style="font-size:12.5px;font-weight:600">Westmoreland Retail</div>
+              <div style="font-size:12.5px;color:#5B7387">Jathan D'Antonio</div>
+              <div><span style="font-size:11.5px;font-weight:700;color:#8A6413;background:#FBF3E2;border-radius:5px;padding:3px 8px">6 days</span></div>
+              <div style="font-size:12.5px;color:#5B7387">Estimate in review</div>
+            </div>
+            <div style="display:grid;grid-template-columns:118px minmax(0,1fr) 150px 120px 210px;gap:0 14px;align-items:center;padding:12px 18px" style-hover="background:#F8FBFD">
+              <div style="font-size:12px;font-weight:600;color:#087BB2">L-2026-0415</div>
+              <div style="font-size:12.5px;font-weight:600">Robert Chen</div>
+              <div style="font-size:12.5px;color:#5B7387">Jason Reed</div>
+              <div><span style="font-size:11.5px;font-weight:700;color:#2F6B4F;background:#E9F4EE;border-radius:5px;padding:3px 8px">0 days</span></div>
+              <div style="font-size:12.5px;color:#5B7387">Awaiting client signature</div>
+            </div>
+          </section>
+
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:20px;min-width:0">
+          <section style="background:linear-gradient(160deg,#0B5C88 0%,#087BB2 60%,#30A5DE 100%);border-radius:12px;padding:18px;color:#fff">
+            <div style="font-family:'Barlow',sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;opacity:.8">On call right now</div>
+            <div style="font-family:'Barlow',sans-serif;font-size:21px;font-weight:600;margin-top:8px">Joshua Tohey</div>
+            <div style="font-size:13px;opacity:.9;margin-top:2px">(412) 555-0100</div>
+            <div style="height:1px;background:rgba(255,255,255,.25);margin:14px 0"></div>
+            <div style="display:flex;justify-content:space-between;font-size:12.5px"><span style="opacity:.85">Backup</span><span style="font-weight:600">Byron Tohey</span></div>
+            <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-top:6px"><span style="opacity:.85">Coverage today</span><span style="font-weight:600">24 / 24 h</span></div>
+            <button style="font:inherit;font-size:12.5px;font-weight:600;color:#0B5C88;background:#fff;border:none;border-radius:7px;padding:9px 12px;width:100%;margin-top:16px;cursor:pointer" style-hover="background:#E7F2F9">Manage on-call schedule</button>
+          </section>
+
+          <section style="background:#fff;border:1px solid #E2E9EF;border-radius:12px;padding:16px 18px">
+            <h2 style="font-family:'Barlow',sans-serif;font-size:15px;font-weight:600;margin:0 0 12px">Intake today</h2>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #F2F6F9">
+              <span style="font-size:12.5px;color:#5B7387">AI calls answered</span><span style="font-family:'Barlow',sans-serif;font-size:16px;font-weight:600">7</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #F2F6F9">
+              <span style="font-size:12.5px;color:#5B7387">Leads created</span><span style="font-family:'Barlow',sans-serif;font-size:16px;font-weight:600">4</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #F2F6F9">
+              <span style="font-size:12.5px;color:#5B7387">Emails captured</span><span style="font-family:'Barlow',sans-serif;font-size:16px;font-weight:600">3</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0">
+              <span style="font-size:12.5px;color:#5B7387">Transfers failed</span><span style="font-family:'Barlow',sans-serif;font-size:16px;font-weight:600;color:#C8442E">1</span>
+            </div>
+          </section>
+
+          <section style="background:#fff;border:1px solid #E2E9EF;border-radius:12px;padding:16px 18px">
+            <h2 style="font-family:'Barlow',sans-serif;font-size:15px;font-weight:600;margin:0 0 12px">Quick actions</h2>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <button style="font:inherit;font-size:12.5px;font-weight:600;color:#fff;background:#087BB2;border:none;border-radius:7px;padding:10px 12px;cursor:pointer;text-align:left" style-hover="background:#0B5C88">+ New lead</button>
+              <button style="font:inherit;font-size:12.5px;font-weight:600;color:#0E2A3B;background:#fff;border:1px solid #DFE8EF;border-radius:7px;padding:10px 12px;cursor:pointer;text-align:left" style-hover="border-color:#087BB2;color:#087BB2">Book a site visit</button>
+              <button style="font:inherit;font-size:12.5px;font-weight:600;color:#0E2A3B;background:#fff;border:1px solid #DFE8EF;border-radius:7px;padding:10px 12px;cursor:pointer;text-align:left" style-hover="border-color:#087BB2;color:#087BB2">Upload an estimate</button>
+            </div>
+          </section>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{}">
+const NAV = [
+  {k:'top', id:'dashboard', l:'Dashboard'},
+  {k:'grp', id:'g_intake', l:'INTAKE', ph:'F1', items:[['hotlist','Hotlist'],['calls','Calls'],['inbox','Inbox Capture'],['appointments','Appointments']]},
+  {k:'grp', id:'g_est', l:'ESTIMATING', ph:'F2', items:[['equeue','Estimating queue'],['sessions','Inspection sessions'],['photolib','Photo library']]},
+  {k:'grp', id:'g_prop', l:'PROPOSALS', ph:'F2', items:[['proposals','Proposals'],['schedules','Payment schedules']]},
+  {k:'grp', id:'g_rec', l:'RECORDS', ph:'', items:[['contacts','Contacts'],['properties','Properties']]},
+  {k:'lock', id:'g_sub', l:'SUBCONTRACTORS', ph:'F3', items:['Subcontractor database','Bid management','Work orders','Project scheduling','Change orders','Client portal']},
+  {k:'lock', id:'g_bill', l:'BILLING', ph:'F4', items:['Invoices (AR)','Payments & collections','Vendor invoices (AP)','QuickBooks sync']},
+  {k:'lock', id:'g_field', l:'FIELD & PAYROLL', ph:'F5', items:['Time clock','Timesheets','Payroll preparation','Gusto sync']},
+  {k:'sec', id:'g_set', l:'SETTINGS', ph:'', subs:[
+    {l:'Intake & AI', id:'x1', items:[['s_ai','AI Receptionist'],['s_oncall','On-Call Schedule'],['s_assign','Assignment Rules'],['s_pipeline','Pipeline & Stages']]},
+    {l:'Follow-up', id:'x2', items:[['s_cadences','Automations & Cadences'],['s_rules','Sending Rules'],['s_templates','Templates']]},
+    {l:'Estimating & cost', id:'x3', items:[['s_cost','Cost codes & trades'],['s_markup','Markup defaults'],['s_capture','Field capture'],['s_labels','Photo labels']]},
+    {l:'Documents', id:'x4', items:[['s_contracts','Contract templates'],['s_docs','Company documents']]},
+    {l:'System', id:'x5', items:[['s_team','Team & Roles'],['s_fields','Custom Fields'],['s_cal','Calendars'],['s_integr','Integrations'],['s_audit','Audit Log']]}
+  ]}
+];
+
+const GRP_BASE = "display:flex;align-items:center;gap:8px;padding:8px 10px;margin-top:6px;border-radius:7px;cursor:pointer;font-family:'Barlow',sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.11em;text-transform:uppercase;";
+const ITEM_BASE = "padding:7px 10px 7px 28px;margin-top:1px;border-radius:7px;cursor:pointer;font-size:12.5px;";
+
+class Component extends DCLogic {
+  state = {
+    open: {g_intake:1, g_est:1, g_prop:1, g_rec:0, g_sub:0, g_bill:0, g_field:0, g_set:1, x1:0, x2:0, x3:0, x4:0, x5:0},
+    cur: 'dashboard',
+    arm: 'All'
+  };
+
+  toggle(id) { this.setState(s => ({open: {...s.open, [id]: s.open[id] ? 0 : 1}})); }
+  select(id) { this.setState({cur: id}); }
+
+  rows() {
+    const out = [];
+    const push = o => out.push(o);
+    for (const n of NAV) {
+      if (n.k === 'top') {
+        const on = this.state.cur === n.id;
+        push({isItem:true, label:n.l, onClick:() => this.select(n.id),
+          style: "display:flex;align-items:center;padding:9px 10px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:600;" +
+            (on ? "background:#087BB2;color:#fff;" : "color:#0E2A3B;")});
+        continue;
+      }
+      const open = this.state.open[n.id];
+      if (n.k === 'grp' || n.k === 'lock') {
+        const locked = n.k === 'lock';
+        push({isGroup:true, label:n.l, phase: locked ? n.ph + ' 🔒' : n.ph, arrow: open ? '▼' : '▶',
+          onClick:() => this.toggle(n.id),
+          style: GRP_BASE + (locked ? "color:#9DB2C1;" : "color:#5B7387;")});
+        if (open) for (const it of n.items) {
+          if (locked) push({isItem:true, label:it, onClick:() => {},
+            style: ITEM_BASE + "color:#B4C4CF;cursor:not-allowed;"});
+          else {
+            const on = this.state.cur === it[0];
+            push({isItem:true, label:it[1], onClick:() => this.select(it[0]),
+              style: ITEM_BASE + (on ? "background:#E7F2F9;color:#0B5C88;font-weight:600;" : "color:#3D586B;")});
+          }
+        }
+      }
+      if (n.k === 'sec') {
+        push({isGroup:true, label:n.l, phase:'', arrow: open ? '▼' : '▶',
+          onClick:() => this.toggle(n.id), style: GRP_BASE + "color:#5B7387;"});
+        if (open) for (const s of n.subs) {
+          const so = this.state.open[s.id];
+          push({isItem:true, label:(so ? '▼  ' : '▶  ') + s.l, onClick:() => this.toggle(s.id),
+            style: "padding:7px 10px 7px 20px;margin-top:1px;border-radius:7px;cursor:pointer;font-size:12px;color:#7C93A5;"});
+          if (so) for (const it of s.items) {
+            const on = this.state.cur === it[0];
+            push({isItem:true, label:it[1], onClick:() => this.select(it[0]),
+              style: "padding:6px 10px 6px 36px;margin-top:1px;border-radius:7px;cursor:pointer;font-size:12px;" +
+                (on ? "background:#E7F2F9;color:#0B5C88;font-weight:600;" : "color:#3D586B;")});
+          }
+        }
+      }
+    }
+    return out;
+  }
+
+  renderVals() {
+    const arms = ['All', 'Commercial GC', 'Restoration'].map(label => ({
+      label,
+      onClick: () => this.setState({arm: label}),
+      style: "padding:7px 14px;border-radius:6px;cursor:pointer;font-size:12.5px;font-weight:600;" +
+        (this.state.arm === label ? "background:#087BB2;color:#fff;" : "color:#5B7387;")
+    }));
+    return {navRows: this.rows(), arms};
+  }
+}
+
+</script>
+</body>
+</html>
