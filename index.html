@@ -306,19 +306,21 @@ const NAV=[
  {k:'grp',id:'g_est',l:'ESTIMATING',ph:'F2',items:[['equeue','Estimating queue','9'],['sessions','Inspection sessions'],['photolib','Photo library']]},
  {k:'grp',id:'g_prop',l:'PROPOSALS',ph:'F2',items:[['proposals','Proposals'],['schedules','Payment schedules']]},
  {k:'grp',id:'g_rec',l:'RECORDS',ph:'',items:[['contacts','Contacts'],['properties','Properties']]},
- {k:'lock',id:'g_sub',l:'SUBCONTRACTORS',ph:'F3',items:['Subcontractor database','Bid management (RFP / ITB)','Bid comparison','Work orders','Contracts & signatures','Project scheduling','Project tracking','Change orders','Subcontractor portal','Client portal']},
- {k:'lock',id:'g_bill',l:'BILLING',ph:'F4',items:['Invoices (AR)','Payments & collections','Vendor invoices (AP)','Invoice OCR','QuickBooks sync','Payment runs']},
+ {k:'grp',id:'g_sub',l:'EXECUTION',ph:'F3',items:[['subs','Subcontractors','8'],['bids','Bid management','4'],['bidcompare','Bid comparison'],['workorders','Work orders','3'],['subcontracts','Contracts & signatures'],['projsched','Project scheduling'],['projtrack','Project tracking','2'],['changeorders','Change orders','1'],['subportal','Subcontractor portal'],['clientportal','Client portal']]},
+ {k:'grp',id:'g_bill',l:'BILLING',ph:'F4',items:[['invoices','Invoices (AR)','2'],['collections','Payments & collections','2'],['apinvoices','Vendor invoices (AP)','5'],['apocr','Invoice OCR'],['qbsync','QuickBooks sync'],['payruns','Payment runs','1']]},
  {k:'lock',id:'g_field',l:'FIELD & PAYROLL',ph:'F5',items:['Time clock','Timesheets','Labour cost allocation','Payroll preparation','Gusto sync']},
  {k:'sec',id:'g_set',l:'SETTINGS',ph:'',subs:[
   {l:'Intake & AI',id:'x1',items:[['s_ai','AI Receptionist'],['s_oncall','On-Call Schedule'],['s_assign','Assignment Rules'],['s_pipeline','Pipeline & Stages']]},
   {l:'Follow-up',id:'x2',items:[['s_cadences','Automations & Cadences'],['s_rules','Sending Rules'],['s_templates','Templates']]},
   {l:'Estimating & cost',id:'x3',items:[['s_cost','Cost codes & trades'],['s_markup','Markup defaults'],['s_capture','Field capture'],['s_labels','Photo labels']]},
   {l:'Documents',id:'x4',items:[['s_contracts','Contract templates'],['s_docs','Company documents']]},
+  {l:'Execution',id:'x6',items:[['s_exec','Bid & work order rules']]},
+  {l:'Billing',id:'x7',items:[['s_billing','Invoicing & collections']]},
   {l:'System',id:'x5',items:[['s_team','Team & Roles'],['s_fields','Custom Fields'],['s_cal','Calendars'],['s_integr','Integrations'],['s_audit','Audit Log']]}]}];
-const OWNER={lead:'hotlist',newlead:'hotlist',call:'calls',contact:'contacts',cadence:'s_cadences',cadence_new:'s_cadences',template:'s_templates',
+const OWNER={sub:'subs',bidpkg:'bids',workorder:'workorders',invoice:'invoices',lead:'hotlist',newlead:'hotlist',call:'calls',contact:'contacts',cadence:'s_cadences',cadence_new:'s_cadences',template:'s_templates',
  estimate:'equeue',mapping:'equeue',scope:'equeue',budget:'equeue',narrative:'equeue',photos:'equeue',photoreport:'equeue',
  proposal:'proposals',schedule:'schedules',versions:'proposals',acceptance:'proposals',inspection:'sessions'};
-const TITLES={dashboard:'Dashboard',hotlist:'Hotlist',calls:'Calls',inbox:'Inbox Capture',appointments:'Appointments',equeue:'Estimating queue',
+const TITLES={subs:'Subcontractors',sub:'Subcontractor',bids:'Bid management',bidpkg:'Bid package',bidcompare:'Bid comparison',workorders:'Work orders',workorder:'Work order',subcontracts:'Subcontractor agreements',projsched:'Project scheduling',projtrack:'Project tracking',changeorders:'Change orders',subportal:'Subcontractor portal',clientportal:'Client portal',invoices:'Invoices (AR)',invoice:'Invoice',collections:'Payments & collections',apinvoices:'Vendor invoices (AP)',apocr:'Invoice OCR',qbsync:'QuickBooks sync',payruns:'Payment runs',s_exec:'Bid & work order rules',s_billing:'Invoicing & collections',dashboard:'Dashboard',hotlist:'Hotlist',calls:'Calls',inbox:'Inbox Capture',appointments:'Appointments',equeue:'Estimating queue',
  sessions:'Inspection sessions',photolib:'Photo library',proposals:'Proposals',schedules:'Payment schedules',contacts:'Contacts',properties:'Properties',
  newlead:'New lead',s_ai:'AI Receptionist',s_oncall:'On-Call Schedule',s_assign:'Assignment Rules',s_pipeline:'Pipeline & Stages',
  s_cadences:'Automations & Cadences',s_rules:'Sending Rules',s_templates:'Templates',s_cost:'Cost codes & trades',s_markup:'Markup defaults',
@@ -492,7 +494,7 @@ const ITEM = "display:flex;align-items:center;gap:6px;padding:7px 10px 7px 26px;
 
 class Component extends DCLogic {
   state = {
-    open:{g_intake:1,g_est:1,g_prop:1,g_rec:0,g_sub:0,g_bill:0,g_field:0,g_set:1,x1:0,x2:0,x3:0,x4:0,x5:0},
+    open:{g_intake:1,g_est:1,g_prop:1,g_rec:0,g_sub:0,g_bill:0,g_field:0,g_set:1,x1:0,x2:0,x3:0,x4:0,x5:0,x6:0,x7:0},
     cur:'dashboard', param:null, tab:0, arm:'All', hotView:'table', eqView:'table',
     leads:LEADS.map(l=>({...l})), modal:null, toasts:[], palette:false, rail:false, flow:null
   };
@@ -689,8 +691,8 @@ function Palette(props){
 }
 
 const LOCKED={
- 'SUBCONTRACTORS':['Subcontractor database with trades, COIs and a 1–5 rating per trade','Bid management — RFP / Invitation to Bid, issued against the scope packages built in Phase 2','Bid intake by PDF upload with AI extraction, and side-by-side comparison','Work orders — the restoration path, where 99% of the time there is no RFP at all','Accept / deny with rebuttal, chased every 24 hours until answered','Contract and agreement generation with digital signature','Project scheduling and milestone tracking','Change orders','Subcontractor portal — progress photos, documents, approvals','Client portal — payments, files, updates, progress photos'],
- 'BILLING':['Invoices (AR) generated from the Phase 2 milestone triggers','Payment links, collections and the stern in-production cadence','Vendor invoices (AP) with OCR extraction','QuickBooks two-way sync','Payment runs — replacing the spreadsheet between BuilderTrend and PNC Pinnacle'],
+ 'SUBCONTRACTORS_RETIRED':['Subcontractor database with trades, COIs and a 1–5 rating per trade','Bid management — RFP / Invitation to Bid, issued against the scope packages built in Phase 2','Bid intake by PDF upload with AI extraction, and side-by-side comparison','Work orders — the restoration path, where 99% of the time there is no RFP at all','Accept / deny with rebuttal, chased every 24 hours until answered','Contract and agreement generation with digital signature','Project scheduling and milestone tracking','Change orders','Subcontractor portal — progress photos, documents, approvals','Client portal — payments, files, updates, progress photos'],
+ 'BILLING_RETIRED':['Invoices (AR) generated from the Phase 2 milestone triggers','Payment links, collections and the stern in-production cadence','Vendor invoices (AP) with OCR extraction','QuickBooks two-way sync','Payment runs — replacing the spreadsheet between BuilderTrend and PNC Pinnacle'],
  'FIELD & PAYROLL':['Mobile clock in / clock out against a specific job and cost code','Timesheets with AI validation of irregular or missing entries','Labour cost allocation feeding the Actual column of the Phase 2 budget','Payroll preparation — aggregation, overtime, structured summaries','Gusto sync — batch prepared here, payment executed manually by the client']};
 
 /* ================= DASHBOARD ================= */
@@ -1929,6 +1931,689 @@ SCREENS.s_audit = () => Page({key:'s_audit', title:'Audit Log', sub:'Every actio
     ['Aug 7, 02:14','AI Receptionist', Tag('AI','ai'),'L-2026-0417','Lead created','Source: AI Call · classified EMERGENCY'],
     ['Aug 6, 19:48','AI Receptionist', Tag('AI','ai'),'L-2026-0413','Transfer completed','→ Byron Tohey · answered'],
     ['Aug 6, 09:22','Byron Tohey', Tag('Human'),'Settings','On-call changed','Sun Aug 10 00:00–08:00 cleared — no replacement assigned']], {min:'1080px'})]});
+
+/* renders inline <b> and <br> inside a plain block of copy */
+const HTM = (style, txt) => h('div',{style:style, dangerouslySetInnerHTML:{__html:txt}});
+
+/* ================= PHASE 3 — SUBCONTRACTOR & PROJECT EXECUTION ================= */
+
+const SUBS=[
+ {id:'S-014',n:'Keystone Demolition LLC',t:['Demolition'],r:4.6,coi:'Mar 12, 2027',w9:true,open:2,done:31,last:'Aug 4',st:'PA'},
+ {id:'S-021',n:'Three Rivers Electric Co.',t:['Electrical'],r:4.8,coi:'Jan 30, 2027',w9:true,open:1,done:44,last:'Aug 6',st:'PA'},
+ {id:'S-008',n:'Mon Valley Mechanical',t:['HVAC','Plumbing'],r:4.1,coi:'Sep 2, 2026',w9:true,open:0,done:19,last:'Jul 22',st:'PA'},
+ {id:'S-033',n:'Allegheny Drywall & Finish',t:['Drywall','Painting'],r:3.9,coi:'Aug 29, 2026',w9:true,open:1,done:27,last:'Aug 5',st:'PA'},
+ {id:'S-002',n:'Baldwin Carpentry',t:['Carpentry'],r:4.4,coi:'Nov 18, 2026',w9:true,open:0,done:52,last:'Jul 30',st:'PA'},
+ {id:'S-045',n:'Steel City Flooring',t:['Flooring'],r:3.6,coi:'Aug 21, 2026',w9:false,open:0,done:12,last:'Jun 14',st:'PA'},
+ {id:'S-051',n:'Ohio Valley Roofing',t:['Roofing'],r:4.2,coi:'Feb 5, 2027',w9:true,open:0,done:8,last:'May 9',st:'OH'},
+ {id:'S-060',n:'Pittsburgh Masonry Works',t:['Masonry','Concrete'],r:4.0,coi:'Dec 1, 2026',w9:true,open:0,done:15,last:'Apr 27',st:'PA'}];
+
+const WOS=[
+ {id:'WO-2026-0088',job:'L-2026-0415',client:'Robert Chen',sp:'SP-02 Demolition & debris',sub:'Keystone Demolition LLC',trade:'Demolition',amt:'1,457.60',sent:'Aug 7, 09:10',st:'Accepted',chase:'—',start:'Aug 25'},
+ {id:'WO-2026-0089',job:'L-2026-0415',client:'Robert Chen',sp:'SP-04 Electrical',sub:'Three Rivers Electric Co.',trade:'Electrical',amt:'3,204.00',sent:'Aug 7, 09:12',st:'Rebuttal',chase:'—',start:'Sep 1'},
+ {id:'WO-2026-0090',job:'L-2026-0415',client:'Robert Chen',sp:'SP-06 Drywall',sub:'Allegheny Drywall & Finish',trade:'Drywall',amt:'774.40',sent:'Aug 6, 16:40',st:'Sent',chase:'2 of 5 · next in 7 h',start:'Sep 4'},
+ {id:'WO-2026-0087',job:'L-2026-0409',client:'Northside Dental',sp:'SP-03 Structural repair',sub:'Baldwin Carpentry',trade:'Carpentry',amt:'6,120.00',sent:'Aug 1, 11:02',st:'Accepted',chase:'—',start:'Aug 12'},
+ {id:'WO-2026-0086',job:'L-2026-0409',client:'Northside Dental',sp:'SP-05 HVAC',sub:'Mon Valley Mechanical',trade:'HVAC',amt:'4,880.00',sent:'Jul 30, 08:15',st:'Denied',chase:'—',start:'—'}];
+
+const BIDPKGS=[
+ {id:'BP-2026-011',job:'L-2026-0414',client:'Westmoreland Retail Partners',trade:'Roofing',sp:'SP-01 Roof tear-off & replacement',inv:4,resp:2,due:'Aug 22',st:'Open'},
+ {id:'BP-2026-010',job:'L-2026-0414',client:'Westmoreland Retail Partners',trade:'Electrical',sp:'SP-03 Electrical',inv:3,resp:3,due:'Aug 19',st:'Ready to compare'},
+ {id:'BP-2026-009',job:'L-2026-0416',client:'Allegheny Property Group',trade:'Drywall',sp:'SP-04 Drywall & finish',inv:3,resp:1,due:'Aug 25',st:'Open'},
+ {id:'BP-2026-008',job:'L-2026-0416',client:'Allegheny Property Group',trade:'HVAC',sp:'SP-06 HVAC',inv:4,resp:4,due:'Aug 15',st:'Awarded'}];
+
+const COS=[
+ {id:'CO-2026-004',job:'L-2026-0409',client:'Northside Dental',d:'Additional subfloor replacement — rot found behind the north wall',amt:'4,850.00',org:'Discovered on site',appr:'Awaiting client',inv:'—',st:'Sent for approval'},
+ {id:'CO-2026-003',job:'L-2026-0409',client:'Northside Dental',d:'Upgrade to commercial-grade LVT at the client’s request',amt:'2,310.00',org:'Client request',appr:'Approved Aug 4',inv:'INV-2026-0142',st:'Invoiced'},
+ {id:'CO-2026-002',job:'L-2026-0411',client:'Linda Vasquez',d:'Extra containment — adjacent room affected',amt:'980.00',org:'Discovered on site',appr:'Approved Jul 28',inv:'INV-2026-0136',st:'Paid'}];
+
+/* ---- Subcontractors ---- */
+SCREENS.subs = () => Page({key:'subs', title:'Subcontractors',
+ sub:'Who is available, what they are qualified for, and whether their paperwork is current',
+ actions:[Btn('Export CSV',{onClick:()=>toast('CSV exported — current filter and sort')}), Btn('+ Add subcontractor',{kind:'pri'})],
+ children:[
+  Tiles([['8','Active subcontractors'],['2','COI expiring within 30 days','', C.wn],['1','Missing W-9','', C.dg],['4','Open work orders','workorders']]),
+  Bar(Fld('',{ph:'Search company, trade, contact…', w:'260px'}),
+    Sel('Trade: All',['Trade: All'].concat(TRADES),{w:'190px'}),
+    Sel('State: All',['State: All','PA','OH','WV'],{w:'140px'}),
+    Sel('Paperwork: All',['Paperwork: All','Current','Expiring within 30 days','Expired','Missing W-9'],{w:'210px'}),
+    Sp(), Btn('Save this view')),
+  Tbl(['Company','Trades',{t:'Rating',n:true},'COI expires','W-9',{t:'Open WOs',n:true},{t:'Jobs done',n:true},'Last used','State'],
+   SUBS.map(s=>({key:s.id, onClick:()=>go('sub', s.id), c:[
+    '<b>'+s.n+'</b><div style="color:#6B8397;font-size:11.5px">'+s.id+'</div>',
+    s.t.join(' · '),
+    {t:s.r.toFixed(1)+' / 5', n:true},
+    s.coi==='Aug 21, 2026' || s.coi==='Aug 29, 2026' || s.coi==='Sep 2, 2026'
+      ? '<span style="color:#C25E4B;font-weight:600">'+s.coi+'</span>' : s.coi,
+    s.w9 ? Tag('On file','ok') : Tag('Missing','dg'),
+    {t:s.open||'—', n:true}, {t:s.done, n:true}, s.last, s.st]})), {min:'1160px'}),
+  Card('How a subcontractor is qualified', Stack(
+   HTM({fontSize:'12.5px', color:C.mut, lineHeight:1.6},
+    'A subcontractor is approved <b>per trade</b>, and one company can hold several. The rating is per trade as well, so a company can be first choice for electrical and a fallback for plumbing. Only approved, current subcontractors appear when a work order or a bid invitation is being issued.'),
+   Tbl(['Requirement','Behaviour'],[
+    ['Certificate of insurance','Expiry date held on the record. <b>An expired COI removes the company from selection</b> until it is replaced.'],
+    ['W-9','Held on file. Missing paperwork is flagged and blocks a payment run in Phase 4.'],
+    ['Trade approval','Set per trade. A company only appears for the trades it is approved for.'],
+    ['Rating','1 to 5 per trade, set by 3Rivers on quality, timeline and price.']], {min:'760px'})))]});
+
+SCREENS.sub = (p) => { const s = SUBS.find(x=>x.id===p) || SUBS[0];
+ return Page({key:'sub', crumb:['Subcontractors', ()=>go('subs'), s.n], title:s.n,
+ sub:s.id+' · '+s.t.join(' · ')+' · '+s.st,
+ actions:[Btn('Issue a work order',{onClick:()=>go('workorders')}), Btn('Invite to bid',{onClick:()=>go('bids')}), Btn('Archive')],
+ children:[
+  Row(
+   Card('Company', Stack(Lbl('Company name'), Fld(s.n), Lbl('Main contact'), Fld('—'),
+     Lbl('Phone'), Fld('(412) 555-0148'), Lbl('Email'), Fld('office@example.com'),
+     Lbl('States served'), Fld(s.st), Lbl('Notes'), Ta('') )),
+   Card('Trades & rating', Stack(
+    Tbl(['Trade','Approved',{t:'Rating',n:true},'Notes'],
+      s.t.map(t=>[t, Tag('Approved','ok'), {t:s.r.toFixed(1), n:true}, Fld('')]), {min:'480px'}),
+    h('div',null, Btn('+ Add a trade'))))),
+  Card('Documents', Tbl(['Document','File','Issued','Expires','Status',''],[
+    ['<b>Certificate of insurance</b>','COI_2026.pdf','Mar 12, 2026', s.coi, Tag('Current','ok'), Btn('Replace',{sm:true})],
+    ['<b>W-9</b>','W9_signed.pdf','Jan 4, 2026','—', s.w9?Tag('On file','ok'):Tag('Missing','dg'), Btn('Upload',{sm:true})],
+    ['Master subcontractor agreement','MSA_v3.pdf','Feb 2, 2026','—', Tag('Signed','ok'), Btn('View',{sm:true})]], {min:'820px'})),
+  Card('History', Tbl(['Date','Job','Scope package','Type',{t:'Amount',n:true},'Outcome'],[
+    ['Aug 7, 2026','L-2026-0415','SP-02 Demolition & debris','Work order',{t:'$1,457.60',n:true}, Tag('Accepted','ok')],
+    ['Jul 12, 2026','L-2026-0402','SP-02 Demolition','Work order',{t:'$2,140.00',n:true}, Tag('Completed','ok')],
+    ['Jun 3, 2026','L-2026-0388','SP-01 Strip-out','Bid',{t:'$5,900.00',n:true}, Tag('Not selected')]], {min:'820px'}))]});};
+
+/* ---- Bid management ---- */
+SCREENS.bids = () => Page({key:'bids', title:'Bid management',
+ sub:'Requests for proposal issued against the scope packages built in Phase 2',
+ actions:[Btn('+ New bid package',{kind:'pri', onClick:()=>go('bidpkg')})],
+ children:[
+  Card('When this is used', HTM({fontSize:'12.5px', color:C.mut, lineHeight:1.6},
+   'A bid package applies to <b>larger commercial projects</b>. On the restoration side the estimate is approved and a <b>work order</b> goes straight to the subcontractor — no bidding round. Both paths issue against the same scope packages.'), {hard:true}),
+  Bar(Sel('Status: All',['Status: All','Draft','Open','Ready to compare','Awarded','Cancelled'],{w:'200px'}),
+    Sel('Trade: All',['Trade: All'].concat(TRADES),{w:'180px'}),
+    Sel('Job: All',['Job: All'].concat(QUEUE.map(q=>q.id)),{w:'190px'}), Sp(), Btn('Export CSV')),
+  Tbl(['Package','Job','Client','Trade','Scope package',{t:'Invited',n:true},{t:'Responded',n:true},'Due','Status',''],
+   BIDPKGS.map(b=>({key:b.id, onClick:()=>go('bidpkg', b.id), c:[
+    '<b>'+b.id+'</b>', b.job, b.client, b.trade, b.sp,
+    {t:b.inv, n:true},
+    {t: b.resp<b.inv ? '<span style="color:#B98900;font-weight:600">'+b.resp+'</span>' : '<b>'+b.resp+'</b>', n:true},
+    b.due,
+    b.st==='Awarded'?Tag('Awarded','ok'):b.st==='Ready to compare'?Tag('Ready to compare','ai'):Tag(b.st),
+    b.st==='Ready to compare' ? Btn('Compare',{sm:true, kind:'pri', onClick:e=>{e.stopPropagation(); go('bidcompare');}}) : '—']})), {min:'1180px'}),
+  Card('The invitation', Stack(
+   Tbl(['Rule','Behaviour'],[
+    ['<b>3Rivers decides the scope</b>','Each subcontractor is invited to bid on <b>a named trade and a named scope package</b>. The scope goes out as written; the subcontractor does not choose what to bid on.'],
+    ['Who is invited','Only companies approved for that trade, with a current certificate of insurance.'],
+    ['Chasing','A reminder goes out on a fixed interval until the subcontractor responds or the package closes. Set in Settings.'],
+    ['Intake','A bid arrives as a PDF upload or through the subcontractor portal. The line values are extracted for comparison and stay editable.'],
+    ['Closing','On the due date the package moves to <b>Ready to compare</b>. Late bids are accepted with a marker.']], {min:'860px'})))]});
+
+SCREENS.bidpkg = (p) => { const b = BIDPKGS.find(x=>x.id===p) || BIDPKGS[1];
+ return Page({key:'bidpkg', crumb:['Bid management', ()=>go('bids'), b.id], title:b.id+' — '+b.trade,
+ sub:b.client+' · '+b.job+' · '+b.sp+' · due '+b.due,
+ actions:[Btn('Send a reminder',{onClick:()=>toast('Reminder sent to the subcontractors who have not replied')}),
+   Btn('Compare bids',{kind:'pri', onClick:()=>go('bidcompare')})],
+ children:[
+  Row(
+   Card('Scope sent to every invited subcontractor', Stack(
+     Lbl('Scope package'), Fld(b.sp), Lbl('Trade'), Fld(b.trade),
+     Lbl('Scope of work'), Ta('Furnish all labour, material and equipment to complete the electrical scope as described in the attached scope of work. Includes rough-in, device installation, panel work and final trim. Site access weekdays 07:00–17:00.'),
+     Lbl('Attachments'), h('div',{style:{display:'flex', gap:'6px', flexWrap:'wrap'}}, Tag('Scope of work.pdf'), Tag('Site photos.pdf'), Tag('Insurance requirements.pdf')))),
+   Card('Invitation', Stack(
+     Lbl('Due date'), Fld(b.due), Lbl('Reminder interval'), Sel('Every 48 hours',['Every 24 hours','Every 48 hours','Every 3 days','No reminders']),
+     Lbl('Stop chasing after'), Fld('5 reminders'),
+     h('div',null, Chk('Accept late bids, marked as late'), Chk('Let the subcontractor respond through the portal'))))),
+  Card('Invited subcontractors', Tbl(['Subcontractor',{t:'Rating',n:true},'Invited','Viewed','Responded',{t:'Bid amount',n:true},'Reminders','Status'],[
+    ['<b>Three Rivers Electric Co.</b>',{t:'4.8',n:true},'Aug 12','Aug 12','Aug 14',{t:'$3,204.00',n:true},'—', Tag('Received','ok')],
+    ['<b>Mon Valley Mechanical</b>',{t:'4.1',n:true},'Aug 12','Aug 13','Aug 16',{t:'$3,480.00',n:true},'1', Tag('Received','ok')],
+    ['<b>Steel City Electrical Services</b>',{t:'3.6',n:true},'Aug 12','Aug 15','Aug 17',{t:'$2,975.00',n:true},'2', Tag('Received','ok')]], {min:'980px'})),
+  Card('Activity', Tbl(['When','Who','What'],[
+    ['Aug 17, 09:14','Steel City Electrical Services','Bid uploaded through the portal — 14 lines extracted'],
+    ['Aug 16, 11:02','System','Reminder 2 sent to Steel City Electrical Services'],
+    ['Aug 14, 15:40','Three Rivers Electric Co.','Bid received by email — PDF attached, 14 lines extracted'],
+    ['Aug 12, 08:00','Jason Reed','Package issued to 3 subcontractors']], {min:'760px'}))]});};
+
+/* ---- Bid comparison ---- */
+SCREENS.bidcompare = () => Page({key:'bidcompare', crumb:['Bid management', ()=>go('bids'), 'Comparison'],
+ title:'Bid comparison — BP-2026-010 Electrical',
+ sub:'Westmoreland Retail Partners · L-2026-0414 · SP-03 Electrical · 3 bids received',
+ actions:[Btn('Export CSV'), Btn('Award and create the work order',{kind:'pri', onClick:()=>toast('Awarded to Three Rivers Electric Co. — work order created')})],
+ children:[
+  Tiles([['$2,975','Lowest total','', C.ok],['$3,204','Recommended','', C.pri],['$3,480','Highest total'],['17%','Spread across bids','', C.wn]]),
+  Card('Line by line', Tbl(
+   ['Scope line',{t:'Three Rivers 4.8',n:true},{t:'Mon Valley 4.1',n:true},{t:'Steel City 3.6',n:true},'Lowest','Selected'],[
+   ['Panel replacement — 200A',{t:'$1,180.00',n:true},{t:'$1,240.00',n:true},{t:'$1,090.00',n:true},'Steel City', Tag('Three Rivers','ai')],
+   ['Rough-in — 14 circuits',{t:'$860.00',n:true},{t:'$960.00',n:true},{t:'$815.00',n:true},'Steel City', Tag('Three Rivers','ai')],
+   ['Device and trim installation',{t:'$610.00',n:true},{t:'$690.00',n:true},{t:'$585.00',n:true},'Steel City', Tag('Three Rivers','ai')],
+   ['Fixture installation',{t:'$404.00',n:true},{t:'$430.00',n:true},{t:'$385.00',n:true},'Steel City', Tag('Three Rivers','ai')],
+   ['Permit and inspection',{t:'$150.00',n:true},{t:'$160.00',n:true},{t:'$100.00',n:true},'Steel City', Tag('Three Rivers','ai')]],
+   {min:'1040px', foot:['<b>Total</b>',{t:'<b>$3,204.00</b>'},{t:'$3,480.00'},{t:'$2,975.00'},'',''] }), {flush:true}),
+  Row(
+   Card('Why the lowest bid is not always the award', Stack(
+    HTM({fontSize:'12.5px', color:C.mut, lineHeight:1.6},
+     'The comparison is <b>item by item</b>, not only on the total, because a bid can be lowest overall and still be wrong on the lines that matter. The award is decided on three things together:'),
+    Tbl(['Criterion','What is shown'],[
+     ['<b>Price</b>','Per line and in total, with the spread across bids'],
+     ['<b>Quality</b>','The 1–5 rating held on the subcontractor record for that trade'],
+     ['<b>Timeline</b>','The start date each subcontractor committed to']], {min:'520px'}))),
+   Card('Award', Stack(
+    Lbl('Award to'), Sel('Three Rivers Electric Co.',['Three Rivers Electric Co.','Mon Valley Mechanical','Steel City Electrical Services']),
+    Lbl('Reason'), Ta('Rating 4.8 for electrical, committed to the required start date, and $276 above the lowest bid on scope we have had rework on before.'),
+    h('div',null, Chk('Create the work order from this award'), Chk('Notify the subcontractors who were not selected')),
+    HTM({fontSize:'11.5px', color:C.faint}, 'The reason is required and is kept on the job.'))))]});
+
+/* ---- Work orders ---- */
+SCREENS.workorders = () => Page({key:'workorders', title:'Work orders',
+ sub:'The restoration path — the estimate is approved and the work goes straight to the subcontractor',
+ actions:[Btn('Export CSV'), Btn('+ New work order',{kind:'pri', onClick:()=>go('workorder')})],
+ children:[
+  Tiles([['3','Awaiting a response','', C.wn],['1','Rebuttal to review','', C.dg],['12','Accepted this month','', C.ok],['1','Denied — needs reissuing']]),
+  Bar(Fld('',{ph:'Search work order, job, subcontractor…', w:'250px'}),
+    Sel('Status: All',['Status: All','Draft','Sent','Viewed','Accepted','Denied','Rebuttal','Cancelled'],{w:'190px'}),
+    Sel('Trade: All',['Trade: All'].concat(TRADES),{w:'170px'}),
+    Sel('Job: All',['Job: All'].concat(QUEUE.map(q=>q.id)),{w:'180px'}), Sp(), Btn('Save this view')),
+  Tbl(['Work order','Job','Client','Scope package','Subcontractor','Trade',{t:'Amount',n:true},'Sent','Status','Chasing','Start'],
+   WOS.map(w=>({key:w.id, onClick:()=>go('workorder', w.id),
+    style: w.st==='Rebuttal' ? {background:'#FDF6F4'} : null,
+    c:['<b>'+w.id+'</b>', w.job, w.client, w.sp, w.sub, w.trade, {t:'$'+w.amt, n:true}, w.sent,
+      w.st==='Accepted'?Tag('Accepted','ok'):w.st==='Denied'?Tag('Denied','dg'):w.st==='Rebuttal'?Tag('Rebuttal','dg'):Tag('Sent','wn'),
+      w.chase, w.start]})), {min:'1320px'}),
+  Card('What a subcontractor can do with a work order', Tbl(['Response','What happens'],[
+    ['<b>Accept</b>','The work order is confirmed, the start date is committed, and the scope package moves into the schedule.'],
+    ['<b>Deny</b>','A reason is required. The work order returns to 3Rivers to be reissued to another subcontractor.'],
+    ['<b>Rebuttal</b>','The subcontractor counters with a different amount and a reason. 3Rivers accepts the counter, holds the original, or reissues elsewhere. <b>The client asked for this by name.</b>'],
+    ['<b>No response</b>','A reminder goes out <b>every 24 hours</b> until the subcontractor answers or the limit is reached.']], {min:'820px'}))]});
+
+SCREENS.workorder = (p) => { const w = WOS.find(x=>x.id===p) || WOS[1];
+ return Page({key:'workorder', crumb:['Work orders', ()=>go('workorders'), w.id], title:w.id+' — '+w.trade,
+ sub:w.client+' · '+w.job+' · '+w.sub+' · $'+w.amt,
+ actions:[Btn('Resend'), Btn('Reissue to another subcontractor'), Btn('Accept the counter-offer',{kind:'pri', onClick:()=>toast('Counter-offer accepted — work order updated to $3,480.00')})],
+ children:[
+  Card('Rebuttal — the subcontractor has countered', Stack(
+   Row(
+    Stack(Lbl('Original amount'), Fld('$3,204.00'), Lbl('Committed start'), Fld('Sep 1')),
+    Stack(Lbl('Counter-offer'), Fld('$3,480.00'), Lbl('Proposed start'), Fld('Sep 3'))),
+   Lbl('Their reason'),
+   Ta('Panel location requires an additional 40 ft of conduit run that is not in the scope as written. Price includes the extra material and one additional labour day.'),
+   h('div',{style:{display:'flex', gap:'8px', flexWrap:'wrap'}},
+    Btn('Accept the counter-offer',{kind:'pri'}), Btn('Hold the original amount'), Btn('Reissue to another subcontractor'), Btn('Discuss')),
+   HTM({fontSize:'11.5px', color:C.faint},
+    'Accepting a counter-offer above the budgeted amount for this scope package is flagged against the Phase 2 budget.')), {hard:true}),
+  Row(
+   Card('The work order', Stack(
+    Lbl('Job'), Fld(w.job+' · '+w.client), Lbl('Scope package'), Fld(w.sp),
+    Lbl('Subcontractor'), Sel(w.sub, SUBS.map(s=>s.n)),
+    Lbl('Amount'), Fld('$'+w.amt), Lbl('Start date'), Fld(w.start), Lbl('Finish by'), Fld('Sep 3'),
+    Lbl('Scope of work'),
+    Ta('Furnish all labour, material and equipment for the electrical scope: panel replacement 200A, rough-in for 14 circuits, device and trim installation, fixture installation, permit and inspection. Work to the scope of work attached.'))),
+   Card('Chasing', Stack(
+    Lbl('Reminder interval'), Sel('Every 24 hours',['Every 12 hours','Every 24 hours','Every 48 hours','No reminders']),
+    Lbl('Stop after'), Fld('5 reminders'),
+    Lbl('If there is still no answer'), Sel('Alert the Operations Manager',['Alert the Operations Manager','Reissue automatically to the next subcontractor','Leave it open']),
+    h('div',null, Chk('Include an accept and a deny button in the email'), Chk('Let the subcontractor respond through the portal')),
+    HTM({fontSize:'11.5px', color:C.faint, marginTop:'4px'},
+     'The client runs on a 24-hour chase today and asked for the accept and deny buttons to sit inside the email.')))),
+  Card('Activity', Tbl(['When','Who','What'],[
+    ['Aug 8, 10:22','Three Rivers Electric Co.','Rebuttal submitted — $3,480.00, reason given'],
+    ['Aug 8, 09:05','System','Reminder 1 sent'],
+    ['Aug 7, 14:31','Three Rivers Electric Co.','Work order viewed'],
+    ['Aug 7, 09:12','Jason Reed','Work order issued — $3,204.00, start Sep 1']], {min:'760px'}))]});};
+
+/* ---- Contracts & signatures ---- */
+SCREENS.subcontracts = () => Page({key:'subcontracts', title:'Subcontractor agreements',
+ sub:'Generated from a template, sent for signature, and tracked in one place',
+ actions:[Btn('+ New agreement',{kind:'pri'})],
+ children:[
+  Bar(Sel('Status: All',['Status: All','Draft','Sent','Viewed','Signed','Expired'],{w:'180px'}),
+    Sel('Type: All',['Type: All','Master agreement','Per-job agreement','Change order addendum'],{w:'210px'}), Sp(), Btn('Export CSV')),
+  Tbl(['Agreement','Subcontractor','Job','Type','Template',{t:'Amount',n:true},'Sent','Signed','Status'],[
+   ['<b>SA-2026-0061</b>','Keystone Demolition LLC','L-2026-0415','Per-job agreement','Subcontract — standard',{t:'$1,457.60',n:true},'Aug 7','Aug 7', Tag('Signed','ok')],
+   ['<b>SA-2026-0062</b>','Three Rivers Electric Co.','L-2026-0415','Per-job agreement','Subcontract — standard',{t:'$3,204.00',n:true},'Aug 7','—', Tag('Awaiting signature','wn')],
+   ['<b>SA-2026-0055</b>','Baldwin Carpentry','—','Master agreement','Master subcontractor agreement',{t:'—',n:true},'Feb 2','Feb 2', Tag('Signed','ok')],
+   ['<b>SA-2026-0058</b>','Mon Valley Mechanical','L-2026-0409','Per-job agreement','Subcontract — standard',{t:'$4,880.00',n:true},'Jul 30','—', Tag('Expired','dg')]], {min:'1080px'}),
+  Row(
+   Card('Templates', Tbl(['Template','Used for','Version','Active'],[
+     ['<b>Master subcontractor agreement</b>','Signed once per company','v3','☑'],
+     ['<b>Subcontract — standard</b>','Issued per job with the work order','v2','☑'],
+     ['<b>Change order addendum</b>','Added when a change order affects a subcontractor','v1','☑']], {min:'480px'})),
+   Card('Merge variables', h('div',{style:{display:'flex', gap:'6px', flexWrap:'wrap'}},
+    ...['{{subcontractor_name}}','{{trade}}','{{job_reference}}','{{property_address}}','{{scope_of_work}}','{{work_order_amount}}','{{start_date}}','{{finish_date}}','{{payment_terms}}','{{coi_expiry}}','{{company_license_no}}'].map(v=>
+     h('span',{key:v, style:{fontSize:'11.5px', fontFamily:'ui-monospace,Menlo,monospace', background:C.priL, color:C.priD,
+      border:'1px solid #CFE4F2', borderRadius:'6px', padding:'3px 7px'}}, v)))))]});
+
+/* ---- Project scheduling ---- */
+SCREENS.projsched = () => Page({key:'projsched', title:'Project scheduling',
+ sub:'A working task list against the scope packages — not a published calendar',
+ actions:[Btn('Notify everyone of a change',{onClick:()=>toast('Schedule change notified to the affected subcontractors and the client')})],
+ children:[
+  Card('What this screen is', HTM({fontSize:'12.5px', color:C.mut, lineHeight:1.6},
+   '3Rivers does not hand a printed schedule to the crew or the client today. What they need is <b>a task list driving the work orders and the subcontractor coordination</b>, with dates that can be communicated when they move. That is what this screen holds.'), {hard:true}),
+  Bar(Sel('Job: L-2026-0415 · Robert Chen',QUEUE.map(q=>q.id+' · '+q.client),{w:'280px'}),
+    Sel('View: By scope package',['View: By scope package','View: By subcontractor','View: By week'],{w:'220px'}), Sp(),
+    Btn('Export CSV')),
+  Tbl(['Scope package','Trade','Subcontractor','Work order','Planned start','Planned finish','Depends on','Status'],
+   SCOPEPKGS.slice(0,6).map((sp,i)=>[
+    '<b>'+sp.c+'</b> '+sp.n, sp.t,
+    sp.ex==='Self-perform' ? '<i>Self-perform</i>' : (i===1?'Keystone Demolition LLC':i===3?'Three Rivers Electric Co.':i===5?'Allegheny Drywall & Finish':'—'),
+    i===1?'WO-2026-0088':i===3?'WO-2026-0089':i===5?'WO-2026-0090':'—',
+    Fld(sp.start,{w:'110px'}), Fld(sp.fin,{w:'110px'}),
+    i===0?'—':'SP-0'+i,
+    i===0?Tag('In progress','ai'):i===1?Tag('Scheduled','ok'):Tag('Not started')]), {min:'1180px'}),
+  Row(
+   Card('When a date moves', Tbl(['Rule','Behaviour'],[
+    ['Dependent packages','Moving a package offers to move everything that depends on it.'],
+    ['Subcontractor','The subcontractor on the affected work order is notified with the new dates.'],
+    ['Client','The client is notified through the portal and by email, on the milestones only.'],
+    ['Milestones','A milestone tied to a package inherits the new date, and Phase 4 invoicing follows it.']], {min:'560px'})),
+   Card('Notifications', Stack(
+    h('div',null, Chk('Notify the subcontractor when their dates change'), Chk('Notify the client on milestone dates only'),
+      Chk('Warn when a package is scheduled before the one it depends on', false)),
+    Lbl('How much notice a subcontractor gets'), Fld('48 hours'),
+    Lbl('Who is copied on every schedule change'), Sel('Operations Manager',USERS.map(u=>u.name)))))]});
+
+/* ---- Project tracking ---- */
+SCREENS.projtrack = () => Page({key:'projtrack', title:'Project tracking',
+ sub:'Every active job, where it stands, and what is holding it up',
+ children:[
+  Tiles([['6','Active jobs'],['2','Behind schedule','', C.dg],['1','Awaiting a change order','', C.wn],['3','Milestones due this week','', C.pri]]),
+  Bar(Sel('Arm: All',['Arm: All','Commercial GC','Restoration / Insurance'],{w:'190px'}),
+    Sel('Status: All',['Status: All','Not started','In progress','Behind schedule','Awaiting client','Complete'],{w:'200px'}),
+    Sel('Project manager: All',['Project manager: All'].concat(USERS.map(u=>u.name)),{w:'220px'}), Sp(), Btn('Export CSV')),
+  Tbl(['Job','Client','Arm',{t:'Contract value',n:true},{t:'Complete',n:true},'Current milestone','Next milestone','Open items','Last update','Status'],[
+   ['<b>L-2026-0409</b>','Northside Dental','Commercial GC',{t:'$148,200.00',n:true},{t:'62%',n:true},'Rough-in complete','Millwork · Sep 12','1 change order awaiting approval','Aug 8, 07:40', Tag('In progress','ai')],
+   ['<b>L-2026-0415</b>','Robert Chen','Restoration',{t:'$62,300.00',n:true},{t:'8%',n:true},'Mitigation','Demolition · Aug 26','1 work order in rebuttal','Aug 8, 10:22', Tag('In progress','ai')],
+   ['<b>L-2026-0411</b>','Linda Vasquez','Restoration',{t:'$18,940.00',n:true},{t:'85%',n:true},'Finishes','Final · Aug 20','—','Aug 7, 16:10', Tag('In progress','ai')],
+   ['<b>L-2026-0402</b>','Carnegie Office Park','Commercial GC',{t:'$96,400.00',n:true},{t:'40%',n:true},'Demolition','Rough-in · Aug 29','Subcontractor has not started','Aug 5, 09:00', Tag('Behind schedule','dg')],
+   ['<b>L-2026-0398</b>','Bethel Park Retail','Commercial GC',{t:'$212,750.00',n:true},{t:'25%',n:true},'Site preparation','Structure · Sep 5','Waiting on a permit','Aug 4, 14:20', Tag('Behind schedule','dg')]], {min:'1400px'}),
+  Row(
+   Card('What each job holds', Tbl(['Section','Contents'],[
+    ['Progress','Percentage complete, derived from the scope packages marked done against their value'],
+    ['Milestones','Which are reached, which are due, and what each one releases in Phase 4'],
+    ['Subcontractors','Every work order on the job with its status and its dates'],
+    ['Photos','Progress photos uploaded by subcontractors and by 3Rivers, on the job timeline'],
+    ['Documents','Permits, inspections, signed agreements and change orders'],
+    ['Notes','Internal notes with @mentions, and the log of everything that happened']], {min:'620px'})),
+   Card('Why a job is flagged', Tbl(['Flag','Raised when'],[
+    ['<b>Behind schedule</b>','A scope package has passed its planned finish and is not marked complete'],
+    ['<b>Awaiting a change order</b>','A change order is out for client approval and work is held'],
+    ['<b>Work order in rebuttal</b>','A subcontractor countered and nobody has answered'],
+    ['<b>Milestone overdue</b>','A milestone date has passed without being marked reached']], {min:'560px'})))]});
+
+/* ---- Change orders ---- */
+SCREENS.changeorders = () => Page({key:'changeorders', title:'Change orders',
+ sub:'Work beyond the signed contract — approved by the client, then invoiced',
+ actions:[Btn('+ New change order',{kind:'pri'})],
+ children:[
+  Tiles([['1','Awaiting client approval','', C.wn],['1','Approved, not yet invoiced','', C.pri],['$8,140','Change order value this month'],['3','This year']]),
+  Bar(Sel('Status: All',['Status: All','Draft','Sent for approval','Approved','Declined','Invoiced','Paid'],{w:'210px'}),
+    Sel('Job: All',['Job: All'].concat(QUEUE.map(q=>q.id)),{w:'190px'}), Sp(), Btn('Export CSV')),
+  Tbl(['Change order','Job','Client','Description',{t:'Amount',n:true},'Origin','Client approval','Invoice','Status'],
+   COS.map(c=>({key:c.id, c:['<b>'+c.id+'</b>', c.job, c.client, c.d, {t:'$'+c.amt, n:true}, c.org, c.appr, c.inv,
+     c.st==='Paid'?Tag('Paid','ok'):c.st==='Invoiced'?Tag('Invoiced','ai'):Tag('Sent for approval','wn')]})), {min:'1240px'}),
+  Row(
+   Card('What a change order carries', Tbl(['Field','What it holds'],[
+    ['Description','What the extra work is, in the words the client will read'],
+    ['Origin','Discovered on site · client request · carrier requirement · design change'],
+    ['Lines','The estimate lines it adds, each with its cost code, trade and cost type'],
+    ['Scope package','Which package the work attaches to, or a new one'],
+    ['Schedule effect','How many days it adds, and which packages move'],
+    ['Amount','What the client pays, and the budgeted cost behind it'],
+    ['Approval','Sent, viewed, signed or declined, with the date']], {min:'620px'})),
+   Card('What it changes downstream', Tbl(['Where','Effect'],[
+    ['<b>Payment schedule</b>','A signed change order <b>adds a payment beyond the six</b> the original contract allows.'],
+    ['<b>Budget</b>','The added lines join the Phase 2 budget with their cost codes, so job costing stays whole.'],
+    ['<b>Subcontractor</b>','If a subcontractor performs the work, a change order addendum is issued against their agreement.'],
+    ['<b>Schedule</b>','Dependent scope packages move by the days the change order adds.']], {min:'560px'})))]});
+
+/* ---- Portals ---- */
+SCREENS.subportal = () => Page({key:'subportal', title:'Subcontractor portal',
+ sub:'What a subcontractor sees when they sign in — kept deliberately small',
+ children:[
+  Card('Why it stays simple', HTM({fontSize:'12.5px', color:C.mut, lineHeight:1.6},
+   'Subcontractors will not fill in long forms. The portal asks for the few things 3Rivers actually needs — <b>an answer on the work order, progress photos, and current paperwork</b> — and the platform structures the rest.'), {hard:true}),
+  Row(
+   Card('Their work orders', Stack(
+    Tbl(['Work order','Job',{t:'Amount',n:true},'Start','Status'],[
+     ['<b>WO-2026-0089</b>','88 Hillcrest Dr',{t:'$3,204.00',n:true},'Sep 1', Tag('Awaiting your answer','wn')],
+     ['<b>WO-2026-0071</b>','412 Brookline Blvd',{t:'$2,140.00',n:true},'Jul 14', Tag('Complete','ok')]], {min:'520px'}),
+    h('div',{style:{display:'flex', gap:'8px', flexWrap:'wrap'}},
+      Btn('Accept',{kind:'pri'}), Btn('Deny'), Btn('Counter-offer')),
+    HTM({fontSize:'11.5px', color:C.faint},
+     'The same three answers are available as buttons inside the work order email, so a subcontractor never has to sign in to reply.'))),
+   Card('Upload', Stack(
+    Lbl('Progress photos'), Ph('Drop photos here — they attach to the job timeline and are visible to 3Rivers and the client',{pad:'22px'}),
+    Lbl('Documents'), Tbl(['Document','Expires','Status'],[
+     ['Certificate of insurance','Jan 30, 2027', Tag('Current','ok')],
+     ['W-9','—', Tag('On file','ok')],
+     ['Signed agreement','—', Tag('Signed','ok')]], {min:'380px'})))),
+  Card('Their payments', Tbl(['Invoice','Job',{t:'Amount',n:true},'Submitted','Status','Paid'],[
+   ['<b>KV-8841</b>','88 Hillcrest Dr',{t:'$1,457.60',n:true},'Aug 8','Under review','—'],
+   ['<b>KV-8802</b>','412 Brookline Blvd',{t:'$2,140.00',n:true},'Jul 20','Approved','Jul 31 · ACH']], {min:'720px'}))]});
+
+SCREENS.clientportal = () => Page({key:'clientportal', title:'Client portal',
+ sub:'What the client sees about their own job — the equivalent of what BuilderTrend gives them today',
+ children:[
+  Row(
+   Card('Progress', Stack(
+    h('div',{style:{fontSize:'13px', fontWeight:600}},'88 Hillcrest Dr, Mt Lebanon — fire damage restoration'),
+    h('div',{style:{height:'10px', background:'#EDF3F7', borderRadius:'999px', overflow:'hidden'}},
+      h('div',{style:{width:'8%', height:'100%', background:C.pri}})),
+    h('div',{style:{fontSize:'12px', color:C.mut}},'8% complete · currently in mitigation · next milestone Demolition, Aug 26'),
+    Tbl(['Milestone','Planned','Status'],[
+     ['Mitigation & odour control','Aug 22', Tag('In progress','ai')],
+     ['Demolition and structural repair','Aug 29', Tag('Scheduled')],
+     ['Rough-in','Sep 5', Tag('Scheduled')],
+     ['Finishes','Sep 19', Tag('Scheduled')]], {min:'420px'}))),
+   Card('Payments', Stack(
+    Tbl(['Invoice','What for',{t:'Amount',n:true},'Due','Status'],[
+     ['<b>INV-2026-0151</b>','Binder',{t:'$500.00',n:true},'Aug 7', Tag('Paid','ok')],
+     ['<b>INV-2026-0152</b>','Deposit — 40%',{t:'$24,920.00',n:true},'Aug 12', Tag('Due','wn')]], {min:'480px'}),
+    h('div',null, Btn('Pay by card or ACH',{kind:'pri'})),
+    HTM({fontSize:'11.5px', color:C.faint},'Card and ACH are tracked automatically. A cheque or cash payment is confirmed by 3Rivers.')))),
+  Row(
+   Card('Photos', Ph('Progress photos from the job, in date order',{pad:'34px'})),
+   Card('Documents', Tbl(['Document','Added'],[
+    ['Signed proposal and contract','Aug 7'],
+    ['Certificate of insurance','Aug 7'],
+    ['GC licence','Aug 7'],
+    ['Photo report','Aug 7']], {min:'360px'})))]});
+
+/* ================= PHASE 4 — BILLING & FINANCIAL AUTOMATION ================= */
+
+const INVOICES=[
+ {id:'INV-2026-0152',job:'L-2026-0415',client:'Robert Chen',t:'Deposit — 40%',amt:'24,920.00',iss:'Aug 7',due:'Aug 12',st:'Ready to send',paid:'—',m:'—',qb:'Not synced'},
+ {id:'INV-2026-0151',job:'L-2026-0415',client:'Robert Chen',t:'Binder',amt:'500.00',iss:'Aug 7',due:'Aug 7',st:'Paid',paid:'Aug 7',m:'Card',qb:'Synced'},
+ {id:'INV-2026-0142',job:'L-2026-0409',client:'Northside Dental',t:'Change order CO-2026-003',amt:'2,310.00',iss:'Aug 4',due:'Aug 11',st:'Sent',paid:'—',m:'—',qb:'Synced'},
+ {id:'INV-2026-0138',job:'L-2026-0409',client:'Northside Dental',t:'Milestone 2 — rough-in',amt:'22,230.00',iss:'Jul 28',due:'Aug 4',st:'Overdue',paid:'—',m:'—',qb:'Synced'},
+ {id:'INV-2026-0136',job:'L-2026-0411',client:'Linda Vasquez',t:'Change order CO-2026-002',amt:'980.00',iss:'Jul 28',due:'Aug 4',st:'Paid',paid:'Aug 1',m:'ACH',qb:'Synced'},
+ {id:'INV-2026-0129',job:'L-2026-0402',client:'Carnegie Office Park',t:'Milestone 1 — demolition',amt:'14,460.00',iss:'Jul 15',due:'Jul 22',st:'Overdue',paid:'—',m:'—',qb:'Synced'}];
+
+const APINV=[
+ {v:'Keystone Demolition LLC',id:'KV-8841',job:'L-2026-0415',wo:'WO-2026-0088',amt:'1,457.60',rec:'Aug 8',ex:'Complete',match:'Matched',appr:'Awaiting approval',pay:'—'},
+ {v:'Three Rivers Electric Co.',id:'TRE-2210',job:'L-2026-0409',wo:'WO-2026-0074',amt:'5,910.00',rec:'Aug 7',ex:'Complete',match:'Matched',appr:'Approved',pay:'Ready'},
+ {v:'ABC Building Supply',id:'INV-77120',job:'L-2026-0409',wo:'—',amt:'842.15',rec:'Aug 7',ex:'Needs review',match:'No work order',appr:'—',pay:'—'},
+ {v:'Baldwin Carpentry',id:'BC-1194',job:'L-2026-0409',wo:'WO-2026-0087',amt:'6,120.00',rec:'Aug 5',ex:'Complete',match:'Amount differs',appr:'—',pay:'—'},
+ {v:'Mon Valley Mechanical',id:'MVM-4402',job:'L-2026-0402',wo:'WO-2026-0068',amt:'3,480.00',rec:'Aug 4',ex:'Complete',match:'Matched',appr:'Approved',pay:'Ready'}];
+
+/* ---- Invoices (AR) ---- */
+SCREENS.invoices = () => Page({key:'invoices', title:'Invoices',
+ sub:'Raised from the Phase 2 milestones and from change orders — prepared by the platform, released by a person',
+ actions:[Btn('Export CSV'), Btn('+ New invoice',{kind:'pri'})],
+ children:[
+  Tiles([['2','Ready to send','', C.pri],['$36,690','Outstanding'],['2','Overdue','', C.dg],['$25,420','Collected this month','', C.ok]]),
+  Card('Ready to send — prepared by the platform, waiting on a person', Stack(
+   Tbl(['Invoice','Job','Client','What for',{t:'Amount',n:true},'Raised by','Due',''],[
+    ['<b>INV-2026-0152</b>','L-2026-0415','Robert Chen','Deposit — 40% of contract value',{t:'$24,920.00',n:true},'Acceptance + 5-day rule','Aug 12',
+      Btn('Review and send',{sm:true, kind:'pri', onClick:()=>toast('Invoice INV-2026-0152 sent — payment link included')})],
+    ['<b>INV-2026-0153</b>','L-2026-0409','Northside Dental','Change order CO-2026-004',{t:'$4,850.00',n:true},'Change order approved','Aug 15',
+      Btn('Review and send',{sm:true, kind:'pri'})]], {min:'1060px'}),
+   HTM({fontSize:'11.5px', color:C.faint},
+    'The platform prepares the invoice and tells the team it is ready. <b>A person checks it and presses send.</b>')), {hard:true}),
+  Bar(Fld('',{ph:'Search invoice, job, client…', w:'240px'}),
+    Sel('Status: All',['Status: All','Draft','Ready to send','Sent','Viewed','Paid','Overdue','Written off'],{w:'190px'}),
+    Sel('Type: All',['Type: All','Binder','Deposit','Milestone','Change order','Final'],{w:'170px'}),
+    Sel('Job: All',['Job: All'].concat(QUEUE.map(q=>q.id)),{w:'180px'}), Sp(), Btn('Save this view')),
+  Tbl(['Invoice','Job','Client','What for',{t:'Amount',n:true},'Issued','Due','Status','Paid','Method','QuickBooks'],
+   INVOICES.map(i=>({key:i.id, onClick:()=>go('invoice', i.id),
+    style: i.st==='Overdue' ? {background:'#FDF6F4'} : null,
+    c:['<b>'+i.id+'</b>', i.job, i.client, i.t, {t:'$'+i.amt, n:true}, i.iss, i.due,
+      i.st==='Paid'?Tag('Paid','ok'):i.st==='Overdue'?Tag('Overdue','dg'):i.st==='Ready to send'?Tag('Ready to send','ai'):Tag('Sent','wn'),
+      i.paid, i.m, i.qb==='Synced'?Tag('Synced','ok'):Tag('Not synced')]})), {min:'1360px'}),
+  Row(
+   Card('What raises an invoice', Tbl(['Trigger','Invoice'],[
+    ['<b>Proposal accepted</b>','The $500 binder'],
+    ['<b>Acceptance + the 5-day rule</b>','The deposit, a percentage of contract value'],
+    ['<b>A milestone marked reached</b>','That milestone’s percentage'],
+    ['<b>A change order approved</b>','The change order amount, <b>beyond the six payments</b> the contract allows'],
+    ['<b>Completion</b>','The final payment']], {min:'520px'})),
+   Card('How a client pays', Tbl(['Method','Tracked automatically','Behaviour'],[
+    ['Card', Tag('Yes','ok'),'Paid through the link in the invoice; the invoice settles on its own'],
+    ['ACH', Tag('Yes','ok'),'Same link; settlement can take a few days and the status follows it'],
+    ['Cheque', Tag('No'),'Marked received by a person, with the cheque number'],
+    ['Cash', Tag('No'),'Marked received by a person']], {min:'560px'})))]});
+
+SCREENS.invoice = (p) => { const i = INVOICES.find(x=>x.id===p) || INVOICES[0];
+ return Page({key:'invoice', crumb:['Invoices', ()=>go('invoices'), i.id], title:i.id,
+ sub:i.client+' · '+i.job+' · '+i.t+' · $'+i.amt,
+ actions:[Btn('Preview'), Btn('Download PDF'), Btn('Review and send',{kind:'pri', onClick:()=>toast('Invoice sent — payment link included')})],
+ children:[
+  Row(
+   Card('The invoice', Stack(
+    Lbl('Bill to'), Fld(i.client), Lbl('Job'), Fld(i.job+' · 88 Hillcrest Dr, Mt Lebanon, PA'),
+    Lbl('What for'), Fld(i.t), Lbl('Amount'), Fld('$'+i.amt),
+    Lbl('Issued'), Fld(i.iss), Lbl('Due'), Fld(i.due),
+    Lbl('Payment terms'), Sel('Net 5',['Due on receipt','Net 5','Net 15','Net 30']),
+    Lbl('Note to the client'), Ta('Deposit invoice for the fire damage restoration at 88 Hillcrest Dr, as set out in the signed agreement dated Aug 7, 2026.'))),
+   Stack(
+    Card('Where it came from', Tbl(['','Detail'],[
+     ['<b>Contract</b>','Proposal v2, signed Aug 7, 2026 — $62,300.00'],
+     ['<b>Milestone</b>','2 · Deposit — 40% of contract value'],
+     ['<b>Rule</b>','Invoiced within 5 calendar days of acceptance'],
+     ['<b>Cost codes</b>','Not applicable — this is a client payment, not a cost']], {min:'400px'})),
+    Card('QuickBooks', Stack(
+     Tbl(['Field','Value'],[
+      ['Customer','Robert Chen'],['Income account','Construction income'],
+      ['Class / job','L-2026-0415'],['Sync status', Tag('Will sync on send','ai')]], {min:'360px'}),
+     HTM({fontSize:'11.5px', color:C.faint},'The invoice is created in QuickBooks when it is sent, and the payment is matched back when it settles.'))))),
+  Card('Activity', Tbl(['When','Who','What'],[
+   ['Aug 7, 17:44','System','Invoice prepared — acceptance recorded, 5-day rule applied'],
+   ['Aug 7, 17:42','Robert Chen','Binder paid — $500.00 by card'],
+   ['Aug 7, 17:40','Robert Chen','Proposal accepted and signed']], {min:'700px'}))]});};
+
+/* ---- Payments & collections ---- */
+SCREENS.collections = () => Page({key:'collections', title:'Payments & collections',
+ sub:'Chasing what is owed, with the tone matched to whether work is already under way',
+ children:[
+  Tiles([['2','Overdue invoices','', C.dg],['$36,690','Overdue value','', C.dg],['2','In the firm policy track','', C.wn],['17 d','Longest overdue']]),
+  Card('Two tracks, not one', Tbl(['Track','When it applies','How it reads'],[
+   ['<b>Friendly</b>','The client accepted and has not paid the deposit. <b>No work has started, nothing has been spent.</b>','A reminder that the deposit has not arrived yet, and a payment link.'],
+   ['<b>Firm, policy-backed</b>','The job is <b>in production</b> — materials bought and labour spent — and a payment is late.','States the payment policy in the signed agreement, the consequence of continued non-payment, and escalates on a schedule that ends in a legal referral.']], {min:'880px'}), {hard:true}),
+  Bar(Sel('Track: All',['Track: All','Friendly','Firm, policy-backed'],{w:'220px'}),
+    Sel('Overdue: All',['Overdue: All','1–7 days','8–14 days','15–30 days','Over 30 days'],{w:'190px'}), Sp(), Btn('Export CSV')),
+  Tbl(['Invoice','Job','Client',{t:'Amount',n:true},'Due',{t:'Days overdue',n:true},'Track','Policy stage','Next action','Owner'],[
+   ['<b>INV-2026-0138</b>','L-2026-0409','Northside Dental',{t:'$22,230.00',n:true},'Aug 4',{t:'4',n:true}, Tag('Firm','dg'),'Stage 2 of 4 — written notice','Call scheduled Aug 9, 09:00','Byron Tohey'],
+   ['<b>INV-2026-0129</b>','L-2026-0402','Carnegie Office Park',{t:'$14,460.00',n:true},'Jul 22',{t:'17',n:true}, Tag('Firm','dg'),'Stage 3 of 4 — work suspension notice','Escalation review Aug 10','Joshua Tohey'],
+   ['<b>INV-2026-0142</b>','L-2026-0409','Northside Dental',{t:'$2,310.00',n:true},'Aug 11',{t:'—',n:true}, Tag('Friendly'),'—','Reminder Aug 12','—']], {min:'1300px'}),
+  Row(
+   Card('The firm escalation ladder', Tbl(['Stage','What goes out','When'],[
+    ['<b>1</b>','A reminder naming the invoice and the payment policy clause','Day 1 overdue'],
+    ['<b>2</b>','Written notice, copied to the Operations Manager','Day 4'],
+    ['<b>3</b>','Notice that work will be suspended, with the date','Day 10'],
+    ['<b>4</b>','Referral for legal action, released by the owner','Day 21']], {min:'620px'})),
+   Card('Rules', Stack(
+    HTM({fontSize:'12.5px', color:C.mut, lineHeight:1.6},
+     'The ladder is data, not code — the client edits the stages, the wording and the days. Two things always hold:'),
+    HTM({fontSize:'12.5px', lineHeight:1.8},
+     '• <b>A person releases every stage.</b> Nothing escalates on its own.<br>'+
+     '• <b>A payment stops the track immediately</b>, on every channel.'),
+    Lbl('Who may release a stage'), Sel('Owner and Operations Manager',['Owner only','Owner and Operations Manager','Anyone with billing access']))))]});
+
+/* ---- Vendor invoices (AP) ---- */
+SCREENS.apinvoices = () => Page({key:'apinvoices', title:'Vendor invoices',
+ sub:'What subcontractors and suppliers bill, matched to the work order that authorised it',
+ actions:[Btn('Upload an invoice',{onClick:()=>go('apocr')}), Btn('Build a payment run',{kind:'pri', onClick:()=>go('payruns')})],
+ children:[
+  Tiles([['5','Received this week'],['2','Need a human','', C.wn],['2','Approved and ready to pay','', C.ok],['$9,390','Ready to pay']]),
+  Bar(Fld('',{ph:'Search vendor, invoice number, job…', w:'250px'}),
+    Sel('Status: All',['Status: All','Needs review','Matched','Approved','Ready to pay','Paid','Disputed'],{w:'200px'}),
+    Sel('Job: All',['Job: All'].concat(QUEUE.map(q=>q.id)),{w:'180px'}), Sp(), Btn('Export CSV')),
+  Tbl(['Vendor','Invoice','Job','Work order',{t:'Amount',n:true},'Received','Extraction','Match','Approval','Payment'],
+   APINV.map(a=>({key:a.id, onClick:()=>go('apocr'),
+    style: a.match!=='Matched' ? {background:'#FDF9EF'} : null,
+    c:['<b>'+a.v+'</b>', a.id, a.job, a.wo, {t:'$'+a.amt, n:true}, a.rec,
+      a.ex==='Complete'?Tag('Complete','ok'):Tag('Needs review','wn'),
+      a.match==='Matched'?Tag('Matched','ok'):Tag(a.match,'dg'),
+      a.appr==='Approved'?Tag('Approved','ok'):a.appr==='—'?'—':Tag('Awaiting approval','wn'),
+      a.pay==='Ready'?Tag('Ready to pay','ai'):'—']})), {min:'1300px'}),
+  Row(
+   Card('How a vendor invoice arrives', Tbl(['Route','Behaviour'],[
+    ['<b>A monitored mailbox</b>','Invoices sent to the accounts address are read automatically, attachment included.'],
+    ['<b>The subcontractor portal</b>','Submitted against a specific work order, so the match is already made.'],
+    ['<b>Uploaded by a person</b>','Drag and drop for anything that arrives another way.']], {min:'560px'})),
+   Card('What holds a payment', Tbl(['Check','Behaviour'],[
+    ['<b>No work order</b>','A supplier invoice with no work order behind it is held for a person to allocate.'],
+    ['<b>Amount differs</b>','A difference against the authorised work order amount is shown and has to be resolved or accepted with a reason.'],
+    ['<b>Paperwork</b>','A missing W-9 or an expired certificate of insurance holds the vendor out of a payment run.'],
+    ['<b>Approval</b>','Every invoice is approved by a person before it can enter a payment run.']], {min:'560px'})))]});
+
+/* ---- Invoice OCR ---- */
+SCREENS.apocr = () => Page({key:'apocr', crumb:['Vendor invoices', ()=>go('apinvoices'), 'BC-1194'],
+ title:'Invoice review — Baldwin Carpentry BC-1194',
+ sub:'What was read from the document, and how it matches the work order that authorised it',
+ actions:[Btn('Reject'), Btn('Approve for payment',{kind:'pri', onClick:()=>toast('BC-1194 approved — added to the next payment run')})],
+ children:[
+  Row(
+   Card('Source document', Ph('BC-1194.pdf<br><br>Baldwin Carpentry<br>Invoice BC-1194 · Aug 5, 2026<br><br>Structural repair — 88 Hillcrest Dr<br>Per work order WO-2026-0087<br><br>Labour ............ $4,320.00<br>Material ......... $1,800.00<br><br>Total ............. $6,120.00',{html:true, left:true, mono:true, pad:'22px', h:'400px'})),
+   Stack(
+    Card('What was read', Tbl(['Field','Value','Confidence'],[
+     ['Vendor','Baldwin Carpentry', Tag('High','ok')],
+     ['Invoice number','BC-1194', Tag('High','ok')],
+     ['Invoice date','Aug 5, 2026', Tag('High','ok')],
+     ['Work order referenced','WO-2026-0087', Tag('High','ok')],
+     ['Total', '$6,120.00', Tag('High','ok')],
+     ['Tax','—', Tag('Low','wn')]], {min:'420px'})),
+    Card('Match against the work order', Stack(
+     Tbl(['','Work order','Invoice','Difference'],[
+      ['Amount','$6,120.00','$6,120.00','—'],
+      ['Job','L-2026-0409','L-2026-0409','—'],
+      ['Scope package','SP-03 Structural repair','SP-03 Structural repair','—']], {min:'440px'}),
+     h('div',{style:{fontSize:'12px', color:C.ok, fontWeight:600}},'Matched — nothing to resolve.'))))),
+  Card('Cost allocation — where this lands in the job cost', Stack(
+   Tbl(['Cost code','Trade','Cost type',{t:'Amount',n:true},'Budgeted',{t:'Remaining',n:true}],[
+    ['<b>06-100</b> Rough carpentry','Carpentry','Sub',{t:'$4,320.00',n:true},'$4,500.00',{t:'$180.00',n:true}],
+    ['<b>06-200</b> Finish carpentry','Carpentry','Material',{t:'$1,800.00',n:true},'$1,900.00',{t:'$100.00',n:true}]], {min:'760px'}),
+   HTM({fontSize:'11.5px', color:C.faint},
+    'Every vendor invoice is allocated to a cost code and a cost type. <b>This is what fills the Actual column of the Phase 2 budget</b>, so a line without an allocation leaves a hole in the job cost.')))]});
+
+/* ---- QuickBooks sync ---- */
+SCREENS.qbsync = () => Page({key:'qbsync', title:'QuickBooks sync',
+ sub:'What moves between the platform and QuickBooks, in both directions',
+ actions:[Btn('Sync now',{onClick:()=>toast('Sync started')})],
+ children:[
+  Row(
+   Card('Connection', Stack(
+    Tbl(['','Detail'],[
+     ['Company','3Rivers General Contracting'],
+     ['Status', Tag('Connected','ok')],
+     ['Last sync','Aug 8, 06:00'],
+     ['Frequency','Every hour, and on demand']], {min:'380px'}))),
+   Card('What syncs', Tbl(['Object','Direction','Behaviour'],[
+    ['<b>Customers</b>','Platform → QuickBooks','Created from the contact record the first time they are invoiced'],
+    ['<b>Invoices</b>','Platform → QuickBooks','Created when a person presses send'],
+    ['<b>Payments</b>','QuickBooks → Platform','Matched back to the invoice and to the job'],
+    ['<b>Vendors</b>','Platform → QuickBooks','Created from the subcontractor record'],
+    ['<b>Vendor bills</b>','Platform → QuickBooks','Created when an invoice is approved for payment'],
+    ['<b>Job costing</b>','Both','Cost codes carried as classes so job-level reporting holds']], {min:'720px'}))),
+  Card('Account mapping', Tbl(['In the platform','In QuickBooks','Set by'],[
+   ['Construction income','Income · Construction income','The client'],
+   ['Subcontracted cost','Cost of goods sold · Subcontractors','The client'],
+   ['Material cost','Cost of goods sold · Materials','The client'],
+   ['Labour cost','Cost of goods sold · Direct labour','The client'],
+   ['Equipment','Cost of goods sold · Equipment','The client'],
+   ['Deposits held','Liability · Customer deposits','The client']], {min:'720px'})),
+  Card('Errors', Tbl(['When','Object','Problem','Status'],[
+   ['Aug 6, 14:12','Invoice INV-2026-0131','Customer name did not match an existing QuickBooks customer', Tag('Resolved','ok')],
+   ['Aug 2, 09:40','Vendor bill TRE-2198','Account mapping missing for a new cost code', Tag('Resolved','ok')]], {min:'760px'}))]});
+
+/* ---- Payment runs ---- */
+SCREENS.payruns = () => Page({key:'payruns', title:'Payment runs',
+ sub:'Approved vendor invoices batched for payment — replacing the spreadsheet kept between systems today',
+ actions:[Btn('+ New payment run',{kind:'pri', onClick:()=>toast('Payment run created from 2 approved invoices')})],
+ children:[
+  Card('How a payment run works', Stack(
+   HTM({fontSize:'12.5px', color:C.mut, lineHeight:1.6},
+    'Approved vendor invoices are gathered into a run. The platform produces the batch — who is paid, how much, against which job and which work order — and <b>the payment itself is executed by the client in their bank</b>. The batch replaces the spreadsheet that is rekeyed by hand today.'),
+   Tbl(['Step','What happens'],[
+    ['<b>1 · Select</b>','Every approved invoice not already in a run, with its vendor, job and amount.'],
+    ['<b>2 · Check</b>','Vendors with a missing W-9 or an expired certificate of insurance are held out of the run and named.'],
+    ['<b>3 · Approve</b>','The owner approves the run as a whole.'],
+    ['<b>4 · Export</b>','The batch file is produced for the bank, and the run is marked as sent for payment.'],
+    ['<b>5 · Confirm</b>','Payment is confirmed against the run, the vendor invoices settle, and QuickBooks is updated.']], {min:'720px'})), {hard:true}),
+  Tbl(['Run','Created','Created by',{t:'Vendors',n:true},{t:'Invoices',n:true},{t:'Total',n:true},'Status','Exported','Confirmed'],[
+   ['<b>PR-2026-018</b>','Aug 8','Byron Tohey',{t:'2',n:true},{t:'2',n:true},{t:'$9,390.00',n:true}, Tag('Awaiting approval','wn'),'—','—'],
+   ['<b>PR-2026-017</b>','Aug 1','Byron Tohey',{t:'4',n:true},{t:'6',n:true},{t:'$18,240.00',n:true}, Tag('Paid','ok'),'Aug 1','Aug 2'],
+   ['<b>PR-2026-016</b>','Jul 25','Byron Tohey',{t:'3',n:true},{t:'4',n:true},{t:'$11,905.00',n:true}, Tag('Paid','ok'),'Jul 25','Jul 26']], {min:'1080px'}),
+  Row(
+   Card('PR-2026-018 — what is in it', Tbl(['Vendor','Invoice','Job','Work order',{t:'Amount',n:true},'Paperwork'],[
+    ['Three Rivers Electric Co.','TRE-2210','L-2026-0409','WO-2026-0074',{t:'$5,910.00',n:true}, Tag('Current','ok')],
+    ['Mon Valley Mechanical','MVM-4402','L-2026-0402','WO-2026-0068',{t:'$3,480.00',n:true}, Tag('Current','ok')]],
+    {min:'720px', foot:['<b>Total</b>','','','',{t:'<b>$9,390.00</b>'},'']})),
+   Card('Held out of this run', Stack(
+    Tbl(['Vendor','Invoice',{t:'Amount',n:true},'Why'],[
+     ['Steel City Flooring','SCF-3310',{t:'$2,180.00',n:true},'<span style="color:#C25E4B;font-weight:600">W-9 missing</span>'],
+     ['Baldwin Carpentry','BC-1194',{t:'$6,120.00',n:true},'Not yet approved']], {min:'480px'}),
+    HTM({fontSize:'11.5px', color:C.faint},
+     'A vendor is never silently dropped from a run. Anything held out is named, with the reason.'))))]});
+
+/* ================= SETTINGS — PHASE 3 & 4 ================= */
+
+SCREENS.s_exec = (p, st) => {
+ const T = ['Bid rules','Work order rules','Subcontractor requirements'];
+ let pane = null;
+ if(st.tab===0) pane = Card('Bid packages', Stack(
+   Lbl('Default response window'), Fld('10 days',{w:'160px'}),
+   Lbl('Reminder interval'), Sel('Every 48 hours',['Every 24 hours','Every 48 hours','Every 3 days','No reminders'],{w:'200px'}),
+   Lbl('Stop chasing after'), Fld('5 reminders',{w:'160px'}),
+   Lbl('Minimum bids before a package can be compared'), Fld('2',{w:'100px'}),
+   h('div',null, Chk('Accept late bids, marked as late'), Chk('Require a written reason on every award'),
+     Chk('Notify the subcontractors who were not selected')),
+   Lbl('Who may award a bid'), Sel('Owner and Operations Manager',['Owner only','Owner and Operations Manager','Any estimator'],{w:'280px'})));
+ if(st.tab===1) pane = Card('Work orders', Stack(
+   Lbl('Reminder interval'), Sel('Every 24 hours',['Every 12 hours','Every 24 hours','Every 48 hours'],{w:'200px'}),
+   Lbl('Stop after'), Fld('5 reminders',{w:'160px'}),
+   Lbl('If there is still no answer'), Sel('Alert the Operations Manager',['Alert the Operations Manager','Reissue to the next subcontractor','Leave it open'],{w:'320px'}),
+   h('div',null, Chk('Include accept and deny buttons in the email'), Chk('Allow a counter-offer'),
+     Chk('Require a reason when a work order is denied')),
+   Lbl('Flag a counter-offer above the budgeted amount by'), Fld('5 %',{w:'120px'}),
+   Lbl('Who may accept a counter-offer'), Sel('Owner and Operations Manager',['Owner only','Owner and Operations Manager','Any estimator'],{w:'280px'})));
+ if(st.tab===2) pane = Stack(
+   Card('What a subcontractor must have on file', Tbl(['Requirement','Required','Blocks'],[
+    ['<b>Certificate of insurance</b>','☑','Selection for a work order or a bid, once expired'],
+    ['<b>W-9</b>','☑','Entering a payment run'],
+    ['<b>Signed master agreement</b>','☑','Issuing a per-job agreement'],
+    ['<b>Trade approval</b>','☑','Appearing for that trade at all']], {min:'620px'})),
+   Card('Expiry warnings', Stack(Lbl('Warn this far ahead of a COI expiry'), Fld('30 days',{w:'140px'}),
+     Lbl('Who is warned'), Sel('Operations Manager',USERS.map(u=>u.name),{w:'260px'}))));
+ return Page({key:'s_exec', title:'Execution settings',
+  sub:'How bids and work orders behave, and what a subcontractor must have on file',
+  children:[Tabs(T, st.tab), pane]});};
+
+SCREENS.s_billing = (p, st) => {
+ const T = ['Invoicing','Collections policy','Payments & AP'];
+ let pane = null;
+ if(st.tab===0) pane = Card('Invoicing', Stack(
+   Lbl('Invoice numbering'), Fld('INV-{{year}}-{{sequence}}',{w:'280px'}),
+   Lbl('Default payment terms'), Sel('Net 5',['Due on receipt','Net 5','Net 15','Net 30'],{w:'200px'}),
+   Lbl('Deposit rule'), Fld('Invoiced within 5 calendar days of acceptance',{w:'420px'}),
+   Lbl('Binder amount'), Fld('$500.00',{w:'160px'}),
+   h('div',null, Chk('Prepare the invoice automatically and hold it for review'),
+     Chk('Include a payment link on every invoice'),
+     Chk('Send automatically without review', false)),
+   HTM({fontSize:'11.5px', color:C.faint},
+    'The platform prepares; a person releases. Automatic sending is switched off by default and is a deliberate choice.')));
+ if(st.tab===1) pane = Stack(
+   Card('Friendly track — nothing spent yet', Tbl(['Stage','Days after due','Channel','Template'],[
+    ['1','1','Email','Deposit reminder — friendly'],
+    ['2','4','Email + text','Deposit reminder — second'],
+    ['3','8','AI call','Deposit call']], {min:'620px'})),
+   Card('Firm track — the job is in production', Tbl(['Stage','Days after due','Channel','Template','Released by'],[
+    ['1','1','Email','Payment due — policy clause quoted','Automatic'],
+    ['2','4','Email','Written notice, Operations Manager copied','A person'],
+    ['3','10','Email + letter','Work suspension notice','A person'],
+    ['4','21','—','Referral for legal action','The owner']], {min:'760px'})),
+   Card('Rules', HTM({fontSize:'12.5px', lineHeight:1.8},
+    '• <b>A person releases every firm stage from 2 onward.</b><br>• <b>A payment stops the track immediately</b>, on every channel.<br>• The wording of every stage is a template the client edits.')));
+ if(st.tab===2) pane = Stack(
+   Card('Accounts payable', Stack(
+    Lbl('Monitored mailbox for vendor invoices'), Fld('accounts@3riverscm.com',{w:'320px'}),
+    Lbl('Approval threshold — above this the owner approves'), Fld('$5,000.00',{w:'200px'}),
+    Lbl('Accept a difference against the work order up to'), Fld('2 %',{w:'120px'}),
+    h('div',null, Chk('Hold a vendor with missing paperwork out of a payment run'),
+      Chk('Require a cost code allocation before approval'),
+      Chk('Require a reason when a difference is accepted')))),
+   Card('Payment runs', Stack(
+    Lbl('Run frequency'), Sel('Weekly — Friday',['Weekly — Friday','Fortnightly','On demand'],{w:'220px'}),
+    Lbl('Who approves a run'), Sel('Owner only',['Owner only','Owner and Operations Manager'],{w:'260px'}),
+    Lbl('Batch format'), Sel('ACH batch file',['ACH batch file','CSV','Both'],{w:'220px'}),
+    HTM({fontSize:'11.5px', color:C.faint},
+     'The batch is produced here and the payment is executed by the client in their bank. Confirmation is recorded against the run.'))));
+ return Page({key:'s_billing', title:'Billing settings',
+  sub:'Invoicing, the collections policy, and how vendors are paid',
+  children:[Tabs(T, st.tab), pane]});};
 
 /* ================= MODALS ================= */
 const F = (label, ctl) => h('div',{key:label, style:{marginBottom:'2px'}}, Lbl(label), ctl);
