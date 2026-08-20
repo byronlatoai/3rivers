@@ -308,19 +308,20 @@ const NAV=[
  {k:'grp',id:'g_rec',l:'RECORDS',ph:'',items:[['contacts','Contacts'],['properties','Properties']]},
  {k:'grp',id:'g_sub',l:'EXECUTION',ph:'F3',items:[['subs','Subcontractors','8'],['bids','Bid management','4'],['bidcompare','Bid comparison'],['workorders','Work orders','3'],['subcontracts','Contracts & signatures'],['projsched','Project scheduling'],['projtrack','Project tracking','2'],['changeorders','Change orders','1'],['subportal','Subcontractor portal'],['clientportal','Client portal']]},
  {k:'grp',id:'g_bill',l:'BILLING',ph:'F4',items:[['invoices','Invoices (AR)','2'],['collections','Payments & collections','2'],['apinvoices','Vendor invoices (AP)','5'],['apocr','Invoice OCR'],['qbsync','QuickBooks sync'],['payruns','Payment runs','1']]},
- {k:'lock',id:'g_field',l:'FIELD & PAYROLL',ph:'F5',items:['Time clock','Timesheets','Labour cost allocation','Payroll preparation','Gusto sync']},
+ {k:'grp',id:'g_field',l:'FIELD & PAYROLL',ph:'F5',items:[['crew','Crew & assignments','5'],['timeclock','Time clock'],['timeentries','Time entries','3'],['timesheets','Timesheets','3'],['labourcost','Labour cost allocation'],['payroll','Payroll preparation'],['gusto','Gusto sync']]},
  {k:'sec',id:'g_set',l:'SETTINGS',ph:'',subs:[
   {l:'Intake & AI',id:'x1',items:[['s_ai','AI Receptionist'],['s_oncall','On-Call Schedule'],['s_assign','Assignment Rules'],['s_pipeline','Pipeline & Stages']]},
   {l:'Follow-up',id:'x2',items:[['s_cadences','Automations & Cadences'],['s_rules','Sending Rules'],['s_templates','Templates']]},
   {l:'Estimating & cost',id:'x3',items:[['s_cost','Cost codes & trades'],['s_markup','Markup defaults'],['s_capture','Field capture'],['s_labels','Photo labels']]},
   {l:'Documents',id:'x4',items:[['s_contracts','Contract templates'],['s_docs','Company documents']]},
   {l:'Execution',id:'x6',items:[['s_exec','Bid & work order rules']]},
+  {l:'Field & payroll',id:'x8',items:[['s_time','Time & payroll rules']]},
   {l:'Billing',id:'x7',items:[['s_billing','Invoicing & collections']]},
   {l:'System',id:'x5',items:[['s_team','Team & Roles'],['s_fields','Custom Fields'],['s_cal','Calendars'],['s_integr','Integrations'],['s_audit','Audit Log']]}]}];
-const OWNER={sub:'subs',bidpkg:'bids',workorder:'workorders',invoice:'invoices',lead:'hotlist',newlead:'hotlist',call:'calls',contact:'contacts',cadence:'s_cadences',cadence_new:'s_cadences',template:'s_templates',
+const OWNER={timesheet:'timesheets',sub:'subs',bidpkg:'bids',workorder:'workorders',invoice:'invoices',lead:'hotlist',newlead:'hotlist',call:'calls',contact:'contacts',cadence:'s_cadences',cadence_new:'s_cadences',template:'s_templates',
  estimate:'equeue',mapping:'equeue',scope:'equeue',budget:'equeue',narrative:'equeue',photos:'equeue',photoreport:'equeue',
  proposal:'proposals',schedule:'schedules',versions:'proposals',acceptance:'proposals',inspection:'sessions'};
-const TITLES={subs:'Subcontractors',sub:'Subcontractor',bids:'Bid management',bidpkg:'Bid package',bidcompare:'Bid comparison',workorders:'Work orders',workorder:'Work order',subcontracts:'Subcontractor agreements',projsched:'Project scheduling',projtrack:'Project tracking',changeorders:'Change orders',subportal:'Subcontractor portal',clientportal:'Client portal',invoices:'Invoices (AR)',invoice:'Invoice',collections:'Payments & collections',apinvoices:'Vendor invoices (AP)',apocr:'Invoice OCR',qbsync:'QuickBooks sync',payruns:'Payment runs',s_exec:'Bid & work order rules',s_billing:'Invoicing & collections',dashboard:'Dashboard',hotlist:'Hotlist',calls:'Calls',inbox:'Inbox Capture',appointments:'Appointments',equeue:'Estimating queue',
+const TITLES={crew:'Crew & assignments',timeclock:'Time clock',timeentries:'Time entries',timesheets:'Timesheets',timesheet:'Timesheet',labourcost:'Labour cost allocation',payroll:'Payroll preparation',gusto:'Gusto sync',s_time:'Time & payroll rules',subs:'Subcontractors',sub:'Subcontractor',bids:'Bid management',bidpkg:'Bid package',bidcompare:'Bid comparison',workorders:'Work orders',workorder:'Work order',subcontracts:'Subcontractor agreements',projsched:'Project scheduling',projtrack:'Project tracking',changeorders:'Change orders',subportal:'Subcontractor portal',clientportal:'Client portal',invoices:'Invoices (AR)',invoice:'Invoice',collections:'Payments & collections',apinvoices:'Vendor invoices (AP)',apocr:'Invoice OCR',qbsync:'QuickBooks sync',payruns:'Payment runs',s_exec:'Bid & work order rules',s_billing:'Invoicing & collections',dashboard:'Dashboard',hotlist:'Hotlist',calls:'Calls',inbox:'Inbox Capture',appointments:'Appointments',equeue:'Estimating queue',
  sessions:'Inspection sessions',photolib:'Photo library',proposals:'Proposals',schedules:'Payment schedules',contacts:'Contacts',properties:'Properties',
  newlead:'New lead',s_ai:'AI Receptionist',s_oncall:'On-Call Schedule',s_assign:'Assignment Rules',s_pipeline:'Pipeline & Stages',
  s_cadences:'Automations & Cadences',s_rules:'Sending Rules',s_templates:'Templates',s_cost:'Cost codes & trades',s_markup:'Markup defaults',
@@ -494,7 +495,7 @@ const ITEM = "display:flex;align-items:center;gap:6px;padding:7px 10px 7px 26px;
 
 class Component extends DCLogic {
   state = {
-    open:{g_intake:1,g_est:1,g_prop:1,g_rec:0,g_sub:0,g_bill:0,g_field:0,g_set:1,x1:0,x2:0,x3:0,x4:0,x5:0,x6:0,x7:0},
+    open:{g_intake:1,g_est:1,g_prop:1,g_rec:0,g_sub:0,g_bill:0,g_field:0,g_set:1,x1:0,x2:0,x3:0,x4:0,x5:0,x6:0,x7:0,x8:0},
     cur:'dashboard', param:null, tab:0, arm:'All', hotView:'table', eqView:'table',
     leads:LEADS.map(l=>({...l})), modal:null, toasts:[], palette:false, rail:false, flow:null
   };
@@ -693,7 +694,7 @@ function Palette(props){
 const LOCKED={
  'SUBCONTRACTORS_RETIRED':['Subcontractor database with trades, COIs and a 1–5 rating per trade','Bid management — RFP / Invitation to Bid, issued against the scope packages built in Phase 2','Bid intake by PDF upload with AI extraction, and side-by-side comparison','Work orders — the restoration path, where 99% of the time there is no RFP at all','Accept / deny with rebuttal, chased every 24 hours until answered','Contract and agreement generation with digital signature','Project scheduling and milestone tracking','Change orders','Subcontractor portal — progress photos, documents, approvals','Client portal — payments, files, updates, progress photos'],
  'BILLING_RETIRED':['Invoices (AR) generated from the Phase 2 milestone triggers','Payment links, collections and the stern in-production cadence','Vendor invoices (AP) with OCR extraction','QuickBooks two-way sync','Payment runs — replacing the spreadsheet between BuilderTrend and PNC Pinnacle'],
- 'FIELD & PAYROLL':['Mobile clock in / clock out against a specific job and cost code','Timesheets with AI validation of irregular or missing entries','Labour cost allocation feeding the Actual column of the Phase 2 budget','Payroll preparation — aggregation, overtime, structured summaries','Gusto sync — batch prepared here, payment executed manually by the client']};
+ 'FIELD & PAYROLL_RETIRED':['Mobile clock in / clock out against a specific job and cost code','Timesheets with AI validation of irregular or missing entries','Labour cost allocation feeding the Actual column of the Phase 2 budget','Payroll preparation — aggregation, overtime, structured summaries','Gusto sync — batch prepared here, payment executed manually by the client']};
 
 /* ================= DASHBOARD ================= */
 SCREENS.dashboard = (p, st) => Page({key:'dash', title:'Good morning, Joshua',
@@ -2613,6 +2614,337 @@ SCREENS.s_billing = (p, st) => {
      'The batch is produced here and the payment is executed by the client in their bank. Confirmation is recorded against the run.'))));
  return Page({key:'s_billing', title:'Billing settings',
   sub:'Invoicing, the collections policy, and how vendors are paid',
+  children:[Tabs(T, st.tab), pane]});};
+
+/* ================= PHASE 5 — FIELD OPERATIONS, TIMEKEEPING & PAYROLL ================= */
+
+const CREW=[
+ {id:'E-101',n:'Marcus Hale',r:'Lead technician',rate:'49.00',ot:'73.50',job:'L-2026-0415',sp:'SP-01 Mitigation & odour control',cc:'02-100',sched:'8.0',st:'Clocked in',since:'07:02',loc:'On site'},
+ {id:'E-102',n:'Danny Ortiz',r:'Technician',rate:'38.00',ot:'57.00',job:'L-2026-0415',sp:'SP-01 Mitigation & odour control',cc:'02-100',sched:'8.0',st:'Clocked in',since:'07:05',loc:'On site'},
+ {id:'E-103',n:'Tyler Brooks',r:'Technician',rate:'38.00',ot:'57.00',job:'L-2026-0409',sp:'SP-07 Millwork',cc:'06-400',sched:'8.0',st:'Clocked in',since:'06:58',loc:'On site'},
+ {id:'E-104',n:'Ray Coleman',r:'Project manager',rate:'62.00',ot:'—',job:'L-2026-0409',sp:'—',cc:'01-500',sched:'8.0',st:'Clocked in',since:'07:30',loc:'Not captured'},
+ {id:'E-105',n:'Sam Whitfield',r:'Technician',rate:'38.00',ot:'57.00',job:'L-2026-0411',sp:'SP-04 Finishes',cc:'09-200',sched:'6.0',st:'Not clocked in',since:'—',loc:'—'}];
+
+const ENTRIES=[
+ {d:'Aug 8',e:'Marcus Hale',job:'L-2026-0415',sp:'SP-01 Mitigation',cc:'02-100 Mitigation labour',in:'07:02',out:'—',h:'running',src:'Mobile',flag:'—'},
+ {d:'Aug 7',e:'Marcus Hale',job:'L-2026-0415',sp:'SP-01 Mitigation',cc:'02-100 Mitigation labour',in:'07:00',out:'15:34',h:'8.57',src:'Mobile',flag:'—'},
+ {d:'Aug 7',e:'Danny Ortiz',job:'L-2026-0415',sp:'SP-01 Mitigation',cc:'02-100 Mitigation labour',in:'07:04',out:'—',h:'—',src:'Mobile',flag:'No clock-out'},
+ {d:'Aug 7',e:'Tyler Brooks',job:'L-2026-0409',sp:'SP-07 Millwork',cc:'06-400 Millwork',in:'06:58',out:'19:44',h:'12.77',src:'Mobile',flag:'Unusually long shift'},
+ {d:'Aug 7',e:'Ray Coleman',job:'L-2026-0409',sp:'—',cc:'—',in:'07:30',out:'16:00',h:'8.50',src:'Manual',flag:'No cost code'},
+ {d:'Aug 6',e:'Sam Whitfield',job:'L-2026-0411',sp:'SP-04 Finishes',cc:'09-200 Painting',in:'07:10',out:'15:10',h:'8.00',src:'Mobile',flag:'—'},
+ {d:'Aug 6',e:'Danny Ortiz',job:'L-2026-0415',sp:'SP-01 Mitigation',cc:'02-100 Mitigation labour',in:'07:00',out:'15:00',h:'8.00',src:'Corrected',flag:'—'}];
+
+const SHEETS=[
+ {e:'Marcus Hale',r:'Lead technician',p:'Aug 4 – Aug 10',reg:'40.0',ot:'2.6',jobs:'2',flags:'0',st:'Open',appr:'—'},
+ {e:'Danny Ortiz',r:'Technician',p:'Aug 4 – Aug 10',reg:'32.0',ot:'0.0',jobs:'1',flags:'1',st:'Needs attention',appr:'—'},
+ {e:'Tyler Brooks',r:'Technician',p:'Aug 4 – Aug 10',reg:'40.0',ot:'6.8',jobs:'1',flags:'1',st:'Needs attention',appr:'—'},
+ {e:'Ray Coleman',r:'Project manager',p:'Aug 4 – Aug 10',reg:'38.5',ot:'0.0',jobs:'3',flags:'1',st:'Needs attention',appr:'—'},
+ {e:'Sam Whitfield',r:'Technician',p:'Aug 4 – Aug 10',reg:'30.0',ot:'0.0',jobs:'1',flags:'0',st:'Submitted',appr:'—'},
+ {e:'Marcus Hale',r:'Lead technician',p:'Jul 28 – Aug 3',reg:'40.0',ot:'4.2',jobs:'2',flags:'0',st:'Approved',appr:'Byron Tohey'},
+ {e:'Danny Ortiz',r:'Technician',p:'Jul 28 – Aug 3',reg:'40.0',ot:'1.5',jobs:'2',flags:'0',st:'Approved',appr:'Byron Tohey'}];
+
+/* ---- Crew & assignments ---- */
+SCREENS.crew = () => Page({key:'crew', title:'Crew & assignments',
+ sub:'Which internal employee is on which job — the assignment is what they see when they open the time clock',
+ actions:[Btn('Export CSV'), Btn('+ Assign to a job',{kind:'pri'})],
+ children:[
+  Tiles([['4','Clocked in right now','', C.ok],['1','Not clocked in','', C.wn],['3','Jobs with crew on site'],['38.0','Hours scheduled today']]),
+  Bar(Sel('Day: Today',['Day: Today','Day: Tomorrow','This week'],{w:'180px'}),
+    Sel('Job: All',['Job: All'].concat(QUEUE.map(q=>q.id)),{w:'190px'}),
+    Sel('Role: All',['Role: All','Lead technician','Technician','Project manager'],{w:'190px'}), Sp(), Btn('Save this view')),
+  Tbl(['Employee','Role','Job','Scope package','Cost code',{t:'Scheduled',n:true},'Status','Since','Location'],
+   CREW.map(c=>({key:c.id, c:[
+    '<b>'+c.n+'</b><div style="color:#6B8397;font-size:11.5px">'+c.id+'</div>', c.r, c.job, c.sp, c.cc,
+    {t:c.sched+' h', n:true},
+    c.st==='Clocked in'?Tag('Clocked in','ok'):Tag('Not clocked in','wn'),
+    c.since,
+    c.loc==='On site'?Tag('On site','ok'):c.loc]})), {min:'1240px'}),
+  Row(
+   Card('How an assignment works', HTM({fontSize:'12.5px', color:C.mut, lineHeight:1.6},
+    '<b>The office assigns the job; the employee sees only what they were assigned.</b> When a technician opens the time clock, the jobs on their screen are the ones on this list — they are not choosing from every open job in the business. That is what keeps hours landing on the right job without anybody correcting them afterwards.')),
+   Card('What an assignment carries', Tbl(['Field','What it holds'],[
+    ['Employee','Who is going'],
+    ['Job','Which job — carried through from Phase 1'],
+    ['Scope package','Which package of work, from Phase 2'],
+    ['<b>Cost code</b>','<b>The default cost code their hours land on.</b> The employee can change it on site; they cannot leave it empty'],
+    ['Date · scheduled hours','When, and how long the work is expected to take'],
+    ['Notes','Site access, what to bring, who else is on site']], {min:'560px'})))]});
+
+/* ---- Time clock (mobile) ---- */
+SCREENS.timeclock = () => Page({key:'timeclock', title:'Time clock',
+ sub:'What a field employee sees on their phone',
+ children:[
+  Card('This screen is a phone, not a desk', HTM({fontSize:'12.5px', color:C.mut, lineHeight:1.6},
+   'A technician uses this standing on a job site, often with gloves on. <b>Clock in has to be reachable in one tap</b>, and everything the platform needs — the job, the scope package and the cost code — is already filled in from the assignment. Correcting a wrong entry afterwards is exactly the administrative work this phase exists to remove.'), {hard:true}),
+  Row(
+   Card('Clocked in — Marcus Hale', Stack(
+    h('div',{style:{textAlign:'center', padding:'10px 0'}},
+     h('div',{style:{fontFamily:BAR, fontSize:'42px', fontWeight:600, color:C.pri, lineHeight:1}},'6:41'),
+     h('div',{style:{fontSize:'12px', color:C.mut, marginTop:'4px'}},'since 07:02 · Aug 8')),
+    Tbl(['','Current'],[
+     ['Job','<b>L-2026-0415</b> · Robert Chen · 88 Hillcrest Dr'],
+     ['Scope package','SP-01 Mitigation & odour control'],
+     ['Cost code','<b>02-100</b> Mitigation labour · Labour'],
+     ['Location','On site — captured at clock-in']], {min:'380px'}),
+    h('div',{style:{display:'flex', gap:'8px', flexWrap:'wrap'}},
+     Btn('Clock out',{kind:'pri'}), Btn('Start a break'), Btn('Switch job or cost code')),
+    HTM({fontSize:'11.5px', color:C.faint},
+     'Switching job or cost code <b>closes the current entry and opens a new one</b>, so a day split across two jobs produces two entries rather than one that has to be unpicked later.'))),
+   Stack(
+    Card('My jobs today', Tbl(['Job','Scope package','Scheduled',''],[
+     ['<b>L-2026-0415</b> · Robert Chen','SP-01 Mitigation & odour control','8.0 h', Tag('Clocked in','ok')],
+     ['<b>L-2026-0409</b> · Northside Dental','SP-07 Millwork','—', Btn('Clock in',{sm:true})]], {min:'480px'})),
+    Card('Not connected', Stack(
+     HTM({fontSize:'12.5px', color:C.mut, lineHeight:1.6},
+      'Restoration sites frequently have no signal. <b>Clock in and clock out keep working offline</b> and sync when connectivity returns — the entry is stamped with the time it actually happened, not the time it reached the server.'),
+     Tbl(['Queued','When','Status'],[
+      ['Clock in · L-2026-0415','07:02', Tag('Synced','ok')],
+      ['Break start','11:30', Tag('Waiting to sync','wn')]], {min:'380px'}))))),
+  Card('What the employee can do, and what they cannot', Tbl(['Action','Behaviour'],[
+   ['<b>Clock in</b>','Only against <b>a job they were assigned</b>. A cost code is always attached — pre-filled from the assignment, changeable, never empty.'],
+   ['<b>Clock out</b>','Closes the entry. A shift left open past the limit is flagged for the office rather than closed automatically.'],
+   ['<b>Break</b>','Starts and ends a break. How breaks affect paid hours is a setting, not a decision made on the phone.'],
+   ['<b>Switch</b>','Moves to another assigned job or another cost code, closing one entry and opening the next.'],
+   ['<b>Add a note</b>','A short note on the entry — what was done, or why the day ran long.'],
+   ['<b>Edit a past entry</b>','<b>Not from the phone.</b> A correction is requested and an approver makes it, so the audit trail holds.']], {min:'860px'}))]});
+
+/* ---- Time entries ---- */
+SCREENS.timeentries = () => Page({key:'timeentries', title:'Time entries',
+ sub:'Every entry across every employee, with the ones that need a person raised first',
+ actions:[Btn('Export CSV'), Btn('+ Add an entry',{kind:'pri'})],
+ children:[
+  Tiles([['3','Entries that need a person','', C.wn],['1','Missing a clock-out','', C.dg],['1','Missing a cost code','', C.dg],['211.9','Hours this period']]),
+  Bar(Fld('',{ph:'Search employee, job, cost code…', w:'250px'}),
+    Sel('Period: Aug 4 – Aug 10',['Period: Aug 4 – Aug 10','Period: Jul 28 – Aug 3','Custom…'],{w:'220px'}),
+    Sel('Employee: All',['Employee: All'].concat(CREW.map(c=>c.n)),{w:'190px'}),
+    Sel('Flagged: All',['Flagged: All','Flagged only','Clean only'],{w:'170px'}), Sp(), Btn('Save this view')),
+  Tbl(['Date','Employee','Job','Scope package','Cost code','In','Out',{t:'Hours',n:true},'Source','Needs a person'],
+   ENTRIES.map((x,i)=>({key:i,
+    style: x.flag!=='—' ? {background:'#FDF9EF'} : null,
+    c:[x.d, '<b>'+x.e+'</b>', x.job, x.sp, x.cc, x.in, x.out, {t:x.h, n:true},
+      x.src==='Mobile'?Tag('Mobile'):x.src==='Corrected'?Tag('Corrected','ai'):Tag('Manual','wn'),
+      x.flag==='—' ? '—' : Tag(x.flag,'dg')]})), {min:'1340px'}),
+  Row(
+   Card('What the platform raises for a person', Tbl(['Check','Raised when'],[
+    ['<b>No clock-out</b>','A shift is still open past the maximum length.'],
+    ['<b>Unusually long shift</b>','Hours exceed the threshold set for that role.'],
+    ['<b>No cost code</b>','An entry reached the office without one.'],
+    ['<b>Overlapping entries</b>','One employee is clocked into two jobs at the same time.'],
+    ['<b>Job not assigned</b>','Hours landed on a job the employee was not assigned to.'],
+    ['<b>Away from the site</b>','Location was captured and does not match the job address.'],
+    ['<b>Missing day</b>','An employee was assigned work and no entry exists.']], {min:'620px'})),
+   Card('How a correction works', Stack(
+    HTM({fontSize:'12.5px', color:C.mut, lineHeight:1.6},
+     'Every flagged entry offers the same three answers: <b>correct it, confirm it as it stands, or ask the employee</b>. Whichever is chosen, the original value is kept beside the new one and the entry is marked as corrected.'),
+    Tbl(['Kept on every correction','Why'],[
+     ['The original value','So a timesheet can be reconstructed as it was captured'],
+     ['Who changed it and when','So an approved timesheet has an owner'],
+     ['The reason','So the same correction can be prevented next time'],
+     ['<b>The pattern</b>','<b>Repeated corrections of the same kind are surfaced</b>, because the fix is usually a setting or an assignment, not another correction']], {min:'560px'}))))]});
+
+/* ---- Timesheets ---- */
+SCREENS.timesheets = () => Page({key:'timesheets', title:'Timesheets',
+ sub:'One employee, one pay period — reviewed and approved before payroll can run',
+ actions:[Btn('Export CSV'), Btn('Approve all clean timesheets',{kind:'pri', onClick:()=>toast('2 clean timesheets approved — 3 still need attention')})],
+ children:[
+  Tiles([['3','Need attention','', C.wn],['1','Submitted, awaiting approval','', C.pri],['2','Approved','', C.ok],['180.5','Hours this period']]),
+  Bar(Sel('Period: Aug 4 – Aug 10',['Period: Aug 4 – Aug 10','Period: Jul 28 – Aug 3','Custom…'],{w:'220px'}),
+    Sel('Status: All',['Status: All','Open','Needs attention','Submitted','Approved','Locked'],{w:'190px'}), Sp(), Btn('Export CSV')),
+  Tbl(['Employee','Role','Pay period',{t:'Regular',n:true},{t:'Overtime',n:true},{t:'Jobs',n:true},{t:'Needs a person',n:true},'Status','Approved by'],
+   SHEETS.map((s,i)=>({key:i, onClick:()=>go('timesheet', s.e),
+    style: s.st==='Needs attention' ? {background:'#FDF9EF'} : null,
+    c:['<b>'+s.e+'</b>', s.r, s.p, {t:s.reg+' h', n:true},
+      {t: s.ot!=='0.0' ? '<b>'+s.ot+' h</b>' : s.ot+' h', n:true},
+      {t:s.jobs, n:true},
+      {t: s.flags==='0' ? '—' : '<span style="color:#C25E4B;font-weight:600">'+s.flags+'</span>', n:true},
+      s.st==='Approved'?Tag('Approved','ok'):s.st==='Submitted'?Tag('Submitted','ai'):s.st==='Needs attention'?Tag('Needs attention','dg'):Tag('Open'),
+      s.appr]})), {min:'1200px'}),
+  Card('The states a timesheet moves through', Tbl(['State','What it means','Who moves it'],[
+   ['<b>Open</b>','The pay period is still running and entries are still arriving.','The clock'],
+   ['<b>Needs attention</b>','The period closed with entries the platform could not settle on its own.','The platform'],
+   ['<b>Submitted</b>','Clean, and waiting for an approver.','The platform, or the employee'],
+   ['<b>Approved</b>','Checked and signed off. <b>Payroll can only run on approved timesheets.</b>','An approver'],
+   ['<b>Locked</b>','The payroll run has been exported. Changing it now needs a correction on the next period.','The payroll run']], {min:'860px'}))]});
+
+SCREENS.timesheet = (p) => { const S = SHEETS.find(x=>x.e===p) || SHEETS[2];
+ return Page({key:'timesheet', crumb:['Timesheets', ()=>go('timesheets'), S.e],
+ title:S.e+' — '+S.p.replace(' – ',' to '),
+ sub:S.r+' · '+S.reg+' regular · '+S.ot+' overtime · '+(S.flags==='0'?'nothing needs a person':S.flags+' entry needs a person'),
+ actions:[Btn('Ask the employee'), Btn('Approve',{kind:'pri', onClick:()=>toast('Timesheet approved — '+S.e+', '+S.p)})],
+ children:[
+  S.flags==='0' ? null : Card('Aug 7 — unusually long shift', Stack(
+   Row(
+    Stack(Lbl('As captured'), Fld('06:58 – 19:44 · 12.77 h'), Lbl('Job'), Fld('L-2026-0409 · SP-07 Millwork')),
+    Stack(Lbl('Corrected to'), Fld('06:58 – 19:44 · 12.77 h'), Lbl('Cost code'), Sel('06-400 Millwork',COSTCODES.map(c=>c[0]+' '+c[1])))),
+   Lbl('Reason'), Ta('Confirmed with the site — millwork delivery arrived late and the crew stayed to finish the install. Hours are correct.'),
+   h('div',{style:{display:'flex', gap:'8px', flexWrap:'wrap'}},
+    Btn('Confirm as captured',{kind:'pri'}), Btn('Correct the entry'), Btn('Ask the employee')),
+   HTM({fontSize:'11.5px', color:C.faint},
+    'The original value is kept whichever answer is chosen, and the entry is marked as corrected.')), {hard:true}),
+  Card('The week', Tbl(['Day','Job','Scope package','Cost code','In','Out',{t:'Hours',n:true},'Source','Needs a person'],[
+   ['<b>Mon Aug 4</b>','L-2026-0409','SP-07 Millwork','06-400 Millwork','07:00','15:30',{t:'8.50',n:true}, Tag('Mobile'),'—'],
+   ['<b>Tue Aug 5</b>','L-2026-0409','SP-07 Millwork','06-400 Millwork','06:55','15:25',{t:'8.50',n:true}, Tag('Mobile'),'—'],
+   ['<b>Wed Aug 6</b>','L-2026-0409','SP-07 Millwork','06-400 Millwork','07:02','15:32',{t:'8.50',n:true}, Tag('Mobile'),'—'],
+   ['<b>Thu Aug 7</b>','L-2026-0409','SP-07 Millwork','06-400 Millwork','06:58','19:44',{t:'12.77',n:true}, Tag('Mobile'), Tag('Unusually long shift','dg')],
+   ['<b>Fri Aug 8</b>','L-2026-0409','SP-07 Millwork','06-400 Millwork','07:00','15:30',{t:'8.50',n:true}, Tag('Mobile'),'—'],
+   ['Sat Aug 9','—','—','—','—','—',{t:'—',n:true},'—','—'],
+   ['Sun Aug 10','—','—','—','—','—',{t:'—',n:true},'—','—']],
+   {min:'1140px', foot:['<b>Total</b>','','','','','',{t:'<b>46.77</b>'},'','']})),
+  Row(
+   Card('How the period breaks down', Tbl(['','Hours','Rate','Cost'],[
+    ['Regular',{t:'40.00'},'$38.00',{t:'$1,520.00'}],
+    ['Overtime',{t:'6.77'},'$57.00',{t:'$385.89'}],
+    ['<b>Total</b>',{t:'<b>46.77</b>'},'',{t:'<b>$1,905.89</b>'}]], {min:'460px'})),
+   Card('Where these hours land', Tbl(['Job','Cost code',{t:'Hours',n:true},{t:'Cost',n:true}],[
+    ['L-2026-0409','06-400 Millwork',{t:'46.77',n:true},{t:'$1,905.89',n:true}]], {min:'460px'})))]});};
+
+/* ---- Labour cost allocation ---- */
+SCREENS.labourcost = () => Page({key:'labourcost', title:'Labour cost allocation',
+ sub:'What the hours cost, against what Phase 2 budgeted — this is what fills the Actual column',
+ actions:[Btn('Export CSV')],
+ children:[
+  Card('Why this screen is the point of the phase', HTM({fontSize:'12.5px', color:C.mut, lineHeight:1.6},
+   'Phase 2 built a budget with <b>estimated labour hours per cost code and an empty Actual column</b>. Phase 4 fills the material and subcontracted side of that column from vendor invoices. <b>This screen fills the labour side</b>, from approved timesheets. Once both are in, a job’s real cost is known while the job is still running rather than after it closes.'), {hard:true}),
+  Bar(Sel('Job: L-2026-0415 · Robert Chen',QUEUE.map(q=>q.id+' · '+q.client),{w:'290px'}),
+    Sel('View: By cost code',['View: By cost code','View: By scope package','View: By employee'],{w:'220px'}), Sp(), Btn('Export CSV')),
+  Tbl(['Cost code','Trade',{t:'Budgeted hours',n:true},{t:'Actual hours',n:true},{t:'Difference',n:true},{t:'Budgeted cost',n:true},{t:'Actual cost',n:true},{t:'Difference',n:true}],[
+   ['<b>02-100</b> Mitigation labour','Mitigation',{t:'64.0',n:true},{t:'58.6',n:true},{t:'<span style="color:#2E7D5B;font-weight:600">−5.4</span>',n:true},{t:'$2,432.00',n:true},{t:'$2,285.40',n:true},{t:'<span style="color:#2E7D5B;font-weight:600">−$146.60</span>',n:true}],
+   ['<b>02-200</b> Cleaning','Mitigation',{t:'24.0',n:true},{t:'26.5',n:true},{t:'<span style="color:#C25E4B;font-weight:600">+2.5</span>',n:true},{t:'$912.00',n:true},{t:'$1,007.00',n:true},{t:'<span style="color:#C25E4B;font-weight:600">+$95.00</span>',n:true}],
+   ['<b>02-300</b> Odour control','Mitigation',{t:'16.0',n:true},{t:'12.0',n:true},{t:'−4.0',n:true},{t:'$608.00',n:true},{t:'$456.00',n:true},{t:'−$152.00',n:true}],
+   ['<b>01-500</b> Site','General',{t:'8.0',n:true},{t:'9.5',n:true},{t:'+1.5',n:true},{t:'$496.00',n:true},{t:'$589.00',n:true},{t:'+$93.00',n:true}]],
+   {min:'1180px', foot:['<b>Total</b>','',{t:'<b>112.0</b>'},{t:'<b>106.6</b>'},{t:'<b>−5.4</b>'},{t:'<b>$4,448.00</b>'},{t:'<b>$4,337.40</b>'},{t:'<b>−$110.60</b>'}]}),
+  Row(
+   Card('How a labour cost is worked out', Tbl(['Element','Behaviour'],[
+    ['<b>Hours</b>','Taken from <b>approved timesheets only</b>. An entry still under review does not reach the job cost.'],
+    ['<b>Rate</b>','The rate held against the employee’s role, at the moment the hours were worked.'],
+    ['<b>Overtime</b>','Charged at the overtime rate for that role, on the hours above the threshold.'],
+    ['<b>Burden</b>','A percentage on top for tax and insurance, set once and applied to every hour.'],
+    ['<b>Cost code</b>','Where the cost lands. Every hour carries one — that is enforced at the clock.']], {min:'620px'})),
+   Card('What it feeds', Tbl(['Where','What it changes'],[
+    ['<b>Phase 2 budget</b>','The Actual column against every labour cost code, and the difference beside it'],
+    ['<b>Phase 3 project tracking</b>','A job running over its labour budget shows as an open item'],
+    ['<b>QuickBooks</b>','Labour posted against the job, so job-level reporting holds'],
+    ['<b>Margin</b>','Job and scope-package margin, recalculated as the hours land']], {min:'560px'})))]});
+
+/* ---- Payroll preparation ---- */
+SCREENS.payroll = () => Page({key:'payroll', title:'Payroll preparation',
+ sub:'Approved hours gathered into a payroll-ready run — replacing the spreadsheet between the job system and Gusto',
+ actions:[Btn('+ New payroll run',{kind:'pri', onClick:()=>toast('Payroll run created for Aug 4 – Aug 10')})],
+ children:[
+  Card('What this replaces', HTM({fontSize:'12.5px', color:C.mut, lineHeight:1.6},
+   'Today the hours are captured in the job system, <b>copied into a spreadsheet, checked there, and then typed into Gusto</b>. The client named that transfer as the most time-consuming part of running payroll. This module produces the payroll-ready figures directly from approved timesheets, so the spreadsheet in the middle disappears.'), {hard:true}),
+  Card('Aug 4 – Aug 10 — this run cannot be exported yet', Stack(
+   Tbl(['Check','Status','Detail'],[
+    ['All timesheets approved', Tag('3 outstanding','dg'),'Danny Ortiz · Tyler Brooks · Ray Coleman'],
+    ['No unresolved entries', Tag('3 outstanding','dg'),'1 missing clock-out · 1 unusually long shift · 1 missing cost code'],
+    ['Every hour carries a cost code', Tag('1 outstanding','dg'),'Ray Coleman, Aug 7'],
+    ['Employees matched in Gusto', Tag('Clear','ok'),'5 of 5 matched']], {min:'720px'}),
+   HTM({fontSize:'11.5px', color:C.faint},
+    '<b>A payroll run exports only when every check is clear.</b> Paying on hours nobody approved is exactly the error this phase exists to prevent.')), {hard:true}),
+  Tbl(['Employee','Role',{t:'Regular',n:true},{t:'Overtime',n:true},{t:'Total hours',n:true},'Rate','OT rate',{t:'Gross',n:true},'Timesheet'],[
+   ['<b>Marcus Hale</b>','Lead technician',{t:'40.00',n:true},{t:'2.60',n:true},{t:'42.60',n:true},'$49.00','$73.50',{t:'$2,151.10',n:true}, Tag('Open','wn')],
+   ['<b>Danny Ortiz</b>','Technician',{t:'32.00',n:true},{t:'0.00',n:true},{t:'32.00',n:true},'$38.00','$57.00',{t:'$1,216.00',n:true}, Tag('Needs attention','dg')],
+   ['<b>Tyler Brooks</b>','Technician',{t:'40.00',n:true},{t:'6.77',n:true},{t:'46.77',n:true},'$38.00','$57.00',{t:'$1,905.89',n:true}, Tag('Needs attention','dg')],
+   ['<b>Ray Coleman</b>','Project manager',{t:'38.50',n:true},{t:'0.00',n:true},{t:'38.50',n:true},'$62.00','—',{t:'$2,387.00',n:true}, Tag('Needs attention','dg')],
+   ['<b>Sam Whitfield</b>','Technician',{t:'30.00',n:true},{t:'0.00',n:true},{t:'30.00',n:true},'$38.00','$57.00',{t:'$1,140.00',n:true}, Tag('Submitted','ai')]],
+   {min:'1200px', foot:['<b>Total</b>','',{t:'<b>180.50</b>'},{t:'<b>9.37</b>'},{t:'<b>189.87</b>'},'','',{t:'<b>$8,799.99</b>'},'']}),
+  Row(
+   Card('The five steps of a run', Tbl(['Step','What happens'],[
+    ['<b>1 · Gather</b>','Every approved timesheet in the pay period, per employee.'],
+    ['<b>2 · Validate</b>','The four checks above. Anything outstanding is named, with who it belongs to.'],
+    ['<b>3 · Review</b>','Regular and overtime hours per employee, with the gross beside them.'],
+    ['<b>4 · Approve</b>','The owner approves the run as a whole, and the timesheets in it lock.'],
+    ['<b>5 · Export</b>','The run is handed to Gusto, and <b>the payroll itself is executed there by the client</b>.']], {min:'620px'})),
+   Card('Overtime', Stack(
+    Tbl(['Rule','Value'],[
+     ['Pay period','Weekly · Monday to Sunday'],
+     ['Overtime above','40 hours in a week'],
+     ['Overtime rate','1.5 × the role rate'],
+     ['Counted per','Employee, across every job they worked']], {min:'440px'}),
+    HTM({fontSize:'11.5px', color:C.faint},
+     'Overtime is calculated <b>per employee across every job</b>, not per job. Splitting a week across two jobs must never hide the overtime.'))))]});
+
+/* ---- Gusto sync ---- */
+SCREENS.gusto = () => Page({key:'gusto', title:'Gusto sync',
+ sub:'The payroll handover — the platform prepares the run, the client executes it in Gusto',
+ actions:[Btn('Sync employees',{onClick:()=>toast('Employee list synced from Gusto')})],
+ children:[
+  Row(
+   Card('Connection', Tbl(['','Detail'],[
+    ['Company','3Rivers General Contracting'],
+    ['Status', Tag('Connected','ok')],
+    ['Employees matched','5 of 5'],
+    ['Last sync','Aug 8, 06:00'],
+    ['Last run exported','Jul 28 – Aug 3 · Aug 4, 09:12']], {min:'400px'})),
+   Card('What moves', Tbl(['What','Direction','Behaviour'],[
+    ['<b>Employees</b>','Gusto → Platform','The employee list, their role and their pay rate come from Gusto. <b>Gusto stays the record for who works here and what they are paid.</b>'],
+    ['<b>Approved hours</b>','Platform → Gusto','Regular and overtime hours per employee for the pay period.'],
+    ['<b>Payroll run</b>','Platform → Gusto','The prepared run. <b>The payroll itself is executed by the client in Gusto.</b>'],
+    ['<b>Labour cost</b>','Platform → QuickBooks','Posted against the job and the cost code, so job costing holds.']], {min:'760px'}))),
+  Card('Employee matching', Tbl(['In the platform','In Gusto','Role','Rate','Status'],[
+   ['Marcus Hale','Marcus Hale','Lead technician','$49.00', Tag('Matched','ok')],
+   ['Danny Ortiz','Daniel Ortiz','Technician','$38.00', Tag('Matched by a person','ai')],
+   ['Tyler Brooks','Tyler Brooks','Technician','$38.00', Tag('Matched','ok')],
+   ['Ray Coleman','Ray Coleman','Project manager','$62.00', Tag('Matched','ok')],
+   ['Sam Whitfield','Sam Whitfield','Technician','$38.00', Tag('Matched','ok')]], {min:'820px'})),
+  Card('Export history', Tbl(['Pay period','Exported','By',{t:'Employees',n:true},{t:'Hours',n:true},{t:'Gross',n:true},'Status'],[
+   ['Jul 28 – Aug 3','Aug 4, 09:12','Byron Tohey',{t:'5',n:true},{t:'192.40',n:true},{t:'$8,914.20',n:true}, Tag('Paid in Gusto','ok')],
+   ['Jul 21 – Jul 27','Jul 28, 08:40','Byron Tohey',{t:'5',n:true},{t:'186.00',n:true},{t:'$8,520.00',n:true}, Tag('Paid in Gusto','ok')]], {min:'880px'}))]});
+
+/* ---- Settings ---- */
+SCREENS.s_time = (p, st) => {
+ const T = ['Time capture','Validation','Payroll'];
+ let pane = null;
+ if(st.tab===0) pane = Stack(
+   Card('The clock', Stack(
+    Lbl('Round each entry to'), Sel('Nearest minute',['Nearest minute','Nearest 5 minutes','Nearest 15 minutes'],{w:'220px'}),
+    Lbl('Shortest entry that counts'), Fld('15 minutes',{w:'160px'}),
+    Lbl('Longest shift before it is flagged'), Fld('12 hours',{w:'160px'}),
+    Lbl('Automatically close a shift left open after'), Fld('16 hours — flag, do not close',{w:'320px'}),
+    h('div',null, Chk('An employee may only clock into a job they were assigned'),
+      Chk('A cost code is required on every entry'),
+      Chk('An employee may edit a past entry', false)))),
+   Card('Breaks', Stack(
+    Lbl('Break handling'), Sel('Unpaid, recorded by the employee',['Unpaid, recorded by the employee','Paid','Deducted automatically after a set number of hours'],{w:'340px'}),
+    Lbl('Automatic deduction after'), Fld('6 hours — 30 minutes',{w:'220px'}))),
+   Card('Location', Stack(
+    h('div',null, Chk('Capture location at clock-in and clock-out'),
+      Chk('Flag an entry captured away from the job address'),
+      Chk('Prevent clocking in away from the job address', false)),
+    Lbl('How far from the address still counts as on site'), Fld('250 metres',{w:'180px'}),
+    HTM({fontSize:'11.5px', color:C.faint},
+     'Location is <b>captured and used to flag</b>, not to block. A technician on a large site or with poor signal must still be able to clock in.'))));
+ if(st.tab===1) pane = Stack(
+   Card('What the platform raises for a person', Tbl(['Check','Active','Threshold'],[
+    ['<b>No clock-out</b>','☑','After 16 hours'],
+    ['<b>Unusually long shift</b>','☑','Above 12 hours'],
+    ['<b>No cost code</b>','☑','—'],
+    ['<b>Overlapping entries</b>','☑','—'],
+    ['<b>Job not assigned</b>','☑','—'],
+    ['<b>Away from the site</b>','☑','Beyond 250 metres'],
+    ['<b>Missing day</b>','☑','Assigned with no entry']], {min:'620px'})),
+   Card('Who is told', Stack(
+    Lbl('Who reviews flagged entries'), Sel('Operations Manager',USERS.map(u=>u.name),{w:'280px'}),
+    Lbl('When they are told'), Sel('Daily, at the end of the day',['As each one is raised','Daily, at the end of the day','When the pay period closes'],{w:'320px'}),
+    h('div',null, Chk('Tell the employee when their entry is flagged'),
+      Chk('Surface a correction that keeps repeating')))));
+ if(st.tab===2) pane = Stack(
+   Card('Pay period and overtime', Stack(
+    Lbl('Pay period'), Sel('Weekly — Monday to Sunday',['Weekly — Monday to Sunday','Fortnightly','Semi-monthly'],{w:'300px'}),
+    Lbl('Overtime above'), Fld('40 hours per week',{w:'200px'}),
+    Lbl('Overtime rate'), Fld('1.5 × the role rate',{w:'200px'}),
+    Lbl('Labour burden added to every hour'), Fld('18 %',{w:'140px'}),
+    HTM({fontSize:'11.5px', color:C.faint},
+     'Burden is what an hour costs the business beyond the wage — tax and insurance. It is applied to job costing, <b>not to what the employee is paid</b>.'))),
+   Card('Rates by role', Tbl(['Role','Hourly rate','Overtime rate','Charged to job costing'],
+    LABOUR.map(l=>[l[0], Fld(l[1],{w:'110px'}), Fld(l[2],{w:'110px'}), Chk('',true)]), {min:'620px'})),
+   Card('Approval and export', Stack(
+    Lbl('Who approves a timesheet'), Sel('Operations Manager',['Operations Manager','Owner','Owner and Operations Manager'],{w:'280px'}),
+    Lbl('Who approves a payroll run'), Sel('Owner only',['Owner only','Owner and Operations Manager'],{w:'260px'}),
+    h('div',null, Chk('A payroll run exports only when every check is clear'),
+      Chk('Lock the timesheets in a run once it is exported')))));
+ return Page({key:'s_time', title:'Time & payroll rules',
+  sub:'How the clock behaves, what the platform raises for a person, and how pay is worked out',
   children:[Tabs(T, st.tab), pane]});};
 
 /* ================= MODALS ================= */
