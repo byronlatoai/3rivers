@@ -156,7 +156,7 @@ const CALLS=[
  {t:'Aug 5, 13:22',from:'(412) 555-0990',dur:'0:12',cls:'—',out:'ABANDONED — follow-up task created',to:'—',res:'—',lead:''},
  {t:'Aug 5, 16:50',from:'(412) 555-0455',dur:'2:30',cls:'Non-emergency',out:'Existing lead updated',to:'—',res:'—',lead:'L-2026-0413'}];
 const INBOX=[
- {t:'Aug 7, 08:12',from:'noreply@3riversgc.com',subj:'Website enquiry — water in basement',src:'Web form',st:'Parsed · 9 of 9 fields',lead:'L-2026-0419'},
+ {t:'Aug 7, 08:12',from:'noreply@3riverscm.com',subj:'Website enquiry — water in basement',src:'Web form',st:'Parsed · 9 of 9 fields',lead:'L-2026-0419'},
  {t:'Aug 7, 09:40',from:'bids@wrpartners.com',subj:'RE: Bid invitation — Route 30 roof',src:'Email',st:'Parsed · 6 of 9 · missing budget, timeline',lead:'L-2026-0414'},
  {t:'Aug 7, 10:05',from:'jhoward@example.com',subj:'(no subject)',src:'Email',st:'COULD NOT PARSE → needs a human',lead:''},
  {t:'Aug 6, 16:31',from:'claims@statefarm.com',subj:'Claim assignment SF-2026-88413',src:'Email',st:'Parsed · attached to existing lead',lead:'L-2026-0417'}];
@@ -207,7 +207,7 @@ const ONCALL=[
  ['BACKUP','Joshua Tohey','Joshua Tohey','Dana Cruz','Byron Tohey','Dana Cruz','Byron Tohey','Byron Tohey']];
 const STAGES_R=[['1','New','Lead created','15 min','—'],['2','Emergency dispatch','Emergency = Yes','immediate','Emergency Response'],['3','Qualified','Qualification outcome = Qualified','—','Default Lead Cadence'],['4','Assigned','Estimator assigned','4 h to first contact','—'],['5','Visit scheduled','Appointment booked','—','Appointment reminders'],['6','Estimating','Visit completed','3 days','—'],['7','Proposal sent','→ Phase 2','—','Proposal Follow-Up — friendly'],['8','Won','Proposal signed + binder paid','—','—'],['9','Lost','Terminal — reason required','—','—']];
 const STAGES_C=[['1','New','Lead created','1 business day','—'],['2','Bid invitation received','Bid reference present','—','—'],['3','Qualified','Qualification outcome = Qualified','—','Default Lead Cadence'],['4','Assigned','Estimator assigned','1 business day','—'],['5','Visit scheduled','Appointment booked','—','Appointment reminders'],['6','Estimating','Visit completed','5 days','—'],['7','Proposal / bid submitted','→ Phase 2','—','Proposal Follow-Up — friendly'],['8','Won','Proposal signed + binder paid','—','—'],['9','Lost','Terminal — reason required','—','—']];
-const JOB={id:'L-2026-0415',client:'Robert Chen',arm:'Restoration',job:'Fire damage',addr:'88 Hillcrest Dr, Mt Lebanon, PA 15228',carrier:'Allstate',claim:'AL-772104',est:'Jason Reed',visit:'Aug 7, 08:00',total:'62,300.00'};
+const JOB={id:'L-2026-0415',client:'Robert Chen',arm:'Restoration',div:'Reconstruction',job:'Fire damage',addr:'88 Hillcrest Dr, Mt Lebanon, PA 15228',carrier:'Allstate',claim:'AL-772104',adjuster:'M. Reyes · (412) 555-0188',pm:'Marcus Hale',sup:'Danny Kovach',est:'Jason Reed',visit:'Aug 7, 08:00',total:'62,300.00',tgm:'45%'};
 const QUEUE=[
  {id:'L-2026-0415',client:'Robert Chen',arm:'Restoration',job:'Fire damage',est:'Jason Reed',visit:'Aug 7',days:0,e:'Reviewed',s:'Structured',b:'Baseline locked',p:'63',pr:'Sent · v2',v:'62,300'},
  {id:'L-2026-0416',client:'Allegheny Property Group',arm:'Commercial GC',job:'Tenant buildout',est:"Jathan D'Antonio",visit:'Aug 8',days:0,e:'—',s:'—',b:'—',p:'0',pr:'—',v:'184,500'},
@@ -308,6 +308,7 @@ const NAV=[
  {k:'grp',id:'g_prop',l:'PROPOSALS',ph:'F2',items:[['proposals','Proposals'],['schedules','Payment schedules']]},
  {k:'grp',id:'g_rec',l:'RECORDS',ph:'',items:[['contacts','Contacts'],['properties','Properties']]},
  {k:'grp',id:'g_sub',l:'EXECUTION',ph:'F3',items:[['subs','Subcontractors','8'],['bids','Bid management','4'],['bidcompare','Bid comparison'],['workorders','Work orders','3'],['subcontracts','Contracts & signatures'],['projsched','Project scheduling'],['projtrack','Project tracking','2'],['changeorders','Change orders','1'],['subportal','Subcontractor portal'],['clientportal','Client portal']]},
+ {k:'grp',id:'g_wip',l:'WEEKLY REVIEW',ph:'F3',items:[['wip','Work in progress','3'],['scorecard','PM scorecard'],['dailylogs','Daily logs'],['sitevisits','Site visits','3'],['supplements','Insurance supplements','2']]},
  {k:'grp',id:'g_bill',l:'BILLING',ph:'F4',items:[['invoices','Invoices (AR)','2'],['collections','Payments & collections','2'],['apinvoices','Vendor invoices (AP)','5'],['apocr','Invoice OCR'],['qbsync','QuickBooks sync'],['payruns','Payment runs','1']]},
  {k:'grp',id:'g_field',l:'FIELD & PAYROLL',ph:'F5',items:[['crew','Crew & assignments','5'],['timeclock','Time clock'],['timeentries','Time entries','3'],['timesheets','Timesheets','3'],['labourcost','Labour cost allocation'],['payroll','Payroll preparation'],['gusto','Gusto sync']]},
  {k:'sec',id:'g_set',l:'SETTINGS',ph:'',subs:[
@@ -322,7 +323,7 @@ const NAV=[
 const OWNER={timesheet:'timesheets',sub:'subs',bidpkg:'bids',workorder:'workorders',invoice:'invoices',lead:'hotlist',newlead:'hotlist',call:'calls',contact:'contacts',cadence:'s_cadences',cadence_new:'s_cadences',template:'s_templates',
  estimate:'equeue',mapping:'equeue',scope:'equeue',budget:'equeue',narrative:'equeue',photos:'equeue',photoreport:'equeue',
  proposal:'proposals',schedule:'schedules',versions:'proposals',acceptance:'proposals',inspection:'sessions'};
-const TITLES={crew:'Crew & assignments',timeclock:'Time clock',timeentries:'Time entries',timesheets:'Timesheets',timesheet:'Timesheet',labourcost:'Labour cost allocation',payroll:'Payroll preparation',gusto:'Gusto sync',s_time:'Time & payroll rules',subs:'Subcontractors',sub:'Subcontractor',bids:'Bid management',bidpkg:'Bid package',bidcompare:'Bid comparison',workorders:'Work orders',workorder:'Work order',subcontracts:'Subcontractor agreements',projsched:'Project scheduling',projtrack:'Project tracking',changeorders:'Change orders',subportal:'Subcontractor portal',clientportal:'Client portal',invoices:'Invoices (AR)',invoice:'Invoice',collections:'Payments & collections',apinvoices:'Vendor invoices (AP)',apocr:'Invoice OCR',qbsync:'QuickBooks sync',payruns:'Payment runs',s_exec:'Bid & work order rules',s_billing:'Invoicing & collections',dashboard:'Dashboard',hotlist:'Hotlist',calls:'Calls',inbox:'Inbox Capture',appointments:'Appointments',equeue:'Estimating queue',
+const TITLES={wip:'Work in progress',scorecard:'PM scorecard',dailylogs:'Daily logs',sitevisits:'Site visits',supplements:'Insurance supplements',crew:'Crew & assignments',timeclock:'Time clock',timeentries:'Time entries',timesheets:'Timesheets',timesheet:'Timesheet',labourcost:'Labour cost allocation',payroll:'Payroll preparation',gusto:'Gusto sync',s_time:'Time & payroll rules',subs:'Subcontractors',sub:'Subcontractor',bids:'Bid management',bidpkg:'Bid package',bidcompare:'Bid comparison',workorders:'Work orders',workorder:'Work order',subcontracts:'Subcontractor agreements',projsched:'Project scheduling',projtrack:'Project tracking',changeorders:'Change orders',subportal:'Subcontractor portal',clientportal:'Client portal',invoices:'Invoices (AR)',invoice:'Invoice',collections:'Payments & collections',apinvoices:'Vendor invoices (AP)',apocr:'Invoice OCR',qbsync:'QuickBooks sync',payruns:'Payment runs',s_exec:'Bid & work order rules',s_billing:'Invoicing & collections',dashboard:'Dashboard',hotlist:'Hotlist',calls:'Calls',inbox:'Inbox Capture',appointments:'Appointments',equeue:'Estimating queue',
  sessions:'Inspection sessions',photolib:'Photo library',proposals:'Proposals',schedules:'Payment schedules',contacts:'Contacts',properties:'Properties',
  newlead:'New lead',s_ai:'AI Receptionist',s_oncall:'On-Call Schedule',s_assign:'Assignment Rules',s_pipeline:'Pipeline & Stages',
  s_cadences:'Automations & Cadences',s_rules:'Sending Rules',s_templates:'Templates',s_cost:'Cost codes & trades',s_markup:'Markup defaults',
@@ -771,7 +772,7 @@ SCREENS.hotlist = (p, st) => {
      Sel('Emergency: All',['Emergency: All','Yes','No'],{w:'145px'}),
      Sel('Stage: All',['Stage: All'].concat(HOT_STAGES),{w:'140px'}),
      Sel('Assigned: All',['Assigned: All'].concat(USERS.map(u=>u.name)),{w:'160px'}),
-     Sel('Source: All',['Source: All','AI Call','Manual Call','Email','Web form','Referral','Bid invitation'],{w:'150px'}),
+     Sel('Channel: All',['Channel: All','AI Call','Manual Call','Email','Web form','Programme assignment','Bid invitation'],{w:'170px'}),
      Sel('Saved views',['Saved views','My leads','Unassigned','Emergencies','Stalled > 3 days','Visits this week'],{w:'150px'}),
      Sp(),
      Grp(Btn('Table',{kind: st.hotView==='table'?'pri':'ghost', onClick:()=>APP.setState({hotView:'table'})}),
@@ -1024,14 +1025,14 @@ SCREENS.inbox = (p, st) => {
        Btn('Create lead',{kind:'pri', onClick:()=>toast('Lead created from message')})))));
  if(st.tab===1) pane = Stack(
    Tbl(['Address','Purpose','Auto-create leads','Default arm','Status',''],[
-     ['info@3riversgc.com','General enquiries','☑','— (AI decides)', Tag('Connected','ok'), Btn('Edit',{sm:true})],
-     ['estimates@3riversgc.com','Bid invitations','☑','Commercial GC', Tag('Connected','ok'), Btn('Edit',{sm:true})],
-     ['claims@3riversgc.com','Carrier assignments','☑','Restoration', Tag('Connected','ok'), Btn('Edit',{sm:true})]]),
+     ['josh@3riverscm.com','General enquiries','☑','— (AI decides)', Tag('Connected','ok'), Btn('Edit',{sm:true})],
+     ['jbish@3riverscm.com','Bid invitations','☑','Commercial GC', Tag('Connected','ok'), Btn('Edit',{sm:true})],
+     ['brian@3riverscm.com','Carrier assignments','☑','Restoration', Tag('Connected','ok'), Btn('Edit',{sm:true})]]),
    h('div',null, Btn('+ Connect a Gmail inbox',{kind:'pri', onClick:()=>toast('Google consent screen would open here')})));
  if(st.tab===2) pane = Stack(
    Tbl(['Form','Where it lives','Fields mapped','Auto-create','Status',''],[
-     ['Website contact form','3riversgc.com/contact','9 of 9','☑', Tag('Active','ok'), Btn('Edit mapping',{sm:true})],
-     ['Emergency request form','3riversgc.com/emergency','7 of 7 · sets Emergency = Yes','☑', Tag('Active','ok'), Btn('Edit mapping',{sm:true})]]),
+     ['Website contact form','3riverscm.com/contact','9 of 9','☑', Tag('Active','ok'), Btn('Edit mapping',{sm:true})],
+     ['Emergency request form','3riverscm.com/emergency','7 of 7 · sets Emergency = Yes','☑', Tag('Active','ok'), Btn('Edit mapping',{sm:true})]]),
    Card('Field mapping', Tbl(['Form field','→ Lead field','Transform'],[
      ['full_name','Contact name','—'],['phone','Phone','Normalise to E.164'],['email','Email','—'],
      ['address','Job site address','Geocode'],['damage_type','Job type','Map to enum'],
@@ -1087,7 +1088,7 @@ SCREENS.appointments = (p, st) => {
      ['<b>No-show</b>','—','Task created · <b>available as a cadence trigger</b>']], {flush:true}), {flush:true}));
  if(st.tab===3) pane = Tbl(['User','Google account','Sync','Calendar','Last sync','Status',''],
    USERS.filter(u=>u.role==='Sales Estimator'||u.role==='Operations Manager').map(u=>[
-     u.name, u.name.toLowerCase().replace(/[^a-z]/g,'.')+'@3riversgc.com','Two-way','Primary','2 min ago', Tag('Connected','ok'), Btn('Reconnect',{sm:true})]));
+     u.name, u.name.toLowerCase().replace(/[^a-z]/g,'.')+'@3riverscm.com','Two-way','Primary','2 min ago', Tag('Connected','ok'), Btn('Reconnect',{sm:true})]));
  return Page({key:'appts', title:'Appointments', sub:'Estimator site visits — synced two-way with Google Calendar (Gmail, not Outlook)',
    children:[Tabs(T, st.tab), pane]});
 };
@@ -1107,7 +1108,7 @@ SCREENS.contact = (i, st) => {
  if(st.tab===0) pane = Row(
    Card('Identity', Stack(Lbl('Type'), Sel(c.t,['Individual','Organization']), Lbl('Name / company'), Fld(c.n),
      Lbl('Main phone'), Fld(c.ph), Lbl('Main email'), Fld(c.e), Lbl('Preferred contact method'), Sel('Email',['Phone','Email','Text']))),
-   Card('Classification', Stack(Lbl('Source'), Sel('Referral',['Web form','Referral','Google','Repeat customer','Bid list']),
+   Card('Classification', Stack(Lbl('Source'), Sel('Referral',['Referral','Google','Contractor Connection','Web form','Programme assignment','Repeat customer','Bid list']),
      Lbl('Tags'), h('div',{style:{display:'flex', gap:'6px', flexWrap:'wrap'}}, Tag('Repeat customer ✕'), Tag('Commercial ✕'), Btn('+ Tag',{sm:true})),
      Lbl('Notes'), Ta(''))));
  if(st.tab===1) pane = Stack(
@@ -1154,6 +1155,10 @@ const jobHeader = (cur) => {
    h('span',{style:{fontSize:'12px', color:C.mut}}, JOB.id+' · '+JOB.addr+' · claim '+JOB.claim),
    h('span',{style:{flex:1}}), h('b',{style:{fontFamily:BAR, fontSize:'17px'}}, '$'+JOB.total),
    Btn('Open lead record',{sm:true, onClick:()=>go('lead','L-2026-0415')})),
+  h('div',{style:{display:'flex', gap:'18px', alignItems:'center', flexWrap:'wrap', padding:'9px 16px', borderBottom:'1px solid '+C.line, fontSize:'11.5px'}},
+   ...[['Division',JOB.div],['Carrier',JOB.carrier],['Claim',JOB.claim],['Adjuster',JOB.adjuster],
+       ['Project manager',JOB.pm],['Superintendent',JOB.sup],['Target gross margin',JOB.tgm]]
+     .map(f=>h('span',{key:f[0]}, h('span',{style:{color:C.faint}}, f[0]+' '), h('b',null, f[1])))),
   h('div',{style:{display:'flex', gap:'14px', alignItems:'center', flexWrap:'wrap', padding:'10px 16px', background:'#F8FBFD', borderBottom:'1px solid '+C.line, fontSize:'12px'}},
    h('span',{style:{color:C.faint}},'Status'), h('b',null, eqLane(QUEUE[0])), h('span',{style:{flex:1}}),
    h('span',{style:{color:C.faint}},'Progress'),
@@ -1223,7 +1228,7 @@ SCREENS.estimate = (p, st) => {
      style:{border:'2px dashed #CBD9E3', borderRadius:'12px', padding:'34px', textAlign:'center', transition:'border-color .15s', background:'#FAFCFD'}},
      h('div',{style:{fontSize:'26px', marginBottom:'8px'}},'⬆'),
      h('div',{style:{fontSize:'13px', fontWeight:600}},'Drag & drop the Xactimate PDF here'),
-     h('div',{style:{fontSize:'12px', color:C.mut, margin:'6px 0 14px'}},'or forward it to estimates@3riversgc.com'),
+     h('div',{style:{fontSize:'12px', color:C.mut, margin:'6px 0 14px'}},'or forward it to jbish@3riverscm.com'),
      Btn('Browse…',{kind:'pri', onClick:()=>APP.pickFile('estimate')}))),
    Card('Extracted header', Stack(
      Tbl(['Estimate #','Date','Claim / job reference','Insured / client','Property address'],
@@ -1288,10 +1293,29 @@ SCREENS.budget = () => jobPage({key:'budget', step:'budget', title:'4 · Budget 
   Tiles([['$62,300','Revenue — estimate total'],['$32,692','Budgeted cost'],['$29,608','Gross margin'],['47.5%','Margin %'],['98 h','Budgeted labour'],['$1,635','Contingency (5%)']]),
   Bar(Sel('Group by cost code',['Group by cost code','Group by scope package','Group by cost type'],{w:'230px'}), Sp(),
     Btn('Export CSV / XLSX',{onClick:()=>toast('Budget exported')}), Btn('Save draft'), Btn('Revise baseline…',{kind:'pri', onClick:()=>toast('Baseline revision v4 started')})),
+  Card('Budget by reporting group — the three figures the weekly progress review works from',
+    Tbl(['Group',{t:'Est. labour hours',n:true},{t:'Est. labour $',n:true},{t:'Est. material $',n:true},{t:'Budgeted cost',n:true},{t:'Cost to date',n:true},{t:'Variance',n:true},'State'],
+      CCGROUPS.filter(g=>BUDGET.some(b=>b[0].slice(0,2)===g[0])).map(g=>{
+        const rows = BUDGET.filter(b=>b[0].slice(0,2)===g[0]);
+        const hrs  = rows.reduce((a,b)=>a + (parseFloat(b[5])||0), 0);
+        const lab  = rows.filter(b=>b[2]==='Labour').reduce((a,b)=>a + (parseFloat(String(b[7]).replace(/,/g,''))||0), 0);
+        const mat  = rows.filter(b=>b[2]!=='Labour').reduce((a,b)=>a + (parseFloat(String(b[7]).replace(/,/g,''))||0), 0);
+        const M = n => '$'+n.toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2});
+        return [h('b',null, g[0]+' '+g[1]), {t:hrs||'—',n:true}, {t:lab?M(lab):'—',n:true}, {t:mat?M(mat):'—',n:true},
+                {t:M(lab+mat),n:true}, {t:'—',n:true}, {t:'—',n:true}, Tag('Not started','dg')];
+      }), {min:'1040px', flush:true}), {flush:true}),
+  HTM({fontSize:'11.5px', color:C.faint, margin:'-4px 0 10px'},
+    'Every group carries estimated labour hours, estimated labour cost and estimated material cost. ' +
+    'Those three are what actual cost is later compared against, and what turns a group amber or red ' +
+    'once it runs more than 10% over.'),
   Tbl(['Cost code','Scope pkg','Cost type',{t:'Qty',n:true},{t:'Unit rate',n:true},{t:'Est. hours',n:true},'Labour category',{t:'Budget cost',n:true},{t:'Actual',n:true},{t:'Variance',n:true}],
     BUDGET.map(b=>[b[0],b[1],b[2],{t:b[3],n:true},{t:b[4],n:true},{t:b[5],n:true},b[6],
       {t:'$'+b[7]+(b[8]?' <span style="color:#7C93A5;font-size:11px">placeholder</span>':''),n:true},{t:'—',n:true},{t:'—',n:true}]),
     {min:'1180px', foot:['<b>TOTAL</b>','','','','',{t:'<b>98</b>'},'',{t:'<b>$32,692.00</b>'},{t:'—'},{t:'—'}]}),
+  Card('Baseline lock', HTM({fontSize:'12.5px', lineHeight:1.75},
+    'The baseline locks automatically once the job reaches <b>10% of production</b>. From that point the ' +
+    'project manager cannot change it — a revision needs the Director. Every revision keeps its own ' +
+    'version, its reason and who approved it, so margin movement can always be traced to a decision.')),
   
   Row(Card('Markup, overhead & profit', Tbl(['Rule','Default','This job'],[
       ['Markup on materials','12%', Fld('12%',{w:'90px'})],['Markup on subcontracted','18%', Fld('18%',{w:'90px'})],
@@ -1809,7 +1833,7 @@ SCREENS.s_markup = () => Page({key:'s_markup', title:'Markup defaults', sub:'Glo
     ['Equipment', Fld('10%',{w:'90px'}), Fld('10%',{w:'90px'}), Btn('Edit',{sm:true})],
     ['Overhead', Fld('10%',{w:'90px'}), Fld('10%',{w:'90px'}), Btn('Edit',{sm:true})],
     ['Profit', Fld('10%',{w:'90px'}), Fld('10%',{w:'90px'}), Btn('Edit',{sm:true})],
-    ['Default contingency', Fld('3%',{w:'90px'}), Fld('5%',{w:'90px'}), Btn('Edit',{sm:true})]]),
+    ['Default contingency', Fld('3%',{w:'90px'}), Fld('5%',{w:'90px'}), Btn('Edit',{sm:true})],['Sales tax — materials', Fld('7%',{w:'90px'}), Fld('7%',{w:'90px'}), Btn('Edit',{sm:true})],['Sales tax — cleaning', Fld('7%',{w:'90px'}), Fld('7%',{w:'90px'}), Btn('Edit',{sm:true})]]),
   Card('Payment policy defaults', Tbl(['Setting','Value'],[
     ['Binder amount', Fld('$500',{w:'120px'})],
     ['Deposit — default percentage of contract value', Fld('40%',{w:'120px'})],
@@ -1913,7 +1937,7 @@ SCREENS.s_cal = () => Page({key:'s_cal', title:'Calendars', sub:'Google Calendar
  children:[
   Tbl(['User','Google account','Sync direction','Calendar','Last sync','Status',''],
     USERS.filter(u=>['Sales Estimator','Operations Manager','Owner / Admin'].includes(u.role)).map(u=>[
-      u.name, u.name.toLowerCase().replace(/[^a-z]/g,'.')+'@3riversgc.com','Two-way','Primary','2 min ago', Tag('Connected','ok'),
+      u.name, u.name.toLowerCase().replace(/[^a-z]/g,'.')+'@3riverscm.com','Two-way','Primary','2 min ago', Tag('Connected','ok'),
       h('div',{style:{display:'flex',gap:'6px'}}, Btn('Reconnect',{sm:true}), Btn('Disconnect',{sm:true}))]), {min:'1020px'}),
   Card('Shared calendars', Tbl(['Calendar','Purpose','Visible to'],[
     ['3Rivers — Estimate visits','All booked site visits','Everyone'],['3Rivers — On-call','Current on-call roster','Everyone']], {flush:true}), {flush:true})]});
@@ -2071,6 +2095,8 @@ SCREENS.bidpkg = (p) => { const b = BIDPKGS.find(x=>x.id===p) || BIDPKGS[1];
   Row(
    Card('Scope sent to every invited subcontractor', Stack(
      Lbl('Scope package'), Fld(b.sp), Lbl('Trade'), Fld(b.trade),
+     Lbl('Not-to-exceed amount'), Fld('$18,400.00',{w:'180px'}),
+     HTM({fontSize:'11.5px', color:C.faint},'Work beyond this figure needs an approved change order before it is carried out. It is the ceiling, not the estimate.'),
      Lbl('Scope of work'), Ta('Furnish all labour, material and equipment to complete the electrical scope as described in the attached scope of work. Includes rough-in, device installation, panel work and final trim. Site access weekdays 07:00–17:00.'),
      Lbl('Attachments'), h('div',{style:{display:'flex', gap:'6px', flexWrap:'wrap'}}, Tag('Scope of work.pdf'), Tag('Site photos.pdf'), Tag('Insurance requirements.pdf')))),
    Card('Invitation', Stack(
@@ -2228,12 +2254,34 @@ SCREENS.projsched = () => Page({key:'projsched', title:'Project scheduling',
 /* ---- Project tracking ---- */
 SCREENS.projtrack = () => Page({key:'projtrack', title:'Project tracking',
  sub:'Every active job, where it stands, and what is holding it up',
+ actions:[Btn('Submit weekly update',{kind:'pri', onClick:()=>toast('Update submitted — this job now reports into the weekly review')})],
  children:[
-  Tiles([['6','Active jobs'],['2','Behind schedule','', C.dg],['1','Awaiting a change order','', C.wn],['3','Milestones due this week','', C.pri]]),
+  Tiles([['6','Active jobs'],['2','Behind schedule','', C.dg],['1','Awaiting a change order','', C.wn],
+         ['4','Not updated this week','', C.wn]]),
+  Card('Weekly update — due before Monday 5 PM',
+   Stack(
+    HTM({fontSize:'12.5px', color:C.mut, marginBottom:'2px'},
+      'Five values, written by the project manager. Everything the Tuesday review shows for this job is ' +
+      'built on them, so a job that has not been updated shows as stale rather than as healthy.'),
+    Row(
+     Stack(Lbl('Percent complete'), Fld('62 %',{w:'120px'}),
+       HTM({fontSize:'11.5px', color:C.faint},'A realistic judgement, not a calculation. The platform does not derive it.')),
+     Stack(Lbl('Projected completion date'), Fld('Sep 12, 2026',{w:'170px'}),
+       HTM({fontSize:'11.5px', color:C.faint},'Moving it past the original date turns the job red.')),
+     Stack(Lbl('Cost to complete'), Fld('$88,900.00',{w:'160px'}),
+       HTM({fontSize:'11.5px', color:C.faint},'What is still to be spent. Drives the projected final cost.'))),
+    Row(
+     Stack(Lbl('Risk status'), Sel('Amber',['Green','Amber','Red'],{w:'150px'}),
+       HTM({fontSize:'11.5px', color:C.faint},'The manager\u2019s own call. It can only make a job worse than the automatic rules, never better.')),
+     Stack(Lbl('Notes for the review'),
+       Ta('Flashing detail reworked at the sub\u2019s cost. Roofing crew back Thursday. Client aware of the two-day slip.',{min:74}))),
+    HTM({fontSize:'11.5px', color:C.faint},
+      'Last updated Aug 25, 16:40 by Danny Kovach \u00b7 the automatic rules currently rate this job red for ' +
+      'receivables and for the subcontractor group running over budget.'))),
   Bar(Sel('Arm: All',['Arm: All','Commercial GC','Restoration / Insurance'],{w:'190px'}),
     Sel('Status: All',['Status: All','Not started','In progress','Behind schedule','Awaiting client','Complete'],{w:'200px'}),
     Sel('Project manager: All',['Project manager: All'].concat(USERS.map(u=>u.name)),{w:'220px'}), Sp(), Btn('Export CSV')),
-  Tbl(['Job','Client','Arm',{t:'Contract value',n:true},{t:'Complete',n:true},'Current milestone','Next milestone','Open items','Last update','Status'],[
+  Tbl(['Job','Client','Arm',{t:'Contract value',n:true},{t:'Complete',n:true},'Current milestone','Next milestone','Open items','Updated','Status'],[
    ['<b>L-2026-0409</b>','Northside Dental','Commercial GC',{t:'$148,200.00',n:true},{t:'62%',n:true},'Rough-in complete','Millwork · Sep 12','1 change order awaiting approval','Aug 8, 07:40', Tag('In progress','ai')],
    ['<b>L-2026-0415</b>','Robert Chen','Restoration',{t:'$62,300.00',n:true},{t:'8%',n:true},'Mitigation','Demolition · Aug 26','1 work order in rebuttal','Aug 8, 10:22', Tag('In progress','ai')],
    ['<b>L-2026-0411</b>','Linda Vasquez','Restoration',{t:'$18,940.00',n:true},{t:'85%',n:true},'Finishes','Final · Aug 20','—','Aug 7, 16:10', Tag('In progress','ai')],
@@ -2579,7 +2627,15 @@ SCREENS.s_exec = (p, st) => {
    h('div',null, Chk('Include accept and deny buttons in the email'), Chk('Allow a counter-offer'),
      Chk('Require a reason when a work order is denied')),
    Lbl('Flag a counter-offer above the budgeted amount by'), Fld('5 %',{w:'120px'}),
-   Lbl('Who may accept a counter-offer'), Sel('Owner and Operations Manager',['Owner only','Owner and Operations Manager','Any estimator'],{w:'280px'})));
+   Lbl('Who may accept a counter-offer'), Sel('Owner and Operations Manager',['Owner only','Owner and Operations Manager','Any estimator'],{w:'280px'}),
+   Lbl('Approval ladder'), Tbl(['Purchase order amount','Approved by'],[
+     ['$0 – $2,500','Construction Manager'],
+     ['$2,501 – $10,000','Operations Manager'],
+     ['$10,001 and above','Director / Owner']], {flush:true, min:'520px'}),
+   HTM({fontSize:'11.5px', color:C.faint},
+    'No purchase order means no authorised work and no payment. Emergency work may start on a verbal ' +
+    'approval from Operations or the Director, but the purchase order has to be issued within 24 hours ' +
+    'or the work is not payable.')));
  if(st.tab===2) pane = Stack(
    Card('What a subcontractor must have on file', Tbl(['Requirement','Required','Blocks'],[
     ['<b>Certificate of insurance</b>','☑','Selection for a work order or a bid, once expired'],
@@ -2615,16 +2671,37 @@ SCREENS.s_billing = (p, st) => {
     ['2','4','Email','Written notice, Operations Manager copied','A person'],
     ['3','10','Email + letter','Work suspension notice','A person'],
     ['4','21','—','Referral for legal action','The owner']], {min:'760px'})),
+   Card('Late payment policy — printed on every invoice', Stack(
+    Tbl(['How overdue','Penalty applied'],[
+     ['3 – 10 days','2 % of the invoice'],
+     ['11 – 20 days','3 % of the invoice'],
+     ['21 days and beyond','5 % of the invoice'],
+     ['Paid by credit card','5 % surcharge, regardless of timing']], {flush:true, min:'560px'}),
+    HTM({fontSize:'11.5px', color:C.faint},
+     'This is the wording 3Rivers already prints at the foot of every invoice. It is what the firm ' +
+     'collection track quotes, and it is what makes that track credible.'))),
+   Card('Escalation trigger', Stack(
+    Lbl('An invoice enters the ageing report at'), Fld('30 days past due',{w:'200px'}),
+    HTM({fontSize:'11.5px', color:C.faint},
+     'At 30 days the project manager contacts the client, accounting sends a written follow-up, and the ' +
+     'contact is logged. The job also turns red on the weekly progress review.'))),
    Card('Rules', HTM({fontSize:'12.5px', lineHeight:1.8},
-    '• <b>A person releases every firm stage from 2 onward.</b><br>• <b>A payment stops the track immediately</b>, on every channel.<br>• The wording of every stage is a template the client edits.')));
+    '• <b>A person releases every firm stage from 2 onward.</b><br>• <b>A payment stops the track immediately</b>, on every channel.<br>• The wording of every stage is a template the client edits.<br>• <b>A late fee is proposed, never applied silently</b> — a person confirms it before it reaches the client.')));
  if(st.tab===2) pane = Stack(
    Card('Accounts payable', Stack(
     Lbl('Monitored mailbox for vendor invoices'), Fld('accounts@3riverscm.com',{w:'320px'}),
-    Lbl('Approval threshold — above this the owner approves'), Fld('$5,000.00',{w:'200px'}),
-    Lbl('Accept a difference against the work order up to'), Fld('2 %',{w:'120px'}),
+    Lbl('Accept a difference against the purchase order up to'), Fld('2 %',{w:'120px'}),
     h('div',null, Chk('Hold a vendor with missing paperwork out of a payment run'),
       Chk('Require a cost code allocation before approval'),
       Chk('Require a reason when a difference is accepted')))),
+   Card('Approval thresholds — who signs off, by amount', Stack(
+    Tbl(['Purchase order amount','Approved by'],[
+     ['$0 – $2,500','Construction Manager'],
+     ['$2,501 – $10,000','Operations Manager'],
+     ['$10,001 and above','Director / Owner']], {flush:true, min:'520px'}),
+    HTM({fontSize:'11.5px', color:C.faint},
+     'The same ladder governs the purchase order in Phase 3 and the supplier invoice here. ' +
+     'A change order above $2,500 follows it too.'))),
    Card('Payment runs', Stack(
     Lbl('Run frequency'), Sel('Weekly — Friday',['Weekly — Friday','Fortnightly','On demand'],{w:'220px'}),
     Lbl('Who approves a run'), Sel('Owner only',['Owner only','Owner and Operations Manager'],{w:'260px'}),
@@ -2634,6 +2711,252 @@ SCREENS.s_billing = (p, st) => {
  return Page({key:'s_billing', title:'Billing settings',
   sub:'Invoicing, the collections policy, and how vendors are paid',
   children:[Tabs(T, st.tab), pane]});};
+
+/* ================= WEEKLY REVIEW — work in progress, logs, site visits, supplements, scorecard ================= */
+
+/* job, division, pm, contract, approved COs, estimated cost, cost to date, cost to complete,
+   billed to date, AR balance, days AR oldest, % complete (PM entered), projected completion,
+   past due?, CO pending days, drivers */
+const WIP=[
+ {job:'Robert Chen — Fire damage', ref:'L-2026-0415', tgm:0.475, div:'Reconstruction', pm:'Marcus Hale',
+  con:62300, co:0, est:32692, ctd:0, ctc:32692, bill:0, ar:0, arDays:0, pct:0,
+  due:'Sep 30, 2026', over:[], coDays:0, drivers:[]},
+ {job:'Allegheny Property Group — Tenant buildout', ref:'L-2026-0416', tgm:0.36, div:'Commercial', pm:'Marcus Hale',
+  con:184500, co:12400, est:121300, ctd:38900, ctc:86200, bill:60885, ar:0, arDays:0, pct:32,
+  due:'Nov 14, 2026', over:[], coDays:0, drivers:[]},
+ {job:'Westmoreland Retail — Roof replacement', ref:'L-2026-0414', tgm:0.30, div:'Commercial', pm:'Danny Kovach',
+  con:240000, co:0, est:171000, ctd:96400, ctc:88900, bill:72000, ar:24800, arDays:34, pct:55,
+  due:'Sep 12, 2026', over:['12 Subcontractors'], coDays:0,
+  drivers:['AR 34 days past due','12 Subcontractors 14% over budget']},
+ {job:'Massage Envy — Lobby remodel', ref:'J-2026-0388', tgm:0.35, div:'Commercial', pm:'Danny Kovach',
+  con:48600, co:7452, est:33100, ctd:29800, ctc:6900, bill:31000, ar:0, arDays:0, pct:78,
+  due:'Aug 22, 2026', over:['07 Flooring'], coDays:0,
+  drivers:['Past the projected completion date','07 Flooring 11% over budget']},
+ {job:'Belfor — Bergman', ref:'J-2026-0402', tgm:0.40, div:'Mitigation', pm:'Jason Reed',
+  con:18900, co:0, est:11400, ctd:9800, ctc:1900, bill:9450, ar:0, arDays:0, pct:62,
+  due:'Sep 5, 2026', over:[], coDays:0, drivers:['Labour trending over estimate']},
+ {job:'Belfor — Cardello Bldg', ref:'J-2026-0399', tgm:0.40, div:'Mitigation', pm:'Jason Reed',
+  con:34200, co:0, est:20100, ctd:6400, ctc:13900, bill:0, ar:0, arDays:0, pct:34,
+  due:'Sep 26, 2026', over:[], coDays:0, drivers:['Underbilled — 34% complete, nothing billed']},
+ {job:'Bella Gerlich — Whole home renovation', ref:'J-2026-0371', tgm:0.32, div:'Reconstruction', pm:'Marcus Hale',
+  con:412000, co:28900, est:288000, ctd:171000, ctc:129000, bill:198000, ar:9800, arDays:12, pct:58,
+  due:'Dec 19, 2026', over:[], coDays:19,
+  drivers:['Change order pending 19 days','Change order value not yet in the revised contract']},
+ {job:'Bluesky — ME Greensburg', ref:'J-2026-0394', tgm:0.36, div:'Reconstruction', pm:'Danny Kovach',
+  con:76400, co:0, est:49100, ctd:24200, ctc:24600, bill:30560, ar:0, arDays:0, pct:48,
+  due:'Oct 3, 2026', over:[], coDays:0, drivers:[]}];
+
+const money = n => '$' + Math.round(n).toLocaleString('en-US');
+const wipCalc = w => {
+ const revised = w.con + w.co;
+ const projFinal = w.ctd + w.ctc;
+ const projGP = revised - projFinal;
+ const gm = revised ? projGP / revised : 0;
+ const billPct = revised ? w.bill / revised : 0;
+ const under = w.pct >= 30 && billPct * 100 < 30;
+ return {revised, projFinal, projGP, gm, billPct, under};
+};
+const wipRisk = w => {
+ const c = wipCalc(w);
+ const red = [];
+ if (w.tgm - c.gm > 0.05) red.push('Margin ' + ((w.tgm - c.gm) * 100).toFixed(1) + ' points under the ' + Math.round(w.tgm*100) + '% target');
+ if (w.over.length) red.push(w.over.join(' and ') + ' over 10%');
+ if (w.arDays > 30) red.push('AR ' + w.arDays + ' days');
+ if (w.drivers.some(d => d.indexOf('Past the projected') === 0)) red.push('Past projected completion');
+ if (w.coDays > 14) red.push('Change order pending ' + w.coDays + ' days');
+ if (red.length) return {k: 'Red', t: 'dg', why: red};
+ const amber = [];
+ if (c.under) amber.push('Underbilled position');
+ w.drivers.forEach(d => { if (d.indexOf('Labour trending') === 0) amber.push(d); });
+ if (amber.length) return {k: 'Amber', t: 'wn', why: amber};
+ return {k: 'Green', t: 'ok', why: ['On margin, on schedule, billed appropriately']};
+};
+
+SCREENS.wip = () => {
+ const rows = WIP;
+ const reds = rows.filter(w => wipRisk(w).k === 'Red').length;
+ const ambers = rows.filter(w => wipRisk(w).k === 'Amber').length;
+ const greens = rows.length - reds - ambers;
+ const totalRev = rows.reduce((a, w) => a + wipCalc(w).revised, 0);
+ const totalGP = rows.reduce((a, w) => a + wipCalc(w).projGP, 0);
+ const totalAR = rows.reduce((a, w) => a + w.ar, 0);
+ const ordered = rows.slice().sort((a, b) => {
+   const o = {Red: 0, Amber: 1, Green: 2};
+   return o[wipRisk(a).k] - o[wipRisk(b).k];
+ });
+ return Page({key:'wip', title:'Work in progress',
+  sub:'Every open job on one sheet — this is what the Tuesday review runs on',
+  actions:[Btn('Export for the meeting',{onClick:()=>toast('WIP exported')}),
+           Btn('Lock this week',{kind:'pri', onClick:()=>toast('Week locked — figures frozen for the review')})],
+  children:[
+   Tiles([[String(reds),'Red — immediate review','', C.dg],
+          [String(ambers),'Amber — watching','', C.wn],
+          [String(greens),'Green','', C.ok],
+          [money(totalRev),'Revised contract value'],
+          [money(totalGP),'Projected gross profit'],
+          [money(totalAR),'Accounts receivable']]),
+   Bar(Sel('Division: All', ['Division: All','Division: Mitigation','Division: Reconstruction','Division: Commercial'],
+        {w:'230px'}),
+     Sel('Risk: All',['Risk: All','Red only','Red and amber'],{w:'170px'}),
+     Sel('Project manager: All',['Project manager: All','Marcus Hale','Danny Kovach','Jason Reed'],{w:'220px'}),
+     Sp(), HTM({fontSize:'12px', color:C.mut}, 'Updated by each project manager before Monday 5 PM')),
+   Tbl(['Risk','Job','Division','PM',{t:'Contract value',n:true},{t:'Approved COs',n:true},{t:'Revised contract',n:true},
+        {t:'Estimated cost',n:true},{t:'Cost to date',n:true},{t:'Cost to complete',n:true},{t:'Projected final cost',n:true},
+        {t:'Projected gross profit',n:true},{t:'Gross margin %',n:true},{t:'Target',n:true},{t:'Billed to date',n:true},{t:'AR balance',n:true},
+        {t:'% complete',n:true},'Projected completion',''],
+     ordered.map(w => {
+       const c = wipCalc(w), r = wipRisk(w);
+       return [Tag(r.k, r.t), h('b',null,w.job), w.div, w.pm,
+         {t:money(w.con),n:true}, {t:w.co?money(w.co):'—',n:true}, {t:money(c.revised),n:true},
+         {t:money(w.est),n:true}, {t:money(w.ctd),n:true}, {t:money(w.ctc),n:true}, {t:money(c.projFinal),n:true},
+         {t:money(c.projGP),n:true},
+         {t:'<b style="color:' + (w.tgm - c.gm > 0.05 ? C.dg : C.ink) + '">' + (c.gm*100).toFixed(1) + '%</b>',n:true},
+         {t:Math.round(w.tgm*100) + '%',n:true},
+         {t:money(w.bill),n:true},
+         {t:w.ar ? '<span style="color:' + (w.arDays>30?C.dg:C.ink) + '">' + money(w.ar) + (w.arDays?' · '+w.arDays+' d':'') + '</span>' : '—',n:true},
+         {t:w.pct + '%',n:true}, w.due,
+         Btn('Open',{sm:true, onClick:()=>go('projtrack')})];
+     }), {min:'2200px'}),
+   Card('Why each job is flagged',
+     Tbl(['Job','Risk','What triggered it'],
+       ordered.filter(w=>wipRisk(w).k!=='Green').map(w=>{
+         const r = wipRisk(w);
+         return [w.job, Tag(r.k, r.t), r.why.join(' · ')];
+       }), {min:'820px', flush:true}), {flush:true}),
+   Row(
+    Card('What turns a job red', HTM({fontSize:'12.5px', lineHeight:1.85},
+      '• Gross margin more than <b>5 points</b> under the target agreed for that job<br>' +
+      '• Any reporting group more than <b>10%</b> over its budget<br>' +
+      '• Receivables past <b>30 days</b><br>' +
+      '• Past the projected completion date<br>' +
+      '• A change order pending more than <b>14 days</b>')),
+    Card('What turns it amber', HTM({fontSize:'12.5px', lineHeight:1.85},
+      '• Labour trending over estimate<br>' +
+      '• A subcontractor change pending<br>' +
+      '• A material price spike<br>' +
+      '• An underbilled position — <b>30% complete and under 30% billed</b>')),
+    Card('The running order', HTM({fontSize:'12.5px', lineHeight:1.85},
+      '1. Pull this sheet live<br>2. Red jobs first<br>3. Margin variance<br>4. Receivables ageing<br>' +
+      '5. Underbilling<br>6. Supplements<br>7. Assign actions<br>8. Update the forecast'))),
+   Card('The rule underneath all of it', HTM({fontSize:'13px', lineHeight:1.8},
+     'No work without a budget. No change without a change order. No invoice without approval. ' +
+     'No purchase without a purchase order. No labour without a time entry. ' +
+     'No job closed without financial reconciliation.'))]});
+};
+
+/* ---------------- PM scorecard ---------------- */
+const SCORES=[
+ {pm:'Marcus Hale', jobs:3, gm:'44.1%', gmVar:'−0.9 pts', lab:'+2.4%', ar:'$9,800', co:'92%', ontime:'88%', budget:'96%'},
+ {pm:'Danny Kovach', jobs:3, gm:'38.6%', gmVar:'−6.4 pts', lab:'+11.2%', ar:'$24,800', co:'74%', ontime:'67%', budget:'89%'},
+ {pm:'Jason Reed', jobs:2, gm:'46.8%', gmVar:'+1.8 pts', lab:'+5.1%', ar:'—', co:'100%', ontime:'100%', budget:'98%'}];
+
+SCREENS.scorecard = () => Page({key:'scorecard', title:'Project manager scorecard',
+ sub:'Pulled straight from the jobs — nobody types these figures in',
+ children:[
+  Bar(Sel('Week of Aug 24, 2026',['Week of Aug 24, 2026','Week of Aug 17, 2026','Week of Aug 10, 2026'],{w:'240px'}),
+    Sel('Division: All',['Division: All','Mitigation','Reconstruction','Commercial'],{w:'200px'}),
+    Sp(), Btn('Export',{onClick:()=>toast('Scorecard exported')})),
+  Tbl(['Project manager',{t:'Open jobs',n:true},{t:'Gross margin',n:true},{t:'Margin variance',n:true},
+       {t:'Labour variance',n:true},{t:'AR over 30 days',n:true},{t:'CO capture ratio',n:true},
+       {t:'On-time completion',n:true},{t:'Budget accuracy',n:true}],
+    SCORES.map(x=>[h('b',null,x.pm), {t:x.jobs,n:true}, {t:x.gm,n:true},
+      {t:'<span style="color:' + (x.gmVar.indexOf('−')===0 && parseFloat(x.gmVar.replace('−',''))>5 ? '#B3261E' : '#0F172A') + '">' + x.gmVar + '</span>',n:true},
+      {t:x.lab,n:true}, {t:x.ar,n:true}, {t:x.co,n:true}, {t:x.ontime,n:true}, {t:x.budget,n:true}]),
+    {min:'1080px'}),
+  Card('What each figure means', Tbl(['Metric','How it is worked out'],[
+    ['<b>Gross margin</b>','Projected gross profit over revised contract value, across the jobs this person runs.'],
+    ['<b>Margin variance</b>','How far that sits from the target gross margin agreed when each job was set up.'],
+    ['<b>Labour variance</b>','Actual labour hours against the hours estimated per reporting group.'],
+    ['<b>AR over 30 days</b>','Receivables on their jobs that have aged past the escalation threshold.'],
+    ['<b>CO capture ratio</b>','Extra work that ended up on an approved change order, against extra work that was performed.'],
+    ['<b>On-time completion</b>','Jobs finished on or before the projected completion date.'],
+    ['<b>Budget accuracy</b>','Final cost against the locked baseline.']], {flush:true, min:'760px'}), {flush:true}),
+  Card('Why this screen exists', HTM({fontSize:'12.5px', lineHeight:1.8},
+    'The client asked for role-based visibility in the kickoff — everyone able to see, in real time, how ' +
+    'they are performing. These seven figures are the ones their own procedure names, and project manager ' +
+    'bonuses are tied to four of them: margin protection, receivables speed, change order recovery and ' +
+    'schedule adherence. Because of that, the figures have to be traceable to the jobs they came from — ' +
+    'every number here opens the list behind it.'))]});
+
+/* ---------------- Daily logs ---------------- */
+const LOGS=[
+ {d:'Aug 26', job:'Massage Envy — Lobby remodel', by:'Danny Kovach', ph:12, budget:'On', sched:'Behind — 2 days', clean:'Yes', qual:'Yes', flag:true},
+ {d:'Aug 26', job:'Bella Gerlich — Whole home renovation', by:'Marcus Hale', ph:18, budget:'On', sched:'On', clean:'Yes', qual:'Yes', flag:false},
+ {d:'Aug 25', job:'Westmoreland Retail — Roof replacement', by:'Danny Kovach', ph:10, budget:'Over', sched:'On', clean:'Yes', qual:'Partial — flashing rework', flag:true},
+ {d:'Aug 25', job:'Belfor — Bergman', by:'Jason Reed', ph:14, budget:'On', sched:'On', clean:'Yes', qual:'Yes', flag:false},
+ {d:'Aug 24', job:'Allegheny Property Group — Tenant buildout', by:'Marcus Hale', ph:11, budget:'On', sched:'On', clean:'Yes', qual:'Yes', flag:false}];
+
+SCREENS.dailylogs = () => Page({key:'dailylogs', title:'Daily logs',
+ sub:'Filled on site at the end of every manager visit — the source of what the weekly review believes',
+ actions:[Btn('+ New log',{kind:'pri', onClick:()=>toast('Opens on the phone, at the job')})],
+ children:[
+  Bar(Fld('',{ph:'Search job…', w:'240px'}), Sel('Job: All',['Job: All'].concat(WIP.map(w=>w.job)),{w:'260px'}),
+    Sel('Author: All',['Author: All','Marcus Hale','Danny Kovach','Jason Reed'],{w:'200px'}),
+    Sp(), Tag('Minimum 10 photos per visit')),
+  Tbl(['Date','Job','By',{t:'Photos',n:true},'On budget?','On schedule?','Site clean & safe?','Quality expectations met?',''],
+    LOGS.map(l=>[l.d, h('b',null,l.job), l.by,
+      {t:'<b style="color:' + (l.ph<10?'#B3261E':'#0F172A') + '">' + l.ph + '</b>',n:true},
+      l.budget==='On'?Tag('On budget','ok'):Tag(l.budget,'dg'),
+      l.sched==='On'?Tag('On schedule','ok'):Tag(l.sched,'wn'),
+      Tag(l.clean,'ok'), l.qual==='Yes'?Tag('Yes','ok'):Tag(l.qual,'wn'),
+      Btn('Open',{sm:true})]), {min:'1180px'}),
+  Card('The five questions, answered at the end of every visit', HTM({fontSize:'12.5px', lineHeight:1.9},
+    '1. Is the project on or off budget? If off, how is it getting back on?<br>' +
+    '2. Is the timeline on or off schedule? If off, how is it getting back on?<br>' +
+    '3. Is the job site clean, safe and organised?<br>' +
+    '4. Are subcontractor and internal installations exceeding quality expectations?<br>' +
+    '5. How are you exceeding client expectations today?')),
+  Card('Working without signal', HTM({fontSize:'12.5px', lineHeight:1.8},
+    'Job sites lose service. The log is written on the phone and held locally, and the photos are taken ' +
+    'from the camera roll when the phone is back in range — but the log still belongs to the day the ' +
+    'visit happened, not the day it uploaded. That distinction has to survive the sync.'))]});
+
+/* ---------------- Site visit compliance ---------------- */
+SCREENS.sitevisits = () => Page({key:'sitevisits', title:'Site visits',
+ sub:'Two visits a week per project, by the assigned manager. This is who is behind.',
+ children:[
+  Tiles([['3','Projects short of two visits','', C.dg],['5','On track','', C.ok],['65','Photos this week']]),
+  Bar(Sel('Week of Aug 24, 2026',['Week of Aug 24, 2026','Week of Aug 17, 2026'],{w:'240px'}),
+    Sel('Manager: All',['Manager: All','Marcus Hale','Danny Kovach','Jason Reed'],{w:'200px'}), Sp()),
+  Tbl(['Job','Assigned manager',{t:'Visits this week',n:true},{t:'Required',n:true},'Last visit',{t:'Photos',n:true},'State',''],
+    [['Massage Envy — Lobby remodel','Danny Kovach',{t:'1',n:true},{t:'2',n:true},'Aug 26',{t:'12',n:true},Tag('One short','wn'),Btn('Open',{sm:true})],
+     ['Westmoreland Retail — Roof replacement','Danny Kovach',{t:'1',n:true},{t:'2',n:true},'Aug 25',{t:'10',n:true},Tag('One short','wn'),Btn('Open',{sm:true})],
+     ['Bluesky — ME Greensburg','Danny Kovach',{t:'0',n:true},{t:'2',n:true},'Aug 19',{t:'0',n:true},Tag('No visit this week','dg'),Btn('Open',{sm:true})],
+     ['Bella Gerlich — Whole home renovation','Marcus Hale',{t:'2',n:true},{t:'2',n:true},'Aug 26',{t:'18',n:true},Tag('Met','ok'),Btn('Open',{sm:true})],
+     ['Allegheny Property Group — Tenant buildout','Marcus Hale',{t:'2',n:true},{t:'2',n:true},'Aug 24',{t:'11',n:true},Tag('Met','ok'),Btn('Open',{sm:true})],
+     ['Robert Chen — Fire damage','Marcus Hale',{t:'2',n:true},{t:'2',n:true},'Aug 25',{t:'14',n:true},Tag('Met','ok'),Btn('Open',{sm:true})],
+     ['Belfor — Bergman','Jason Reed',{t:'2',n:true},{t:'2',n:true},'Aug 25',{t:'14',n:true},Tag('Met','ok'),Btn('Open',{sm:true})],
+     ['Belfor — Cardello Bldg','Jason Reed',{t:'2',n:true},{t:'2',n:true},'Aug 23',{t:'10',n:true},Tag('Met','ok'),Btn('Open',{sm:true})]], {min:'1000px'}),
+  Card('Why this is counted', HTM({fontSize:'12.5px', lineHeight:1.8},
+    'A weekly review is only as good as what the project managers saw with their own eyes. The standard ' +
+    'is two visits a week per project, with at least ten photographs each. A project that is behind on ' +
+    'visits is a project whose reported progress nobody has checked.'))]});
+
+/* ---------------- Insurance supplements ---------------- */
+SCREENS.supplements = () => Page({key:'supplements', title:'Insurance supplements',
+ sub:'Extra scope submitted to a carrier, and how long it has been sitting there',
+ actions:[Btn('+ New supplement',{kind:'pri'})],
+ children:[
+  Tiles([['2','Past 14 days without follow-up','', C.dg],['3','Awaiting carrier response','', C.wn],
+         ['$48,200','Value in flight'],['6','Approved this month','', C.ok]]),
+  Bar(Sel('Carrier: All',['Carrier: All','Allstate','State Farm','Erie','Travelers'],{w:'190px'}),
+    Sel('State: All',['State: All','Submitted','Carrier reviewing','Approved','Partially approved','Denied'],{w:'220px'}), Sp()),
+  Tbl(['Job','Carrier','Claim','Adjuster',{t:'Value',n:true},'Submitted','Carrier response',{t:'Age',n:true},'State',''],
+    [['Robert Chen — Fire damage','Allstate','AL-772104','M. Reyes',{t:'$8,400',n:true},'Aug 8','—',{t:'<b style="color:#B3261E">19 d</b>',n:true},Tag('No response','dg'),Btn('Chase',{sm:true})],
+     ['Belfor — Cardello Bldg','Erie','ER-118902','K. Doyle',{t:'$12,900',n:true},'Aug 11','—',{t:'<b style="color:#B3261E">16 d</b>',n:true},Tag('No response','dg'),Btn('Chase',{sm:true})],
+     ['Bella Gerlich — Whole home renovation','State Farm','SF-449021','T. Nowak',{t:'$26,900',n:true},'Aug 20','Aug 24 — under review',{t:'7 d',n:true},Tag('Carrier reviewing','wn'),Btn('Open',{sm:true})],
+     ['Belfor — Bergman','Allstate','AL-770044','M. Reyes',{t:'$3,200',n:true},'Aug 14','Aug 19 — approved',{t:'—',n:true},Tag('Approved','ok'),Btn('Open',{sm:true})]], {min:'1200px'}),
+  Card('The rule', HTM({fontSize:'12.5px', lineHeight:1.8},
+    'No supplement should be older than <b>14 days without a documented follow-up</b>. Anything past that ' +
+    'is on the weekly review. And nothing on a supplement is billed to the client until the carrier has ' +
+    'approved it — a progress invoice only ever carries approved scope and approved change orders.')),
+  Card('What a supplement carries', Tbl(['Field','Why it is held'],[
+    ['<b>Submitted date</b>','Starts the clock that drives the ageing above.'],
+    ['<b>Carrier response date</b>','Stops it, and records how long that carrier actually takes.'],
+    ['<b>Adjuster</b>','Who to chase. Carried from the job.'],
+    ['<b>Replacement cost vs actual cash value</b>','The two figures a restoration claim settles between.'],
+    ['<b>Depreciation held</b>','What the carrier is holding back until the work is proved complete.'],
+    ['<b>Mortgage company</b>','On larger losses the cheque is made out jointly and has to be endorsed.']], {flush:true, min:'760px'}), {flush:true})]});
 
 /* ================= PHASE 5 — FIELD OPERATIONS, TIMEKEEPING & PAYROLL ================= */
 
