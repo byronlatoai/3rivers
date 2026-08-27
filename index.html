@@ -319,11 +319,11 @@ const NAV=[
   {l:'Execution',id:'x6',items:[['s_exec','Bid & work order rules']]},
   {l:'Field & payroll',id:'x8',items:[['s_time','Time & payroll rules']]},
   {l:'Billing',id:'x7',items:[['s_billing','Invoicing & collections']]},
-  {l:'System',id:'x5',items:[['s_team','Team & Roles'],['s_fields','Custom Fields'],['s_cal','Calendars'],['s_integr','Integrations'],['s_audit','Audit Log']]}]}];
+  {l:'System',id:'x5',items:[['s_team','Team & Roles'],['s_lists','Lists & values'],['s_fields','Custom Fields'],['s_cal','Calendars'],['s_integr','Integrations'],['s_audit','Audit Log']]}]}];
 const OWNER={timesheet:'timesheets',sub:'subs',bidpkg:'bids',workorder:'workorders',invoice:'invoices',lead:'hotlist',newlead:'hotlist',call:'calls',contact:'contacts',cadence:'s_cadences',cadence_new:'s_cadences',template:'s_templates',
  estimate:'equeue',mapping:'equeue',scope:'equeue',budget:'equeue',narrative:'equeue',photos:'equeue',photoreport:'equeue',
  proposal:'proposals',schedule:'schedules',versions:'proposals',acceptance:'proposals',inspection:'sessions'};
-const TITLES={wip:'Work in progress',scorecard:'PM scorecard',dailylogs:'Daily logs',sitevisits:'Site visits',supplements:'Insurance supplements',crew:'Crew & assignments',timeclock:'Time clock',timeentries:'Time entries',timesheets:'Timesheets',timesheet:'Timesheet',labourcost:'Labour cost allocation',payroll:'Payroll preparation',gusto:'Gusto sync',s_time:'Time & payroll rules',subs:'Subcontractors',sub:'Subcontractor',bids:'Bid management',bidpkg:'Bid package',bidcompare:'Bid comparison',workorders:'Work orders',workorder:'Work order',subcontracts:'Subcontractor agreements',projsched:'Project scheduling',projtrack:'Project tracking',changeorders:'Change orders',subportal:'Subcontractor portal',clientportal:'Client portal',invoices:'Invoices (AR)',invoice:'Invoice',collections:'Payments & collections',apinvoices:'Vendor invoices (AP)',apocr:'Invoice OCR',qbsync:'QuickBooks sync',payruns:'Payment runs',s_exec:'Bid & work order rules',s_billing:'Invoicing & collections',dashboard:'Dashboard',hotlist:'Hotlist',calls:'Calls',inbox:'Inbox Capture',appointments:'Appointments',equeue:'Estimating queue',
+const TITLES={s_lists:'Lists & values',wip:'Work in progress',scorecard:'PM scorecard',dailylogs:'Daily logs',sitevisits:'Site visits',supplements:'Insurance supplements',crew:'Crew & assignments',timeclock:'Time clock',timeentries:'Time entries',timesheets:'Timesheets',timesheet:'Timesheet',labourcost:'Labour cost allocation',payroll:'Payroll preparation',gusto:'Gusto sync',s_time:'Time & payroll rules',subs:'Subcontractors',sub:'Subcontractor',bids:'Bid management',bidpkg:'Bid package',bidcompare:'Bid comparison',workorders:'Work orders',workorder:'Work order',subcontracts:'Subcontractor agreements',projsched:'Project scheduling',projtrack:'Project tracking',changeorders:'Change orders',subportal:'Subcontractor portal',clientportal:'Client portal',invoices:'Invoices (AR)',invoice:'Invoice',collections:'Payments & collections',apinvoices:'Vendor invoices (AP)',apocr:'Invoice OCR',qbsync:'QuickBooks sync',payruns:'Payment runs',s_exec:'Bid & work order rules',s_billing:'Invoicing & collections',dashboard:'Dashboard',hotlist:'Hotlist',calls:'Calls',inbox:'Inbox Capture',appointments:'Appointments',equeue:'Estimating queue',
  sessions:'Inspection sessions',photolib:'Photo library',proposals:'Proposals',schedules:'Payment schedules',contacts:'Contacts',properties:'Properties',
  newlead:'New lead',s_ai:'AI Receptionist',s_oncall:'On-Call Schedule',s_assign:'Assignment Rules',s_pipeline:'Pipeline & Stages',
  s_cadences:'Automations & Cadences',s_rules:'Sending Rules',s_templates:'Templates',s_cost:'Cost codes & trades',s_markup:'Markup defaults',
@@ -2098,7 +2098,20 @@ SCREENS.bidpkg = (p) => { const b = BIDPKGS.find(x=>x.id===p) || BIDPKGS[1];
      Lbl('Not-to-exceed amount'), Fld('$18,400.00',{w:'180px'}),
      HTM({fontSize:'11.5px', color:C.faint},'Work beyond this figure needs an approved change order before it is carried out. It is the ceiling, not the estimate.'),
      Lbl('Scope of work'), Ta('Furnish all labour, material and equipment to complete the electrical scope as described in the attached scope of work. Includes rough-in, device installation, panel work and final trim. Site access weekdays 07:00–17:00.'),
-     Lbl('Attachments'), h('div',{style:{display:'flex', gap:'6px', flexWrap:'wrap'}}, Tag('Scope of work.pdf'), Tag('Site photos.pdf'), Tag('Insurance requirements.pdf')))),
+     Lbl('Attachments'), h('div',{style:{display:'flex', gap:'6px', flexWrap:'wrap'}}, Tag('Scope of work.pdf'), Tag('Site photos.pdf'), Tag('Insurance requirements.pdf')),
+     Lbl('Working hours'), Fld('9:00 PM to 6:00 AM',{w:'220px'}),
+     Lbl('Schedule requirement'), Fld('All work on consecutive nights, within two nights of starting',{w:'100%'}))),
+   Card('Photographs the subcontractor has to submit', Stack(
+     HTM({fontSize:'12px', color:C.mut},
+      'Set per working day, and per package. The subcontractor uploads against these from the portal, and ' +
+      'the work order cannot be marked complete until every required shot is in.'),
+     Lbl('Day one'),
+     Ta('Room contents removed and relocated\nFront desk and product shelving protected\nExisting flooring removed\nMud bed removed\nConcrete primed for self-levelling underlayment\nSelf-levelling underlayment applied, if time allows',{min:120}),
+     Lbl('Day two'),
+     Ta('Completed self-levelling underlayment\nFlooring adhesive applied\nLVP flooring installation\nBaseboard and cove base installation\nFinal clean\nRoom contents returned to their original position',{min:120}),
+     h('div',{style:{display:'flex', gap:'8px', flexWrap:'wrap'}}, Btn('+ Add a day'), Btn('Use a template')),
+     h('div',null, Chk('Require photographs at the start and end of each working day'),
+       Chk('Block completion until every required photograph is uploaded')))),
    Card('Invitation', Stack(
      Lbl('Due date'), Fld(b.due), Lbl('Reminder interval'), Sel('Every 48 hours',['Every 24 hours','Every 48 hours','Every 3 days','No reminders']),
      Lbl('Stop chasing after'), Fld('5 reminders'),
@@ -2306,12 +2319,39 @@ SCREENS.changeorders = () => Page({key:'changeorders', title:'Change orders',
  sub:'Work beyond the signed contract — approved by the client, then invoiced',
  actions:[Btn('+ New change order',{kind:'pri'})],
  children:[
-  Tiles([['1','Awaiting client approval','', C.wn],['1','Approved, not yet invoiced','', C.pri],['$8,140','Change order value this month'],['3','This year']]),
+  Tiles([['1','Awaiting client approval','', C.wn],['1','Work paused pending approval','', C.dg],
+         ['1','Approved, not yet invoiced','', C.pri],['$8,140','Change order value this month']]),
+  Card('How a change order moves', Tbl(['Step','Who','What happens'],[
+   ['<b>1 · Identify and document</b>','Construction manager','Photographs, the reason and the location, logged within 24 hours of noticing it.'],
+   ['<b>2 · Pause the affected work</b>','Construction manager','<b>Only the changed scope stops</b> — the rest of the job carries on. The area is secured if it needs to be, and the client is told about the delay.'],
+   ['<b>3 · Price it</b>','Estimator','Labour, materials, equipment, subcontractors, overhead and profit, and the days it adds. Insurance work is priced as a supplement in Xactimate.'],
+   ['<b>4 · Internal approval</b>','Operations or Director','Required for <b>anything over $2,500</b>, any schedule extension, and any exception to the agreed margin.'],
+   ['<b>5 · Client or adjuster approval</b>','Client · owner · adjuster','Written only — a signature in the platform or an approved email. <b>Verbal approval is not acceptable.</b>'],
+   ['<b>6 · Execute and bill</b>','Construction manager','Work resumes, the signed change order is attached to the invoice, and the revised contract value updates.']],
+   {min:'980px', flush:true}), {flush:true}),
   Bar(Sel('Status: All',['Status: All','Draft','Sent for approval','Approved','Declined','Invoiced','Paid'],{w:'210px'}),
     Sel('Job: All',['Job: All'].concat(QUEUE.map(q=>q.id)),{w:'190px'}), Sp(), Btn('Export CSV')),
   Tbl(['Change order','Job','Client','Description',{t:'Amount',n:true},'Origin','Client approval','Invoice','Status'],
    COS.map(c=>({key:c.id, c:['<b>'+c.id+'</b>', c.job, c.client, c.d, {t:'$'+c.amt, n:true}, c.org, c.appr, c.inv,
      c.st==='Paid'?Tag('Paid','ok'):c.st==='Invoiced'?Tag('Invoiced','ai'):Tag('Sent for approval','wn')]})), {min:'1240px'}),
+  Row(
+   Card('What starts one', HTM({fontSize:'12.5px', lineHeight:1.9},
+    '• A hidden condition found on opening — rot, mould, asbestos, structural damage<br>' +
+    '• The client asks for something more<br>' +
+    '• A code requirement that was not visible at estimate<br>' +
+    '• The carrier revises the scope<br>' +
+    '• A material has to be substituted because of availability<br>' +
+    '• <b>Quantities that move 10% or more</b> from the estimate')),
+   Card('If somebody skips it', HTM({fontSize:'12.5px', lineHeight:1.9},
+    'Work carried out without an approved change order is <b>not payable</b>. It is written off, and it ' +
+    'counts against the project manager, whose change order capture ratio is one of the seven figures on ' +
+    'the weekly scorecard.<br><br>Change orders are numbered in sequence — CO-001, CO-002 — and live in ' +
+    'the job\u2019s financial folder.')),
+   Card('The one exception', HTM({fontSize:'12.5px', lineHeight:1.9},
+    'Emergency work may go ahead without prior approval when <b>life safety is at risk</b>, there is ' +
+    '<b>active water intrusion</b>, or there is a <b>structural collapse risk</b>.<br><br>' +
+    'Management is told immediately, the change order is documented and submitted <b>within 24 hours</b>, ' +
+    'and photographs and a written justification are required.'))),
   Row(
    Card('What a change order carries', Tbl(['Field','What it holds'],[
     ['Description','What the extra work is, in the words the client will read'],
@@ -2466,7 +2506,20 @@ SCREENS.invoice = (p) => { const i = INVOICES.find(x=>x.id===p) || INVOICES[0];
 SCREENS.collections = () => Page({key:'collections', title:'Payments & collections',
  sub:'Chasing what is owed, with the tone matched to whether work is already under way',
  children:[
-  Tiles([['2','Overdue invoices','', C.dg],['$36,690','Overdue value','', C.dg],['2','In the firm policy track','', C.wn],['17 d','Longest overdue']]),
+  Tiles([['2','Overdue invoices','', C.dg],['$36,690','Overdue value','', C.dg],
+         ['1','Past 30 days — escalated','', C.dg],['2','In the firm policy track','', C.wn]]),
+  Card('Ageing', Tbl(['Bracket',{t:'Invoices',n:true},{t:'Value',n:true},'What happens','Late fee'],[
+   ['<b>Current</b>',{t:'6',n:true},{t:'$84,200.00',n:true},'Nothing.','—'],
+   ['<b>1 – 2 days</b>',{t:'1',n:true},{t:'$14,460.00',n:true},'The track sends its first reminder.','—'],
+   ['<b>3 – 10 days</b>',{t:'1',n:true},{t:'$22,230.00',n:true},'Second reminder, and the firm track quotes the policy.','<b>2 %</b>'],
+   ['<b>11 – 20 days</b>',{t:'0',n:true},{t:'—',n:true},'Written notice with the Operations Manager copied.','<b>3 %</b>'],
+   ['<b>21 – 30 days</b>',{t:'0',n:true},{t:'—',n:true},'Work suspension notice.','<b>5 %</b>'],
+   ['<b>Over 30 days</b>',{t:'1',n:true},{t:'$24,800.00',n:true},'<b>Escalated.</b> The project manager calls the client, accounting writes, the contact is logged, and the job turns red on the weekly review.','<b>5 %</b>']],
+   {min:'1080px', flush:true}), {flush:true}),
+  Card('About the late fee', HTM({fontSize:'12.5px', lineHeight:1.8},
+   'The percentages come from the policy 3Rivers already prints at the foot of every invoice, and a ' +
+   'credit card payment carries a further 5% regardless of timing. <b>The platform proposes a late fee ' +
+   'and a person confirms it</b> — it is never added to a client\u2019s balance on its own.')),
   Card('Two tracks, not one', Tbl(['Track','When it applies','How it reads'],[
    ['<b>Friendly</b>','The client accepted and has not paid the deposit. <b>No work has started, nothing has been spent.</b>','A reminder that the deposit has not arrived yet, and a payment link.'],
    ['<b>Firm, policy-backed</b>','The job is <b>in production</b> — materials bought and labour spent — and a payment is late.','States the payment policy in the signed agreement, the consequence of continued non-payment, and escalates on a schedule that ends in a legal referral.']], {min:'880px'}), {hard:true}),
@@ -2711,6 +2764,72 @@ SCREENS.s_billing = (p, st) => {
  return Page({key:'s_billing', title:'Billing settings',
   sub:'Invoicing, the collections policy, and how vendors are paid',
   children:[Tabs(T, st.tab), pane]});};
+
+
+/* ---------------- Lists & values ---------------- */
+const PROJTYPES=['Attic Space – Residential','Basement – Residential Remodel','Bathroom – Residential Remodel',
+ 'CC – Repair referral','Commercial Electrical – Exterior','Commercial Repair','Concrete Flatwork',
+ 'Deck – Residential Build','Insurance Mitigation','Insurance Recon','Kitchen – Residential Remodel',
+ 'Maintenance','Modular Home Build','Multi Room – Commercial Remodel','Multi Room – Residential Remodel',
+ 'Office – Commercial Build','Office – Commercial Remodel','Patio Build','Porch – Remodel','Porch Demolition',
+ 'Residential – remodel','Residential Bathroom Remodel','Residential Maintenance','Residential Plumbing',
+ 'Roof – Commercial','Roof – Residential','Structural Review','Subcontractor Repair Referral',
+ 'Water Damage Restoration','Waterproofing','Whole home build – Residential','Whole House Remodel – Period Correct'];
+
+SCREENS.s_lists = (p, st) => {
+ const T = ['Project types','Lead statuses','Sources','Divisions'];
+ let pane = null;
+ if(st.tab===0) pane = Stack(
+   Bar(Fld('',{ph:'Search…', w:'240px'}), Sp(),
+     HTM({fontSize:'12px', color:C.mut}, PROJTYPES.length + ' values in use'),
+     Btn('+ Add project type',{kind:'pri'})),
+   Card('Project types', h('div',{style:{display:'flex', gap:'6px', flexWrap:'wrap'}},
+     ...PROJTYPES.map(v=>Tag(v + ' ✕'))), {flush:false}),
+   Card('Where this list came from', HTM({fontSize:'12.5px', lineHeight:1.8},
+     'Read from the values 3Rivers uses today. Each one drives which question set the receptionist asks, ' +
+     'which division a lead belongs to, and how the pipeline reports.<br><br>' +
+     '<b>Confirm this list before building against it.</b> It was read from their system rather than ' +
+     'exported, so a value or two may be missing, and several look like duplicates that they may want to ' +
+     'merge — <i>Bathroom – Residential Remodel</i> and <i>Residential Bathroom Remodel</i>, ' +
+     '<i>Maintenance</i> and <i>Residential Maintenance</i>.')));
+ if(st.tab===1) pane = Stack(
+   Card('Lead statuses', Tbl(['Status','What it means','Counts as open'],[
+     ['<b>Open</b>','Received, not yet worked.','Yes'],
+     ['<b>In progress</b>','Somebody is actively on it.','Yes'],
+     ['<b>On hold</b>','Paused for a reason outside our control — waiting on a carrier, or the client has gone quiet.','Yes'],
+     ['<b>Pending</b>','Waiting on a decision that is expected.','Yes'],
+     ['<b>Sold</b>','Won. Becomes a job.','No'],
+     ['<b>Lost</b>','Went to someone else, or the client did not proceed.','No'],
+     ['<b>No opportunity</b>','Never qualified — out of area, out of scope, not real work.','No']], {min:'820px', flush:true}), {flush:true}),
+   Card('Why on hold matters', HTM({fontSize:'12.5px', lineHeight:1.8},
+     'Without it, a lead waiting on a carrier sits in a stage that misdescribes it and keeps triggering ' +
+     'chase steps at a client who cannot answer yet. On hold stops the cadence without closing the lead.')));
+ if(st.tab===2) pane = Stack(
+   Card('Sources', Tbl(['Source','What it is','Carries extra fields'],[
+     ['<b>Referral</b>','A person or a past client sent them.','—'],
+     ['<b>Google</b>','Found through search.','—'],
+     ['<b>Contractor Connection</b>','A claims network that assigns repair work.','Programme reference, carrier, claim, adjuster, first-contact deadline'],
+     ['<b>Programme assignment</b>','Work assigned by a larger restoration company — Belfor, Servpro, Bluesky, Brand Point, Cambria.','Programme reference, carrier, claim, adjuster, first-contact deadline'],
+     ['<b>Web form</b>','Submitted on 3riverscm.com.','—'],
+     ['<b>Repeat customer</b>','Someone they have worked for before.','Links to the previous job'],
+     ['<b>Bid list</b>','Invited to bid on a commercial project.','Bid documents, submission deadline']], {min:'980px', flush:true}), {flush:true}),
+   Card('The one that carries the volume', HTM({fontSize:'12.5px', lineHeight:1.8},
+     'Programme work is a large share of what comes in — of the first twenty-two open jobs in their ' +
+     'system, seventeen are Belfor. A programme assignment is not an enquiry: it arrives already ' +
+     'qualified, with a claim behind it and a clock running on first contact.')));
+ if(st.tab===3) pane = Stack(
+   Card('Divisions', Tbl(['Division','What it covers','Reports separately'],[
+     ['<b>Mitigation</b>','The emergency response — drying, containment, extraction.','Yes'],
+     ['<b>Reconstruction</b>','Putting the property back, on an insurance claim.','Yes'],
+     ['<b>Commercial</b>','General contracting for businesses, no insurance involved.','Yes']], {min:'820px', flush:true}), {flush:true}),
+   Card('Why three and not two', HTM({fontSize:'12.5px', lineHeight:1.8},
+     'The business is often described as two arms — commercial and restoration. Their own procedure ' +
+     'splits it three ways and holds a <b>separate weekly review per division</b>, because mitigation and ' +
+     'reconstruction run on different clocks and different margins even though both are insurance work.')));
+ return Page({key:'s_lists', title:'Lists & values',
+  sub:'The values behind every dropdown — editable without a code change',
+  children:[Tabs(T, st.tab), pane]});
+};
 
 /* ================= WEEKLY REVIEW — work in progress, logs, site visits, supplements, scorecard ================= */
 
