@@ -104,7 +104,7 @@ const BAR = "'Barlow',sans-serif";
 /* ---------------- sample data ---------------- */
 const USERS=[
  {id:'u1',name:'Joshua Tohey',role:'Owner / Admin',oncall:true,arms:'Both',max:'—',level:'—',active:true},
- {id:'u2',name:'Byron',role:'Operations Manager',oncall:true,arms:'Both',max:'—',level:'—',active:true},
+ {id:'u2',name:'Brian McClelland',role:'Operations Manager',oncall:true,arms:'Both',max:'—',level:'—',active:true},
  {id:'u3',name:"Jathan D'Antonio",role:'Sales Estimator',oncall:false,arms:'Both',max:25,level:'Senior',active:true},
  {id:'u4',name:'Kyle Brennan',role:'Sales Estimator',oncall:false,arms:'Restoration',max:20,level:'Senior',active:true},
  {id:'u5',name:'Marcus Hale',role:'Sales Estimator',oncall:false,arms:'Both',max:10,level:'Junior',active:true},
@@ -135,7 +135,7 @@ const LEADS=[
  {id:'L-2026-0413',client:'Linda Vasquez',ctype:'Individual',company:'',arm:'Restoration',emg:true,job:'Mold',src:'AI Call',stage:'Assigned',assigned:'Kyle Brennan',created:'Aug 6, 19:31',last:'Aug 6, 19:48',next:'First contact overdue',cad:'Running · step 1 of 4',value:null,
   phone:'(412) 555-0455',phone2:'',email:'l.vasquez@example.com',pref:'Text',addr:'19 Beechwood Blvd',city:'Pittsburgh',state:'PA',zip:'15217',ptype:'Duplex',access:'Tenant occupied unit B',
   desc:'Visible black mould in basement and bathroom ceiling. Tenant reporting respiratory symptoms.',carrier:'Erie Insurance',claim:'ER-2026-4471',bidref:'',biddue:'',
-  avail:'Evenings after 5pm',notes:'AI picked up "mould" + "can\'t breathe" → EMERGENCY. Transferred successfully to Byron.',
+  avail:'Evenings after 5pm',notes:'AI picked up "mould" + "can\'t breathe" → EMERGENCY. Transferred successfully to Brian McClelland.',
   q:{scope:'Mould remediation basement + bathroom',sa:'Qualified',budget:'Unknown — checking coverage',ba:'Unclear',time:'This week',ta:'Qualified',out:'Needs more info'}},
  {id:'L-2026-0412',client:'Tri-State Logistics',ctype:'Organization',company:'Tri-State Logistics Inc',arm:'Commercial GC',emg:false,job:'Warehouse repair',src:'Referral',stage:'Qualified',assigned:null,created:'Aug 6, 08:15',last:'—',next:'Assign estimator',cad:'Not started',value:'55,000',
   phone:'(304) 555-0210',phone2:'',email:'ops@tristatelog.com',pref:'Phone',addr:'1450 Industrial Pkwy',city:'Weirton',state:'WV',zip:'26062',ptype:'Warehouse',access:'Gate code required',
@@ -149,8 +149,8 @@ const LEADS=[
   q:{scope:'Siding + gutter repair',sa:'Qualified',budget:'Under $10k',ba:'Not qualified',time:'—',ta:'—',out:'Not qualified'}}];
 
 const CALLS=[
- {t:'Aug 7, 02:14',from:'(412) 555-0142',dur:'3:12',cls:'EMERGENCY',out:'Lead created',to:'Byron',res:'Not answered',lead:'L-2026-0417'},
- {t:'Aug 6, 19:31',from:'(412) 555-0455',dur:'4:41',cls:'EMERGENCY',out:'Lead created · transferred',to:'Byron',res:'Answered',lead:'L-2026-0413'},
+ {t:'Aug 7, 02:14',from:'(412) 555-0142',dur:'3:12',cls:'EMERGENCY',out:'Lead created',to:'Brian McClelland',res:'Not answered',lead:'L-2026-0417'},
+ {t:'Aug 6, 19:31',from:'(412) 555-0455',dur:'4:41',cls:'EMERGENCY',out:'Lead created · transferred',to:'Brian McClelland',res:'Answered',lead:'L-2026-0413'},
  {t:'Aug 6, 09:41',from:'(412) 555-0338',dur:'4:05',cls:'Non-emergency',out:'Lead created · visit booked',to:'—',res:'—',lead:'L-2026-0415'},
  {t:'Aug 6, 11:03',from:'(724) 555-0812',dur:'0:48',cls:'Non-emergency',out:'Not qualified — outside service area',to:'—',res:'—',lead:''},
  {t:'Aug 5, 13:22',from:'(412) 555-0990',dur:'0:12',cls:'—',out:'ABANDONED — follow-up task created',to:'—',res:'—',lead:''},
@@ -201,10 +201,10 @@ const TEMPLATES=[
  {n:'Firm payment demand',c:'Email',u:'Invoice Follow-Up — job in production',e:'Aug 1'},
  {n:'Appointment confirmation',c:'SMS',u:'Appointment reminders',e:'Jul 28'}];
 const ONCALL=[
- ['00:00 – 08:00','Byron','Byron','Byron','Joshua Tohey','Joshua Tohey','Nora Cruz','⚠ NOT COVERED'],
- ['08:00 – 17:00','Joshua Tohey','Joshua Tohey','Joshua Tohey','Joshua Tohey','Joshua Tohey','Byron','Byron'],
- ['17:00 – 24:00','Byron','Nora Cruz','Byron','Nora Cruz','Byron','Joshua Tohey','Joshua Tohey'],
- ['BACKUP','Joshua Tohey','Joshua Tohey','Nora Cruz','Byron','Nora Cruz','Byron','Byron']];
+ ['00:00 – 08:00','Brian McClelland','Brian McClelland','Brian McClelland','Joshua Tohey','Joshua Tohey','Nora Cruz','⚠ NOT COVERED'],
+ ['08:00 – 17:00','Joshua Tohey','Joshua Tohey','Joshua Tohey','Joshua Tohey','Joshua Tohey','Brian McClelland','Brian McClelland'],
+ ['17:00 – 24:00','Brian McClelland','Nora Cruz','Brian McClelland','Nora Cruz','Brian McClelland','Joshua Tohey','Joshua Tohey'],
+ ['BACKUP','Joshua Tohey','Joshua Tohey','Nora Cruz','Brian McClelland','Nora Cruz','Brian McClelland','Brian McClelland']];
 const STAGES_R=[['1','New','Lead created','15 min','—'],['2','Emergency dispatch','Emergency = Yes','immediate','Emergency Response'],['3','Qualified','Qualification outcome = Qualified','—','Default Lead Cadence'],['4','Assigned','Estimator assigned','4 h to first contact','—'],['5','Visit scheduled','Appointment booked','—','Appointment reminders'],['6','Estimating','Visit completed','3 days','—'],['7','Proposal sent','→ Phase 2','—','Proposal Follow-Up — friendly'],['8','Won','Proposal signed + binder paid','—','—'],['9','Lost','Terminal — reason required','—','—']];
 const STAGES_C=[['1','New','Lead created','1 business day','—'],['2','Bid invitation received','Bid reference present','—','—'],['3','Qualified','Qualification outcome = Qualified','—','Default Lead Cadence'],['4','Assigned','Estimator assigned','1 business day','—'],['5','Visit scheduled','Appointment booked','—','Appointment reminders'],['6','Estimating','Visit completed','5 days','—'],['7','Proposal / bid submitted','→ Phase 2','—','Proposal Follow-Up — friendly'],['8','Won','Proposal signed + binder paid','—','—'],['9','Lost','Terminal — reason required','—','—']];
 const JOB={id:'L-2026-0415',client:'Robert Chen',arm:'Restoration',div:'Reconstruction',job:'Fire damage',addr:'88 Hillcrest Dr, Mt Lebanon, PA 15228',carrier:'Allstate',claim:'AL-772104',adjuster:'M. Reyes · (412) 555-0188',pm:'Marcus Hale',sup:'Danny Kovach',est:'Kyle Brennan',visit:'Aug 7, 08:00',total:'62,300.00',tgm:'45%'};
@@ -272,7 +272,7 @@ const TOCONVERT=[
 /* milestone -> tasks for job 088 (Robert Chen). who: [kind, name]  kind S = subcontractor, I = internal */
 const JTASKS=[
  {m:'Milestone 1',t:'Demolition, mitigation and structural repair complete',amt:'9,345.00',pct:'15',due:'Aug 29',tasks:[
-  ['Pull the demolition permit','I','Byron','—','1 day','Aug 17','Aug 17','Done'],
+  ['Pull the demolition permit','I','Brian McClelland','—','1 day','Aug 17','Aug 17','Done'],
   ['SP-01 Mitigation & odour control','I','Crew · T. Novak','—','5 days × 8 h','Aug 18','Aug 22','Done'],
   ['SP-02 Demolition & debris','S','Keystone Demolition LLC','WO-2026-0088','2 days','Aug 25','Aug 26','Done'],
   ['SP-03 Structural repair','S','Baldwin Carpentry','WO-2026-0091','3 days','Aug 27','Aug 29','In progress']]},
@@ -781,7 +781,7 @@ SCREENS.dashboard = (p, st) => Page({key:'dash', title:'Good morning, Joshua',
      h('div',{style:{fontFamily:BAR, fontSize:'21px', fontWeight:600, marginTop:'8px'}}, 'Joshua Tohey'),
      h('div',{style:{fontSize:'13px', opacity:.9}}, '(412) 555-0100'),
      h('div',{style:{height:'1px', background:'rgba(255,255,255,.25)', margin:'14px 0'}}),
-     h('div',{style:{display:'flex', justifyContent:'space-between', fontSize:'12.5px'}}, h('span',{style:{opacity:.85}},'Backup'), h('b',null,'Byron')),
+     h('div',{style:{display:'flex', justifyContent:'space-between', fontSize:'12.5px'}}, h('span',{style:{opacity:.85}},'Backup'), h('b',null,'Brian McClelland')),
      h('div',{style:{display:'flex', justifyContent:'space-between', fontSize:'12.5px', marginTop:'6px'}},
        h('span',{style:{opacity:.85}},'Coverage this week'), h('b',null,'⚠ 1 gap')),
      h('button',{onClick:()=>go('s_oncall'), style:{font:'inherit', fontSize:'12.5px', fontWeight:600, color:C.priD, background:'#fff',
@@ -876,7 +876,7 @@ SCREENS.lead = (id, st) => {
        Btn('Log a call',{sm:true, onClick:()=>APP.mLogCall()}), Btn('Send email',{sm:true, onClick:()=>APP.mSendMsg('Email')}),
        Btn('Send SMS',{sm:true, onClick:()=>APP.mSendMsg('SMS')})),
      thread('📞','<b>Inbound call · AI Receptionist</b> · Aug 7, 02:14 · 3:12',
-       'Classified <b>EMERGENCY</b> · Transferred to Byron — <b>not answered</b>','SYSTEM'),
+       'Classified <b>EMERGENCY</b> · Transferred to Brian McClelland — <b>not answered</b>','SYSTEM'),
      thread('💬','<b>SMS sent</b> · Aug 7, 02:18 · Emergency Response · step 1 · Delivered',
        '"We received your emergency call. A 3Rivers technician has been alerted and will contact you shortly. Ref L-2026-0417."','SYSTEM'),
      thread('✉️','<b>Email sent</b> · Aug 7, 02:18 · Emergency Response · step 2 · Delivered · <i>not opened</i>',
@@ -924,7 +924,7 @@ SCREENS.lead = (id, st) => {
      Btn('Export CSV',{onClick:()=>toast('CSV exported')})),
    Tbl(['Timestamp','Actor','Type','Action','Detail'],[
      ['Aug 7, 02:14','AI Receptionist', Tag('AI','ai'),'Lead created from call','Source: AI Call · classified EMERGENCY'],
-     ['Aug 7, 02:16','AI Receptionist', Tag('AI','ai'),'Transfer attempted','→ Byron (on-call primary) · not answered'],
+     ['Aug 7, 02:16','AI Receptionist', Tag('AI','ai'),'Transfer attempted','→ Brian McClelland (on-call primary) · not answered'],
      ['Aug 7, 02:17','AI Receptionist', Tag('AI','ai'),'Escalated','Notified primary + backup + Operations Manager'],
      ['Aug 7, 02:18','System', Tag('AI','ai'),'SMS sent','Template "Emergency acknowledgement" · delivered'],
      ['Aug 7, 07:05','Joshua Tohey', Tag('Human'),'Call logged','Outbound · 6:40'],
@@ -969,7 +969,7 @@ SCREENS.newlead = () => Page({key:'newlead', crumb:['Hotlist', ()=>go('hotlist')
     h('div',{style:{fontSize:'13px'}}, h('b',null,'On call right now: Joshua Tohey'), ' · (412) 555-0100'),
     h('div',{style:{display:'flex', gap:'8px', flexWrap:'wrap'}},
       Btn('📞 Call / transfer now',{kind:'pri', onClick:()=>toast('Dialling on-call primary…')}),
-      Btn('Call backup — Byron',{onClick:()=>toast('Dialling backup…')}))), {hard:true}),
+      Btn('Call backup — Brian McClelland',{onClick:()=>toast('Dialling backup…')}))), {hard:true}),
   
   Card('3 · Where', Stack(Lbl('Job site address'), Fld(''),
     Lbl('City / State / ZIP'), h('div',{style:{display:'flex', gap:'8px'}}, Fld(''), Sel('PA',['PA','OH','WV']), Fld('')),
@@ -1039,7 +1039,7 @@ SCREENS.call = (i) => {
          Btn('Save corrections → update lead',{kind:'pri', onClick:()=>toast('Corrections saved as training feedback')}))),
        {actions:[Tag('AI','ai')]})),
    Card('Transfer', Stack(
-     h('div',{style:{fontSize:'12.5px'}},'Attempted 02:16 → ', h('b',null,'Byron'),' (on-call primary) · rang 30s · ', h('b',{style:{color:C.dg}},'Not answered')),
+     h('div',{style:{fontSize:'12.5px'}},'Attempted 02:16 → ', h('b',null,'Brian McClelland'),' (on-call primary) · rang 30s · ', h('b',{style:{color:C.dg}},'Not answered')),
      h('div',{style:{fontSize:'12.5px', color:C.mut}},'Backup Joshua Tohey · not attempted'),
      h('div',{style:{display:'flex', gap:'8px', flexWrap:'wrap'}},
        Btn('📞 Call back now',{kind:'pri', onClick:()=>toast('Dialling (412) 555-0142…')}),
@@ -1666,7 +1666,7 @@ SCREENS.s_oncall = () => Page({key:'s_oncall', title:'On-Call Schedule', sub:'Wh
  children:[
   Card('On call right now', h('div',{style:{display:'flex', gap:'14px', alignItems:'center', flexWrap:'wrap'}},
     h('div',null, h('b',{style:{fontFamily:BAR, fontSize:'17px'}},'Joshua Tohey'),
-      h('div',{style:{fontSize:'12.5px', color:C.mut}},'(412) 555-0100 · Backup: Byron · (412) 555-0101')),
+      h('div',{style:{fontSize:'12.5px', color:C.mut}},'(412) 555-0100 · Backup: Brian McClelland · (412) 555-0101')),
     Sp(), Btn('Take over on-call now',{kind:'pri', onClick:()=>APP.mTakeOver()}), Btn('Change who is on call now',{onClick:()=>APP.mChangeNow()})), {hard:true}),
   Bar(Sel('Week',['Week','Month'],{w:'110px'}), Sel('This week — Aug 4 to Aug 10',['This week — Aug 4 to Aug 10','Next week — Aug 11 to Aug 17'],{w:'260px'}),
     Sp(), Sel('Apply rotation template…',['Apply rotation template…','Standard weekly','Holiday coverage'],{w:'220px'}), Btn('+ Override')),
@@ -1677,7 +1677,7 @@ SCREENS.s_oncall = () => Page({key:'s_oncall', title:'On-Call Schedule', sub:'Wh
       h('div',{style:{color:C.mut}},'Emergency transfers during that window will fail. Coverage is 24/7 — the system must never let that silently break.')),
     Sp(), Btn('Assign someone',{kind:'danger', onClick:()=>APP.mFixGap()})), {hard:true}),
   Card('Rotation templates', Tbl(['Name','Pattern','Applies to','Active',''],[
-    ['Standard weekly','Joshua days · Byron / Dana nights · weekend rotation','All weeks','☑', h('div',{style:{display:'flex',gap:'6px'}}, Btn('Edit',{sm:true}), Btn('Apply',{sm:true}))],
+    ['Standard weekly','Joshua days · Brian McClelland / Dana nights · weekend rotation','All weeks','☑', h('div',{style:{display:'flex',gap:'6px'}}, Btn('Edit',{sm:true}), Btn('Apply',{sm:true}))],
     ['Holiday coverage','Single person 24h, rotating daily','Holiday dates only','☑', h('div',{style:{display:'flex',gap:'6px'}}, Btn('Edit',{sm:true}), Btn('Apply',{sm:true}))]], {flush:true}), {flush:true}),
   Card('On-call eligible staff', Tbl(['User','Role','Phone','Eligible','Currently'],
     USERS.filter(u=>u.oncall).map((u,i)=>[u.name, u.role,'(412) 555-01'+(10+i),'☑', u.name==='Joshua Tohey'?Tag('ON CALL','ok'):'—']), {flush:true}), {flush:true})]});
@@ -1947,7 +1947,7 @@ SCREENS.s_docs = () => Page({key:'s_docs', title:'Company documents',
     ['Workers comp certificate','WC_2026.pdf','Jan 1, 2026','Dec 31, 2026', Tag('Valid','ok'),'☐', Btn('Replace',{sm:true})],
     ['W-9','W9_3Rivers.pdf','Jan 1, 2024','—', Tag('Valid','ok'),'☐', Btn('Replace',{sm:true})]], {min:'1020px'}),
   Card('Expiry reminders', Stack(h('div',{style:{display:'flex', gap:'8px', alignItems:'center', flexWrap:'wrap', fontSize:'12.5px'}},
-      'Notify', Fld('30',{w:'70px'}),'days before expiry to', Sel('Joshua Tohey',['Joshua Tohey','Byron','All admins'],{w:'190px'})),
+      'Notify', Fld('30',{w:'70px'}),'days before expiry to', Sel('Joshua Tohey',['Joshua Tohey','Brian McClelland','All admins'],{w:'190px'})),
     h('div',null, Chk('Block sending a proposal when an auto-attached document has expired'))))]});
 
 SCREENS.s_team = () => Page({key:'s_team', title:'Team & Roles', sub:'Invite people, set their role, and control what each one can see',
@@ -2026,8 +2026,8 @@ SCREENS.s_audit = () => Page({key:'s_audit', title:'Audit Log', sub:'Every actio
     ['Aug 7, 02:18','System', Tag('AI','ai'),'L-2026-0417','Email sent','Template "Emergency intake confirmation" · delivered'],
     ['Aug 7, 02:17','AI Receptionist', Tag('AI','ai'),'L-2026-0417','Escalated','Transfer not answered → notified primary, backup, Ops Manager'],
     ['Aug 7, 02:14','AI Receptionist', Tag('AI','ai'),'L-2026-0417','Lead created','Source: AI Call · classified EMERGENCY'],
-    ['Aug 6, 19:48','AI Receptionist', Tag('AI','ai'),'L-2026-0413','Transfer completed','→ Byron · answered'],
-    ['Aug 6, 09:22','Byron', Tag('Human'),'Settings','On-call changed','Sun Aug 10 00:00–08:00 cleared — no replacement assigned']], {min:'1080px'})]});
+    ['Aug 6, 19:48','AI Receptionist', Tag('AI','ai'),'L-2026-0413','Transfer completed','→ Brian McClelland · answered'],
+    ['Aug 6, 09:22','Brian McClelland', Tag('Human'),'Settings','On-call changed','Sun Aug 10 00:00–08:00 cleared — no replacement assigned']], {min:'1080px'})]});
 
 /* renders inline <b> and <br> inside a plain block of copy */
 const HTM = (style, txt) => h('div',{style:style, dangerouslySetInnerHTML:{__html:txt}});
@@ -2505,7 +2505,7 @@ SCREENS.job = (p, st) => {
     HTM({fontSize:'11.5px', color:C.faint}, 'Last updated Aug 24, 16:10 by ' + j.pm + '.')), {hard:true});
  return Page({key:'job', crumb:['Jobs & schedule', ()=>go('jobs'), '#' + j.id],
   title:'#' + j.id + ' · ' + j.n,
-  sub:(j.claim ? 'Claim <b>' + j.claim + '</b> · ' : '') + j.div + ' · project manager <b>' + j.pm + '</b> · converted by Byron, Operations Manager',
+  sub:(j.claim ? 'Claim <b>' + j.claim + '</b> · ' : '') + j.div + ' · project manager <b>' + j.pm + '</b> · converted by Brian McClelland, Operations Manager',
   actions:[Btn('Submit weekly update'), Btn('Move to Punch list',{kind:'pri', onClick:()=>toast('Moved to Punch list — the client portal shows the new stage')})],
   children:[
    stepper,
@@ -2782,7 +2782,7 @@ SCREENS.collections = () => Page({key:'collections', title:'Payments & collectio
   Bar(Sel('Track: All',['Track: All','Friendly','Firm, policy-backed'],{w:'220px'}),
     Sel('Overdue: All',['Overdue: All','1–7 days','8–14 days','15–30 days','Over 30 days'],{w:'190px'}), Sp(), Btn('Export CSV')),
   Tbl(['Invoice','Job','Client',{t:'Amount',n:true},'Due',{t:'Days overdue',n:true},'Track','Policy stage','Next action','Owner'],[
-   ['<b>Northside Dental - Draw 3</b>','L-2026-0409','Northside Dental',{t:'$22,230.00',n:true},'Aug 4',{t:'4',n:true}, Tag('Firm','dg'),'Stage 2 of 4 — written notice','Call scheduled Aug 9, 09:00','Byron'],
+   ['<b>Northside Dental - Draw 3</b>','L-2026-0409','Northside Dental',{t:'$22,230.00',n:true},'Aug 4',{t:'4',n:true}, Tag('Firm','dg'),'Stage 2 of 4 — written notice','Call scheduled Aug 9, 09:00','Brian McClelland'],
    ['<b>Carnegie Office Park - Draw 2</b>','L-2026-0402','Carnegie Office Park',{t:'$14,460.00',n:true},'Jul 22',{t:'17',n:true}, Tag('Firm','dg'),'Stage 3 of 4 — work suspension notice','Escalation review Aug 10','Joshua Tohey'],
    ['<b>Northside Dental - CO 3</b>','L-2026-0409','Northside Dental',{t:'$2,310.00',n:true},'Aug 11',{t:'—',n:true}, Tag('Friendly'),'—','Reminder Aug 12','—']], {min:'1300px'}),
   Row(
@@ -2904,9 +2904,9 @@ SCREENS.payruns = () => Page({key:'payruns', title:'Payment runs',
     ['<b>4 · Export</b>','The batch file is produced for the bank, and the run is marked as sent for payment.'],
     ['<b>5 · Confirm</b>','Payment is confirmed against the run, the vendor invoices settle, and QuickBooks is updated.']], {min:'720px'})), {hard:true}),
   Tbl(['Run','Created','Created by',{t:'Vendors',n:true},{t:'Invoices',n:true},{t:'Total',n:true},'Status','Exported','Confirmed'],[
-   ['<b>PR-2026-018</b>','Aug 8','Byron',{t:'2',n:true},{t:'2',n:true},{t:'$9,390.00',n:true}, Tag('Awaiting approval','wn'),'—','—'],
-   ['<b>PR-2026-017</b>','Aug 1','Byron',{t:'4',n:true},{t:'6',n:true},{t:'$18,240.00',n:true}, Tag('Paid','ok'),'Aug 1','Aug 2'],
-   ['<b>PR-2026-016</b>','Jul 25','Byron',{t:'3',n:true},{t:'4',n:true},{t:'$11,905.00',n:true}, Tag('Paid','ok'),'Jul 25','Jul 26']], {min:'1080px'}),
+   ['<b>PR-2026-018</b>','Aug 8','Brian McClelland',{t:'2',n:true},{t:'2',n:true},{t:'$9,390.00',n:true}, Tag('Awaiting approval','wn'),'—','—'],
+   ['<b>PR-2026-017</b>','Aug 1','Brian McClelland',{t:'4',n:true},{t:'6',n:true},{t:'$18,240.00',n:true}, Tag('Paid','ok'),'Aug 1','Aug 2'],
+   ['<b>PR-2026-016</b>','Jul 25','Brian McClelland',{t:'3',n:true},{t:'4',n:true},{t:'$11,905.00',n:true}, Tag('Paid','ok'),'Jul 25','Jul 26']], {min:'1080px'}),
   Row(
    Card('PR-2026-018 — what is in it', Tbl(['Vendor','Invoice','Job','Work order',{t:'Amount',n:true},'Paperwork'],[
     ['Three Rivers Electric Co.','TRE-2210','L-2026-0409','WO-2026-0074',{t:'$5,910.00',n:true}, Tag('Current','ok')],
@@ -3408,8 +3408,8 @@ const SHEETS=[
  {e:'Tyler Brooks',r:'Technician',p:'Aug 4 – Aug 10',reg:'40.0',ot:'6.8',jobs:'1',flags:'1',st:'Needs attention',appr:'—'},
  {e:'Ray Coleman',r:'Project manager',p:'Aug 4 – Aug 10',reg:'38.5',ot:'0.0',jobs:'3',flags:'1',st:'Needs attention',appr:'—'},
  {e:'Sam Whitfield',r:'Technician',p:'Aug 4 – Aug 10',reg:'30.0',ot:'0.0',jobs:'1',flags:'0',st:'Submitted',appr:'—'},
- {e:'Marcus Hale',r:'Lead technician',p:'Jul 28 – Aug 3',reg:'40.0',ot:'4.2',jobs:'2',flags:'0',st:'Approved',appr:'Byron'},
- {e:'Danny Ortiz',r:'Technician',p:'Jul 28 – Aug 3',reg:'40.0',ot:'1.5',jobs:'2',flags:'0',st:'Approved',appr:'Byron'}];
+ {e:'Marcus Hale',r:'Lead technician',p:'Jul 28 – Aug 3',reg:'40.0',ot:'4.2',jobs:'2',flags:'0',st:'Approved',appr:'Brian McClelland'},
+ {e:'Danny Ortiz',r:'Technician',p:'Jul 28 – Aug 3',reg:'40.0',ot:'1.5',jobs:'2',flags:'0',st:'Approved',appr:'Brian McClelland'}];
 
 /* ---- Crew & assignments ---- */
 SCREENS.crew = () => Page({key:'crew', title:'Crew & assignments',
@@ -3656,8 +3656,8 @@ SCREENS.gusto = () => Page({key:'gusto', title:'Gusto sync',
    ['Ray Coleman','Ray Coleman','Project manager','$62.00', Tag('Matched','ok')],
    ['Sam Whitfield','Sam Whitfield','Technician','$38.00', Tag('Matched','ok')]], {min:'820px'})),
   Card('Export history', Tbl(['Pay period','Exported','By',{t:'Employees',n:true},{t:'Hours',n:true},{t:'Gross',n:true},'Status'],[
-   ['Jul 28 – Aug 3','Aug 4, 09:12','Byron',{t:'5',n:true},{t:'192.40',n:true},{t:'$8,914.20',n:true}, Tag('Paid in Gusto','ok')],
-   ['Jul 21 – Jul 27','Jul 28, 08:40','Byron',{t:'5',n:true},{t:'186.00',n:true},{t:'$8,520.00',n:true}, Tag('Paid in Gusto','ok')]], {min:'880px'}))]});
+   ['Jul 28 – Aug 3','Aug 4, 09:12','Brian McClelland',{t:'5',n:true},{t:'192.40',n:true},{t:'$8,914.20',n:true}, Tag('Paid in Gusto','ok')],
+   ['Jul 21 – Jul 27','Jul 28, 08:40','Brian McClelland',{t:'5',n:true},{t:'186.00',n:true},{t:'$8,520.00',n:true}, Tag('Paid in Gusto','ok')]], {min:'880px'}))]});
 
 /* ---- Settings ---- */
 SCREENS.s_time = (p, st) => {
@@ -3754,13 +3754,13 @@ Object.assign(Component.prototype, {
    h('div',null, Btn('+ Add question',{kind:'pri'}))), okFoot('Question set saved')); },
  mTakeOver(){ modal('Take over on-call', Stack(
    h('div',{style:{fontSize:'13px', fontWeight:600}},'You are about to become the on-call primary, effective immediately.'),
-   Tbl(['','Who'],[['Current primary','Joshua Tohey'],['New primary','Byron (you)']]),
+   Tbl(['','Who'],[['Current primary','Joshua Tohey'],['New primary','Brian McClelland']]),
    F('Backup', Sel('Joshua Tohey', USERS.filter(u=>u.oncall).map(u=>u.name))),
    F('Until', Sel('Until I hand it back',['Until I hand it back','End of this slot','End of today','Specific time…']))),
    [Btn('Cancel',{onClick:()=>closeM()}), Btn('Confirm — I am on call now',{kind:'pri', onClick:()=>{closeM(); toast('You are now the on-call primary');}})]); },
  mChangeNow(){ modal('Change who is on call now', Stack(
    F('Primary', Sel('Joshua Tohey', USERS.filter(u=>u.oncall).map(u=>u.name))),
-   F('Backup', Sel('Byron', USERS.filter(u=>u.oncall).map(u=>u.name))),
+   F('Backup', Sel('Brian McClelland', USERS.filter(u=>u.oncall).map(u=>u.name))),
    F('Effective', Sel('Immediately',['Immediately','At the top of the next hour','Specific time…'])),
    F('Until', Sel('End of the current slot',['End of the current slot','End of today','Specific time…'])),
    h('div',null, Chk('Notify new primary'), Chk('Notify new backup'), Chk('Notify Operations Manager'))), okFoot('On-call updated')); },
