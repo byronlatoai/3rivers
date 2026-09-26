@@ -271,23 +271,22 @@ const TOCONVERT=[
  {lead:'L-2026-0401',client:'Keller Family Dental',job:'Office refit',div:'Commercial',v:'88,500.00',paid:'Deposit paid Aug 25',est:'Marcus Hale',tpa:'',claim:''}];
 /* milestone -> tasks for job 088 (Robert Chen). who: [kind, name]  kind S = subcontractor, I = internal */
 const JTASKS=[
- {m:'Milestone 1',t:'Demolition, mitigation and structural repair complete',amt:'9,345.00',pct:'15',due:'Aug 29',tasks:[
+ {m:'Draw 2',t:'Completion of drywall — demolition, mitigation, structure and rough-in done',amt:'12,460.00',pct:'20',due:'Sep 8',tasks:[
   ['Pull the demolition permit','I','Brian McClelland','—','1 day','Aug 17','Aug 17','Done'],
   ['SP-01 Mitigation & odour control','I','Crew · T. Novak','—','5 days × 8 h','Aug 18','Aug 22','Done'],
   ['SP-02 Demolition & debris','S','Keystone Demolition LLC','WO-2026-0088','2 days','Aug 25','Aug 26','Done'],
-  ['SP-03 Structural repair','S','Baldwin Carpentry','WO-2026-0091','3 days','Aug 27','Aug 29','In progress']]},
- {m:'Milestone 2',t:'Rough-in complete — electrical, HVAC, drywall',amt:'9,345.00',pct:'15',due:'Sep 8',tasks:[
+  ['SP-03 Structural repair','S','Baldwin Carpentry','WO-2026-0091','3 days','Aug 27','Aug 29','In progress'],
   ['SP-04 Electrical','S','Three Rivers Electric Co.','WO-2026-0089','3 days','Sep 1','Sep 3','Not started'],
   ['SP-05 HVAC','S','Mon Valley Mechanical','WO-2026-0092','2 days','Sep 1','Sep 2','Not started'],
   ['SP-06 Drywall','S','Allegheny Drywall & Finish','WO-2026-0090','3 days','Sep 4','Sep 8','Not started']]},
- {m:'Milestone 3',t:'Millwork, painting and flooring complete',amt:'15,575.00',pct:'25',due:'Sep 25',tasks:[
+ {m:'Draw 3',t:'Completion of painting — millwork, finish carpentry and painting done',amt:'12,460.00',pct:'20',due:'Sep 19',tasks:[
   ['SP-07 Millwork & finish carpentry','S','Baldwin Carpentry','—','6 days','Sep 9','Sep 16','Not started'],
-  ['SP-08 Painting','S','Allegheny Drywall & Finish','—','3 days','Sep 17','Sep 19','Not started'],
-  ['SP-09 Flooring','I','Crew · R. Diaz','—','3 days × 8 h','Sep 22','Sep 24','Not started']]},
- {m:'Final',t:'Punch list signed off / job closeout',amt:'3,115.00',pct:'5',due:'Sep 30',tasks:[
+  ['SP-08 Painting','S','Allegheny Drywall & Finish','—','3 days','Sep 17','Sep 19','Not started']]},
+ {m:'Final',t:'The remainder — flooring, punch list signed off and closeout',amt:'11,960.00',pct:'19.2',due:'Sep 30',tasks:[
+  ['SP-09 Flooring','I','Crew · R. Diaz','—','3 days × 8 h','Sep 22','Sep 24','Not started'],
   ['Punch walk with the client','I','Marcus Hale','—','1 day','Sep 28','Sep 28','Not started'],
   ['Final clean','I','Crew · T. Novak','—','1 day × 6 h','Sep 29','Sep 29','Not started']]}];
-/* Xactimate category and section for each LINES row (illustrative — to be confirmed against their estimates) */
+/* Xactimate category and section for each LINES row (illustrative). The final draft prints no category against the line, so the extraction proposes it from the description and the recap at the back of the estimate proves it */
 const XCAT=['DMO','DRY','PNT','CAB','CAB','CNT','APP','LIT','ELE','CLN','PNT','FCC','FCW','WTR','WTR','CON','FNC','FNC','HVC','FRM','DMO','CLN'];
 const XSEC=[0,1,1,1,1,1,1,1,1,0,1,1,1,0,0,0,1,1,1,1,0,1];
 const XIN =['SP-02','SP-06','','SP-07','SP-07','SP-07','SP-07','SP-04','SP-04','SP-01','','SP-09','SP-09','SP-01','SP-01','SP-01','SP-07','SP-07','SP-05','SP-03','SP-02','SP-01'];
@@ -321,23 +320,101 @@ const PHOTOS=[
  ['Dining room — overview','—','Overview','Dining room','Smoke','—',1],['Hallway — wall surfaces','—','Affected area','Hallway','Smoke','—',1],
  ['Unlabelled capture','—','—','—','—','—',0.41]];
 const MILESTONES=[
- ['1','Binder','Proposal approved by the client','Fixed','500.00','—','On acceptance','Pending',true],
- ['2','Deposit','Invoiced within 5 calendar days of acceptance','%','24,920.00','40','Auto draft invoice on acceptance + 0d','Pending',false],
- ['3','Milestone 1','Demolition, mitigation and structural repair complete','%','9,345.00','15','On milestone marked complete','Pending',false],
- ['4','Milestone 2','Rough-in complete — electrical, HVAC, drywall','%','9,345.00','15','On milestone marked complete','Pending',false],
- ['5','Milestone 3','Millwork, painting and flooring complete','%','15,575.00','25','On milestone marked complete','Pending',false],
- ['6','Final','Punch list signed off / job closeout','%','3,115.00','5','On completion','Pending',false]];
-const XCATMAP={'01':'DMO','02':'WTR · CLN · CON','03':'WTR — equipment lines','04':'FRM','05':'DRY','06':'PNT','07':'FCC · FCW · FCV · FCT','08':'CAB · CNT · FNC','09':'ELE · LIT','10':'PLM','11':'CDC — supervision and administration','12':'HVC · RFG · MAS · CNC — and any trade without a group'};
+ ['1','Binder','On signature — non-refundable','Fixed','500.00','—','On acceptance','Pending',true,'—'],
+ ['2','Draw 1','Deposit — due within 5 calendar days of signing','%','24,920.00','40','Auto draft invoice on acceptance','Pending',false,'—'],
+ ['3','Draw 2','Completion of drywall','%','12,460.00','20','On milestone marked complete','Pending',false,'40.7 %'],
+ ['4','Draw 3','Completion of painting','%','12,460.00','20','On milestone marked complete','Pending',false,'39.0 %'],
+ ['5','Final','Punch list and final walkthrough — whatever is left','Remainder','11,960.00','19.2','On completion','Pending',false,'20.2 %']];
+const XCATMAP={'01':'GENERAL DEMOLITION','02':'WATER EXTRACTION &amp; REMEDIATION · CLEANING · CONTENT MANIPULATION','03':'WATER EXTRACTION &amp; REMEDIATION — the equipment lines','04':'FRAMING &amp; ROUGH CARPENTRY','05':'DRYWALL · INTERIOR LATH &amp; PLASTER','06':'PAINTING','07':'FLOOR COVERING (carpet · wood · vinyl · ceramic tile) · TILE','08':'CABINETRY · COUNTERTOPS · FINISH CARPENTRY / TRIMWORK','09':'ELECTRICAL · LIGHT FIXTURES','10':'PLUMBING','11':'GENERAL CONDITIONS — supervision and administration','12':'HEAT, VENT &amp; AIR CONDITIONING · ROOFING · MASONRY · CONCRETE — and any trade without a group'};
+/* ---- Estimate intake after the Xactimate walkthrough (25 Sep) and the two reports of one job (26 Sep).
+   An estimate arrives as two PDFs. The final draft prints no category against the line; the recap by category and
+   the recap by room at the back of it are what the extraction is proved against. The components report carries the
+   codes, the materials and the labour hours by trade. Figures for job 088 are illustrative. ---- */
+const XCATNAME={DMO:'GENERAL DEMOLITION',DRY:'DRYWALL',PNT:'PAINTING',CAB:'CABINETRY',CNT:'COUNTERTOPS',APP:'APPLIANCES',
+ LIT:'LIGHT FIXTURES',ELE:'ELECTRICAL',CLN:'CLEANING',FCC:'FLOOR COVERING - CARPET',FCW:'FLOOR COVERING - WOOD',
+ WTR:'WATER EXTRACTION & REMEDIATION',CON:'CONTENT MANIPULATION',FNC:'FINISH CARPENTRY / TRIMWORK',
+ HVC:'HEAT, VENT & AIR CONDITIONING',FRM:'FRAMING & ROUGH CARPENTRY'};
+const XCATN = XCAT.map(c => XCATNAME[c]);
+const XTRADE = XCATN.map(n => n.charAt(0) + n.slice(1).toLowerCase());
+const XREPORTS=[
+ ['Final draft','CHEN_R_FIRE_08-2026 — final draft.pdf · 11 pages','The lines, room by room — and the recap by category and by room at the back'],
+ ['Components report','CHEN_R_FIRE_08-2026 — components.pdf · 6 pages','Every material with its code, the equipment, and the labour hours by trade']];
+/* [name, recap, extracted] — before overhead, profit and tax, the way Xactimate prints its recaps */
+const XREC=[
+ ['CABINETRY',7820.00,7820.00],['ELECTRICAL',5850.00,5850.00],['FLOOR COVERING - WOOD',5376.00,5376.00],
+ ['PAINTING',4331.20,4331.20],['FINISH CARPENTRY / TRIMWORK',4294.00,4294.00],['FRAMING &amp; ROUGH CARPENTRY',3381.60,3200.00],
+ ['WATER EXTRACTION &amp; REMEDIATION',2908.00,2908.00],['DRYWALL',2774.40,2774.40],['FLOOR COVERING - CARPET',2624.00,2624.00],
+ ['GENERAL DEMOLITION',2457.60,2457.60],['COUNTERTOPS',2132.00,2132.00],['HEAT, VENT &amp; AIR CONDITIONING',1940.00,1940.00],
+ ['CLEANING',1841.20,1841.20],['CONTENT MANIPULATION',504.00,504.00],['LIGHT FIXTURES',354.00,354.00],['APPLIANCES',62.00,62.00]];
+const XROOM=[['Kitchen',17230.00,17230.00],['Living / Dining',12410.00,12410.00],['1st floor',10818.40,10818.40],
+ ['Hallway',2941.00,2941.00],['Structural',3381.60,3200.00],['Site',1869.00,1869.00]];
+/* labour hours by trade, from the components report, and the group each lands in */
+const XLAB=[
+ ['DMO','Demolition laborer','22.0','01 Demolition'],['WTR','Water mitigation technician','30.0','02 Mitigation labour'],
+ ['CLN','Cleaning technician','18.5','02 Mitigation labour'],['LBR','General laborer — contents','12.0','02 Mitigation labour'],
+ ['CARP-FRM','Carpenter — framer','16.0','04 Framing'],['DRY','Drywall installer / finisher','14.0','05 Drywall'],
+ ['PNT','Painter','38.5','06 Paint'],['FLR','Flooring installer','30.5','07 Flooring'],
+ ['CARP-FNC','Carpenter — finish, trim / cabinet','34.0','08 Cabinets'],['ELE','Electrician','26.0','09 Electrical'],
+ ['HVC','HVAC technician','12.0','12 Subcontractors']];
+const XHRS={'01':'22.0','02':'60.5','04':'16.0','05':'14.0','06':'38.5','07':'30.5','08':'34.0','09':'26.0','12':'12.0'};
+/* the twenty categories on the recap of one of their real estimates (26 Sep), share of that job, group */
+const XCATS20=[
+ ['PAINTING','24.51 %','06 Paint'],['TILE','12.29 %','07 Flooring'],['FLOOR COVERING - CARPET','11.34 %','07 Flooring'],
+ ['PLUMBING','8.06 %','10 Plumbing'],['GENERAL DEMOLITION','4.12 %','01 Demolition'],['ELECTRICAL','3.84 %','09 Electrical'],
+ ['DRYWALL','2.49 %','05 Drywall'],['CABINETRY','1.91 %','08 Cabinets'],['CONTENT MANIPULATION','1.90 %','02 Mitigation labour'],
+ ['LIGHT FIXTURES','1.76 %','09 Electrical'],['INTERIOR LATH & PLASTER','1.71 %','05 Drywall'],
+ ['FLOOR COVERING - CERAMIC TILE','1.69 %','07 Flooring'],['DOORS','1.29 %',''],['MIRRORS & SHOWER DOORS','1.11 %',''],
+ ['CLEANING','0.74 %','02 Mitigation labour'],['INSULATION','0.70 %',''],['APPLIANCES','0.52 %',''],['FINISH HARDWARE','0.52 %',''],
+ ['CONT: GARMENT & SOFT GOODS CLN','0.50 %','02 Mitigation labour'],['FINISH CARPENTRY / TRIMWORK','0.38 %','08 Cabinets']];
+const xMoney = n => n.toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2});
+const xOk = (got, want) => Math.abs(got-want) < 0.005
+ ? h('span',{style:{color:C.ok, fontWeight:700}},'✓')
+ : h('b',{style:{color:C.dg}},'Δ $' + xMoney(want-got));
+const xCheckTbl = (head, rows) => Tbl([head,{t:'Recap',n:true},{t:'Extracted',n:true},''],
+ rows.map(r=>({c:[r[0], {t:xMoney(r[1]),n:true}, {t:xMoney(r[2]),n:true}, xOk(r[2],r[1])],
+   style: Math.abs(r[2]-r[1]) >= 0.005 ? {background:'#FFFCF5'} : null})),
+ {flush:true, foot:['<b>Line items</b>', {t:'<b>'+xMoney(rows.reduce((a,r)=>a+r[1],0))+'</b>'},
+   {t:'<b>'+xMoney(rows.reduce((a,r)=>a+r[2],0))+'</b>'}, '']});
+const xLbl = t => h('div',{style:{fontSize:'11px', fontWeight:700, color:C.mut, letterSpacing:'.05em', margin:'0 0 8px'}}, t);
+const xNote = (...k) => h('div',{style:{fontSize:'12px', color:C.mut, marginTop:'8px', lineHeight:1.6}}, ...k);
+const xRecon = () => h('div',{style:{display:'grid', gridTemplateColumns:'minmax(240px,.7fr) minmax(380px,1.3fr) minmax(320px,1fr)', gap:'22px', alignItems:'start'}},
+ h('div',{style:{fontSize:'13px', lineHeight:1.7}},
+  xLbl('1 · GRAND TOTAL'),
+  h('div',null,'Extracted lines, plus overhead, profit and tax'), h('b',{style:{fontSize:'15px'}},'$62,118.40'),
+  h('div',{style:{marginTop:'8px'}},'Grand total on the final draft'), h('b',{style:{fontSize:'15px'}},'$62,300.00'),
+  h('div',{style:{marginTop:'8px'}}, h('b',{style:{color:C.dg, fontSize:'15px'}},'Δ $181.60')),
+  xNote('The grand total says something is off. It cannot say where — the two recaps at the back of the final draft can.')),
+ h('div',null, xLbl('2 · BY TRADE — AGAINST THE RECAP BY CATEGORY'), xCheckTbl('Category', XREC),
+  xNote('15 of 16 categories match. Like the recap Xactimate prints, these figures are before overhead, profit and tax.')),
+ h('div',null, xLbl('3 · BY ROOM — AGAINST THE RECAP BY ROOM'), xCheckTbl('Room', XROOM),
+  xNote(h('b',null,'Both recaps point at the same line:'),
+   ' framing, in the Structural room — line 20, the header the extraction could not read. Correct it and all three checks clear.')));
+const xReports = () => h('div',{style:{display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(320px,1fr))', gap:'12px'}},
+ ...XREPORTS.map(r => h('div',{key:r[0], style:{display:'flex', gap:'12px', alignItems:'flex-start', border:'1px solid '+C.bd, borderRadius:'10px', padding:'10px 14px', background:'#fff'}},
+  h('div',{style:{fontSize:'18px', color:C.ok, lineHeight:1.2}},'✓'),
+  h('div',{style:{minWidth:0}},
+   h('div',{style:{fontSize:'13px', fontWeight:700}}, r[0]),
+   h('div',{style:{fontSize:'12px', color:C.mut}}, r[1]),
+   h('div',{style:{fontSize:'11.5px', color:C.faint, marginTop:'2px'}}, r[2])))));
+const xDrop = (label, note) => Card(label, h('div',{onDragOver:e=>{e.preventDefault(); e.currentTarget.style.borderColor=C.pri;},
+  onDragLeave:e=>e.currentTarget.style.borderColor='#CBD9E3',
+  onDrop:e=>{e.preventDefault(); e.currentTarget.style.borderColor='#CBD9E3';
+   const f=e.dataTransfer.files[0]; if(f) APP.onFile({target:{files:[f], value:''}});},
+  style:{border:'2px dashed #CBD9E3', borderRadius:'12px', padding:'28px', textAlign:'center', transition:'border-color .15s', background:'#FAFCFD'}},
+ h('div',{style:{fontSize:'24px', marginBottom:'6px'}},'⬆'),
+ h('div',{style:{fontSize:'13px', fontWeight:600}},'Drag & drop the ' + label.toLowerCase() + ' here'),
+ h('div',{style:{fontSize:'12px', color:C.mut, margin:'6px 0 14px', lineHeight:1.5}}, note),
+ Btn('Browse…',{kind:'pri', onClick:()=>APP.pickFile('estimate')})));
 const CCGROUPS=[['01','Demolition'],['02','Mitigation labour'],['03','Drying equipment'],['04','Framing'],['05','Drywall'],['06','Paint'],['07','Flooring'],['08','Cabinets'],['09','Electrical'],['10','Plumbing'],['11','Overhead'],['12','Subcontractors']];
 const COSTCODES=[['01.1','Demolition','01','Sub','—','—'],['02.1','Mitigation labour','02','Labour','$38.00','—'],['02.2','Cleaning','02','Labour','$38.00','—'],['02.3','Odour control','02','Labour','$38.00','—'],['03.1','Drying &amp; air equipment','03','Equipment','—','—'],['04.1','Rough carpentry','04','Sub','—','—'],['05.1','Drywall','05','Sub','—','—'],['06.1','Painting','06','Sub','—','—'],['07.1','Flooring','07','Sub','—','—'],['08.1','Millwork &amp; cabinets','08','Sub','—','—'],['08.2','Finish carpentry','08','Sub','—','—'],['09.1','Electrical','09','Sub','—','—'],['10.1','Plumbing','10','Sub','—','—'],['11.1','Site &amp; general conditions','11','Sub','—','—'],['12.1','HVAC','12','Sub','—','—'],['12.2','Roofing','12','Sub','—','—'],['12.3','Masonry','12','Sub','—','—'],['12.4','Concrete','12','Sub','—','—']];
 const TRADES=['General Contractor','Demolition','Mitigation','Carpentry','Drywall','Painting','Flooring','Electrical','Plumbing','HVAC','Roofing','Masonry','Concrete'];
 const LABOUR=[['Technician','$38.00','$57.00'],['Lead technician','$49.00','$73.50'],['Project manager','$62.00','—'],['Estimator','$68.00','—'],['Labourer','$28.00','$42.00']];
-const CONTRACTS=[['Standard Agreement — small','$0','$10,000','v2','☑'],['Standard Agreement — mid','$10,001','$50,000','v3','☑'],['Standard Agreement — large','$50,001','$250,000','v3','☑'],['Standard Agreement — major','$250,001','—','v1','☑']];
+const CONTRACTS=[['Resi Fixed Rate — Less Than $30K — PA HIC','$0','$30,000','—','☑'],['Resi Fixed Rate — Greater Than $30K — PA HIC','$30,000.01','—','v2.8','☑']];
 const SESSIONS=[['Aug 7, 08:12','L-2026-0415','Robert Chen','Voice','14:22','28','17','Synced'],['Aug 7, 08:40','L-2026-0415','Robert Chen','Silent','06:10','35','0','Synced'],['Aug 1, 10:05','L-2026-0414','Westmoreland Retail','Silent','22:40','22','0','Synced'],['Jul 25, 09:30','L-2026-0408','Northside Dental','Voice','11:05','8','6','Synced']];
 const PROPOSALS=[
- ['L-2026-0415','Robert Chen','v2','62,300.00','Standard Agreement — large · v3','Aug 7, 17:40','Sent','Aug 7, 19:02','—'],
- ['L-2026-0415','Robert Chen','v1','58,120.00','Standard Agreement — large · v3','Aug 5, 11:15','Superseded','Aug 5, 13:44','—'],
- ['L-2026-0411','Gregory Palmer','v1','8,940.00','Standard Agreement — small · v2','Jul 30, 14:20','Declined','Jul 30, 16:10','—']];
+ ['L-2026-0415','Robert Chen','v2','62,300.00','Resi Fixed Rate — Greater Than $30K — PA HIC · v2.8','Aug 7, 17:40','Sent','Aug 7, 19:02','—'],
+ ['L-2026-0415','Robert Chen','v1','58,120.00','Resi Fixed Rate — Greater Than $30K — PA HIC · v2.8','Aug 5, 11:15','Superseded','Aug 5, 13:44','—'],
+ ['L-2026-0411','Gregory Palmer','v1','8,940.00','Resi Fixed Rate — Less Than $30K — PA HIC','Jul 30, 14:20','Declined','Jul 30, 16:10','—']];
 const HOT_STAGES=['New','Qualified','Assigned','Visit scheduled','Estimating','Proposal sent','Won','Lost'];
 const EQLANES=['Visit scheduled','Awaiting estimate','In review','Structuring','Proposal draft','Sent — awaiting client','Won','Lost'];
 function eqLane(q){const pr=q.pr||'—';
@@ -1247,46 +1324,38 @@ SCREENS.equeue = (p, st) => {
 };
 
 SCREENS.estimate = (p, st) => {
- const T = ['Review extraction','Source PDF','Versions'];
+ const T = ['Review extraction','Source reports','Versions'];
  let pane = null;
  if(st.tab===0) pane = Stack(
+   Card('Two reports per estimate — both are in', xReports(), {hard:true}),
    Bar(Sel('Show: all lines',['Show: all lines','Low confidence first','Unconfirmed only'],{w:'200px'}), Sp(),
      h('span',{style:{fontSize:'12.5px'}},'Showing ', h('b',null,'22 of 42'),' line items'),
      Btn('+ Add line',{sm:true}), Btn('Confirm all high-confidence',{sm:true, onClick:()=>toast('21 lines confirmed')})),
    h('div',{style:{display:'grid', gridTemplateColumns:'minmax(320px,.85fr) minmax(520px,1.15fr)', gap:'14px', alignItems:'start'}},
-    Card('Source PDF — page 3 of 11', Ph('CHEN_R_FIRE_08-2026.pdf\nAllstate · Claim AL-772104\n88 Hillcrest Dr, Mt Lebanon PA 15228\n\nKITCHEN — Height 8\'\n1. Tear out wet drywall, cut & bag   320.00 SF   0.68   217.60\n2. Drywall 1/2" hung, taped, floated  320.00 SF  2.42  774.40\n3. Seal then paint walls and ceiling  480.00 SF  1.12  537.60\n4. R&R Cabinetry - lower units  18.00 LF  268.00  4,824.00\n…\n20. R&R Load bearing header - engineered\n     1.00 EA  3,2??.00  3,2??.00   ← OCR could not resolve these digits',
+    Card('Final draft — page 3 of 11', Ph('CHEN_R_FIRE_08-2026.pdf\nAllstate · Claim AL-772104\n88 Hillcrest Dr, Mt Lebanon PA 15228\n\nKITCHEN — Height 8\'\n1. Tear out wet drywall, cut & bag   320.00 SF   0.68   217.60\n2. Drywall 1/2" hung, taped, floated  320.00 SF  2.42  774.40\n3. Seal then paint walls and ceiling  480.00 SF  1.12  537.60\n4. R&R Cabinetry - lower units  18.00 LF  268.00  4,824.00\n…\n20. R&R Load bearing header - engineered\n     1.00 EA  3,2??.00  3,2??.00   ← OCR could not resolve these digits',
       {left:true, mono:true, h:'400px'})),
-    Card('Extracted line items', Tbl(['⚠','Area / room','Description',{t:'Qty',n:true},'UoM',{t:'Unit $',n:true},{t:'Total $',n:true},'Conf.',''],
-      LINES.map((l,i)=>({c:[ l[9]<1 ? Tag('!','dg') : '', l[0], l[1], {t:l[2],n:true}, l[3], {t:l[4],n:true}, {t:l[5],n:true},
+    Card('Extracted line items', Tbl(['⚠','Area / room','Description','Category (AI)',{t:'Qty',n:true},'UoM',{t:'Unit $',n:true},{t:'Total $',n:true},'Conf.',''],
+      LINES.map((l,i)=>({c:[ l[9]<1 ? Tag('!','dg') : '', l[0], l[1], h('span',{style:{fontSize:'11.5px', fontWeight:600, whiteSpace:'nowrap'}}, XCATN[i]), {t:l[2],n:true}, l[3], {t:l[4],n:true}, {t:l[5],n:true},
         Math.round(l[9]*100)+'%', h('div',{style:{display:'flex',gap:'4px'}}, Btn('Edit',{sm:true}), Btn('🗑',{sm:true}))],
-        style: l[9]<1 ? {background:'#FFFCF5'} : null})), {flush:true, min:'760px'}), {flush:true})),
-   Card('Reconciliation', h('div',{style:{fontSize:'13px', lineHeight:1.8}},
-     'Sum of extracted lines ', h('b',null,'$62,118.40'), ' vs PDF grand total ', h('b',null,'$62,300.00'), ' → ',
-     h('b',{style:{color:C.dg}},'Δ $181.60'),
-     h('div',{style:{fontSize:'12px', color:C.mut}},'A non-zero delta blocks "Mark reviewed". Resolve line 20 (low confidence) or add the missing line.')), {hard:true}),
+        style: l[9]<1 ? {background:'#FFFCF5'} : null})), {flush:true, min:'980px'}), {flush:true})),
+   Card('Reconciliation — checked three ways', xRecon(), {hard:true}),
    Bar(Btn('Save draft'), Btn('Mark reviewed → continue to mapping',{kind:'pri', disabled:true, title:'Blocked: reconciliation delta $181.60'}), Sp(),
      Btn('Upload a revised estimate (creates v3)',{onClick:()=>APP.pickFile('estimate')})));
  if(st.tab===1) pane = Stack(
-   Card('Upload', h('div',{onDragOver:e=>{e.preventDefault(); e.currentTarget.style.borderColor=C.pri;},
-     onDragLeave:e=>e.currentTarget.style.borderColor='#CBD9E3',
-     onDrop:e=>{e.preventDefault(); e.currentTarget.style.borderColor='#CBD9E3';
-       const f=e.dataTransfer.files[0]; if(f) APP.onFile({target:{files:[f], value:''}});},
-     style:{border:'2px dashed #CBD9E3', borderRadius:'12px', padding:'34px', textAlign:'center', transition:'border-color .15s', background:'#FAFCFD'}},
-     h('div',{style:{fontSize:'26px', marginBottom:'8px'}},'⬆'),
-     h('div',{style:{fontSize:'13px', fontWeight:600}},'Drag & drop the Xactimate PDF here'),
-     h('div',{style:{fontSize:'12px', color:C.mut, margin:'6px 0 14px'}},'or forward it to jbish@3riverscm.com'),
-     Btn('Browse…',{kind:'pri', onClick:()=>APP.pickFile('estimate')}))),
+   Row(xDrop('Final draft', 'The report that goes to the carrier and the client. The lines, room by room, and the recap by category and by room at the back.'),
+       xDrop('Components report', 'The internal report. Every material with its code, the equipment, and the labour hours by trade.')),
+   HTM({fontSize:'11.5px', color:C.faint, margin:'-6px 0 0'}, 'Both come out of Xactimate as PDFs — there is nothing to connect to and nothing to import. They can also be forwarded together to jbish@3riverscm.com.'),
    Card('Extracted header', Stack(
      Tbl(['Estimate #','Date','Claim / job reference','Insured / client','Property address'],
        [[Fld('CHEN-R-08-2026'), Fld('Aug 7, 2026'), Fld('AL-772104'), Fld('Robert Chen'), Fld('88 Hillcrest Dr, Mt Lebanon, PA 15228')]]),
      Tbl([{t:'Subtotal',n:true},{t:'Overhead',n:true},{t:'Profit',n:true},{t:'Sales tax',n:true},{t:'GRAND TOTAL',n:true}],
        [[{t:'48,650.00',n:true},{t:'4,865.00',n:true},{t:'4,865.00',n:true},{t:'3,920.00',n:true},{t:'<b>62,300.00</b>',n:true}]]))),
-   Card('Source file', Ph('CHEN_R_FIRE_08-2026.pdf · 11 pages · 2.4 MB · uploaded Aug 7, 14:22 by Kyle Brennan')));
+   Card('Source files', Ph('CHEN_R_FIRE_08-2026 — final draft.pdf · 11 pages · 2.4 MB · uploaded Aug 7, 14:22 by Kyle Brennan<br>CHEN_R_FIRE_08-2026 — components.pdf · 6 pages · 0.9 MB · uploaded Aug 7, 14:23 by Kyle Brennan', {html:true})));
  if(st.tab===2) pane = Tbl(['Version','Source','Uploaded','By',{t:'Grand total',n:true},'Status','Δ vs previous',''],[
-   ['<b>v2</b> (current)','Xactimate PDF','Aug 7, 14:22','Kyle Brennan',{t:'$62,300.00',n:true}, Tag('In review','wn'),'+$4,180.00 · 3 lines added',
+   ['<b>v2</b> (current)','Final draft + components','Aug 7, 14:22','Kyle Brennan',{t:'$62,300.00',n:true}, Tag('In review','wn'),'+$4,180.00 · 3 lines added',
      h('div',{style:{display:'flex',gap:'6px'}}, Btn('View',{sm:true}), Btn('Compare',{sm:true}))],
-   ['v1','Xactimate PDF','Aug 5, 09:10','Kyle Brennan',{t:'$58,120.00',n:true},'Superseded','—', Btn('View',{sm:true})]]);
- return jobPage({key:'estimate', step:'estimate', title:'1 · Estimate intake', sub:'Xactimate PDF ingestion · version 2',
+   ['v1','Final draft + components','Aug 5, 09:10','Kyle Brennan',{t:'$58,120.00',n:true},'Superseded','—', Btn('View',{sm:true})]]);
+ return jobPage({key:'estimate', step:'estimate', title:'1 · Estimate intake', sub:'Final draft + components report · version 2',
    children:[Tabs(T, st.tab), pane]});
 };
 
@@ -1297,13 +1366,13 @@ SCREENS.mapping = () => jobPage({key:'mapping', step:'mapping', title:'2 · Line
     Btn('Auto-map all with AI',{onClick:()=>toast('21 of 22 lines auto-mapped')}), Btn('Bulk assign…',{onClick:()=>APP.mBulk()}), Sp(),
     h('span',{style:{fontSize:'12.5px'}}, h('b',{style:{color:C.dg}},'Unmapped: 1 of 22')),
     Btn('Mapping dictionary',{onClick:()=>go('s_cost')})),
-  Tbl(['☐','Description (from Xactimate)',{t:'Qty',n:true},'Cost code','Trade','Cost type','Source'],
-    LINES.map((l,i)=>({c:['☐', l[1], {t:l[2]+' '+l[3],n:true},
+  Tbl(['☐','Description (from Xactimate)','Category',{t:'Qty',n:true},'Cost code','Trade','Cost type','Source'],
+    LINES.map((l,i)=>({c:['☐', l[1], h('span',{style:{fontSize:'11.5px', fontWeight:600, whiteSpace:'nowrap'}}, XCATN[i]), {t:l[2]+' '+l[3],n:true},
       Sel(l[6],['— unmapped —'].concat(COSTCODES.map(c=>c[0]+' '+c[1])),{w:'190px'}),
       Sel(l[7],['— unmapped —'].concat(TRADES),{w:'140px'}),
       Sel(l[8],['— select —','Labour','Material','Equipment','Sub'],{w:'120px'}),
       i===19 ? Tag('unmapped','dg') : (i<8 ? Tag('AI · remembered','ai') : Tag('AI','ai'))],
-      style: i===19 ? {background:'#FFFCF5'} : null})), {min:'1180px'}),
+      style: i===19 ? {background:'#FFFCF5'} : null})), {min:'1420px'}),
   Bar(Sp(), Btn('Continue to scope structuring',{kind:'pri', disabled:true, title:'Blocked: 1 line still unmapped'})),
   
   Card('Mapping dictionary — learned from confirmed mappings', Tbl(['Xactimate description','→ Cost code','→ Trade','→ Cost type',{t:'Times confirmed',n:true},''],[
@@ -1340,20 +1409,25 @@ SCREENS.budget = () => jobPage({key:'budget', step:'budget', title:'4 · Budget 
   Bar(Sel('Group by cost code',['Group by cost code','Group by scope package','Group by cost type'],{w:'230px'}), Sp(),
     Btn('Export CSV / XLSX',{onClick:()=>toast('Budget exported')}), Btn('Save draft'), Btn('Revise baseline…',{kind:'pri', onClick:()=>toast('Baseline revision v4 started')})),
   Card('Budget by reporting group — the three figures the weekly progress review works from',
-    Tbl(['Group',{t:'Est. labour hours',n:true},{t:'Est. labour $',n:true},{t:'Est. material $',n:true},{t:'Budgeted cost',n:true},{t:'Cost to date',n:true},{t:'Variance',n:true},'State'],
+    Tbl(['Group',{t:'Hours in the estimate',n:true},{t:'Est. labour hours',n:true},{t:'Est. labour $',n:true},{t:'Est. material $',n:true},{t:'Budgeted cost',n:true},{t:'Cost to date',n:true},{t:'Variance',n:true},'State'],
       CCGROUPS.filter(g=>BUDGET.some(b=>b[0].slice(0,2)===g[0])).map(g=>{
         const rows = BUDGET.filter(b=>b[0].slice(0,2)===g[0]);
         const hrs  = rows.reduce((a,b)=>a + (parseFloat(b[5])||0), 0);
         const lab  = rows.filter(b=>b[2]==='Labour').reduce((a,b)=>a + (parseFloat(String(b[7]).replace(/,/g,''))||0), 0);
         const mat  = rows.filter(b=>b[2]!=='Labour').reduce((a,b)=>a + (parseFloat(String(b[7]).replace(/,/g,''))||0), 0);
         const M = n => '$'+n.toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2});
-        return [h('b',null, g[0]+' '+g[1]), {t:hrs||'—',n:true}, {t:lab?M(lab):'—',n:true}, {t:mat?M(mat):'—',n:true},
+        return [h('b',null, g[0]+' '+g[1]), {t:XHRS[g[0]]||'—',n:true}, {t:hrs||'—',n:true}, {t:lab?M(lab):'—',n:true}, {t:mat?M(mat):'—',n:true},
                 {t:M(lab+mat),n:true}, {t:'—',n:true}, {t:'—',n:true}, Tag('Not started','dg')];
-      }), {min:'1040px', flush:true}), {flush:true}),
-  HTM({fontSize:'11.5px', color:C.faint, margin:'-4px 0 10px'},
+      }), {min:'1180px', flush:true}), {flush:true}),
+  HTM({fontSize:'11.5px', color:C.faint, margin:'-4px 0 10px', lineHeight:1.6},
     'Every group carries estimated labour hours, estimated labour cost and estimated material cost. ' +
     'Those three are what actual cost is later compared against, and what turns a group amber or red ' +
-    'once it runs more than 10% over.'),
+    'once it runs more than 10% over. <b>Hours in the estimate</b> come from the components report, by trade: ' +
+    'where 3Rivers does the work itself the budget starts from that figure and the estimator adjusts it; where a ' +
+    'subcontractor does it, the hours stay as a reference and the cost comes from the subcontract.'),
+  Card('Where the hours come from — labour components of the estimate', Tbl(['Code','Trade',{t:'Hours',n:true},'Lands in group'],
+    XLAB.map(r=>['<b>'+r[0]+'</b>', r[1], {t:r[2],n:true}, r[3]]),
+    {flush:true, foot:['<b>Subtotal</b>','',{t:'<b>253.5</b>'},'']}), {flush:true}),
   Tbl(['Cost code','Scope pkg','Cost type',{t:'Qty',n:true},{t:'Unit rate',n:true},{t:'Est. hours',n:true},'Labour category',{t:'Budget cost',n:true},{t:'Actual',n:true},{t:'Variance',n:true}],
     BUDGET.map(b=>[b[0],b[1],b[2],{t:b[3],n:true},{t:b[4],n:true},{t:b[5],n:true},b[6],
       {t:'$'+b[7]+(b[8]?' <span style="color:#7C93A5;font-size:11px">placeholder</span>':''),n:true},{t:'—',n:true},{t:'—',n:true}]),
@@ -1435,14 +1509,14 @@ SCREENS.proposal = () => jobPage({key:'proposal', step:'proposal', title:'8 · P
  children:[
   Card('Total proposal amount', h('div',{style:{display:'flex', gap:'14px', alignItems:'center', flexWrap:'wrap'}},
     h('b',{style:{fontFamily:BAR, fontSize:'26px'}},'$62,300.00'),
-    h('span',{style:{fontSize:'12.5px', color:C.mut}},'→ contract template band $50,001 – $250,000 → '),
-    h('b',{style:{fontSize:'12.5px'}},'Standard Agreement — large · v3'),
+    h('span',{style:{fontSize:'12.5px', color:C.mut}},'→ contract template for jobs over $30,000 → '),
+    h('b',{style:{fontSize:'12.5px'}},'Resi Fixed Rate — Greater Than $30K — PA HIC · v2.8'),
     Btn('Override template…',{sm:true, onClick:()=>APP.mOverrideTpl()})), {hard:true}),
   Tbl(['☑','Component','Content','Order',''],[
     ['☑','<b>Introductory statement</b>','Cover message stating what is enclosed','1 ↕', Btn('Edit',{sm:true, onClick:()=>APP.mIntro()})],
-    ['☑','<b>Contract</b>','Standard Agreement — large · v3 · includes all legal verbiage and payment terms','2 ↕', Btn('Preview',{sm:true})],
+    ['☑','<b>Contract</b>','Resi Fixed Rate — Greater Than $30K — PA HIC · v2.8 · includes all legal verbiage and payment terms','2 ↕', Btn('Preview',{sm:true})],
     ['☑','<b>Scope of work</b>', Sel('AI narrative + structured table + original Xactimate PDF',['AI narrative only','Structured line item table only','Original Xactimate PDF only','AI narrative + structured table','AI narrative + structured table + original Xactimate PDF'],{w:'340px'}),'3 ↕', Btn('Edit',{sm:true, onClick:()=>go('narrative')})],
-    ['☑','<b>Payment schedule</b>','6 payments · binder $500 · deposit 40% · milestones 15/15/25 · final 5%','4 ↕', Btn('Edit schedule',{sm:true, onClick:()=>go('schedule')})],
+    ['☑','<b>Payment schedule</b>','5 payments · binder $500 · draw 1 40% · draws 2 and 3 at 20% · final the remainder','4 ↕', Btn('Edit schedule',{sm:true, onClick:()=>go('schedule')})],
     ['☑','<b>GC license</b>','PA HIC #PA-118442 · expires Mar 31, 2027 · valid','5 ↕', Btn('Replace',{sm:true, onClick:()=>go('s_docs')})],
     ['☑','<b>Proof of insurance</b>','COI — Erie Insurance · <b style="color:#C8442E">⚠ expires in 21 days</b>','6 ↕', Btn('Replace',{sm:true, onClick:()=>go('s_docs')})],
     ['☑','<b>Photo report</b>','12 pages · 63 photos · generated Aug 7, 17:02','7 ↕', Btn('Select',{sm:true, onClick:()=>go('photoreport')})],
@@ -1452,28 +1526,33 @@ SCREENS.proposal = () => jobPage({key:'proposal', step:'proposal', title:'8 · P
     Btn('Review & send →',{kind:'pri', onClick:()=>go('versions')}))]});
 
 SCREENS.schedule = () => jobPage({key:'schedule', step:'schedule', title:'9 · Payment schedule & milestones',
- sub:'Contract value <b>$62,300.00</b> · 6 payments · defines every invoice Phase 4 will create',
+ sub:'Contract value <b>$62,300.00</b> · 5 payments · from the contract template for jobs over $30,000 · defines every invoice Phase 4 will create',
  children:[
-  Bar(Sel('Apply a schedule template…',['Apply a schedule template…','Standard restoration — 6 payments','Standard commercial — 5 payments','Small job — 3 payments'],{w:'320px'}),
+  Bar(Sel('Residential fixed rate — over $30K · binder + 40 / 20 / 20 + remainder',['Residential fixed rate — over $30K · binder + 40 / 20 / 20 + remainder','Residential fixed rate — under $30K','Standard schedule of values — 4 draws'],{w:'460px'}),
     Sp(), Btn('+ Add milestone',{onClick:()=>APP.mMilestone()})),
-  Tbl(['#','Payment','Trigger / milestone','Type',{t:'Amount',n:true},{t:'%',n:true},'Invoice trigger','Status',''],
+  Tbl(['#','Payment','Trigger / milestone','Type',{t:'Amount',n:true},{t:'%',n:true},{t:'Work it covers',n:true},'Invoice trigger','Status',''],
     MILESTONES.map(m=>[m[0],'<b>'+m[1]+'</b>', m[8]?m[2]:Fld(m[2]), m[3], {t:'$'+m[4],n:true},
-      {t: m[5]==='—' ? '—' : Fld(m[5],{w:'64px'}), n:true}, m[6], Tag(m[7]),
+      m[5]==='—' ? '—' : (m[3]==='Remainder' ? m[5]+' · the rest' : Fld(m[5],{w:'64px'})),
+      {t:m[9], n:true}, m[6], Tag(m[7]),
       m[8] ? '🔒' : h('div',{style:{display:'flex',gap:'5px'}}, Btn('↑↓',{sm:true}), Btn('🗑',{sm:true}))]),
-    {min:'1180px', foot:['','<b>TOTAL</b>','','',{t:'<b>$62,800.00</b>'},{t:'<b>100%</b>'},'($500 binder + 100% of contract value)','','']}),
+    {min:'1280px', foot:['','<b>TOTAL</b>','','',{t:'<b>$62,300.00</b>'},{t:'<b>100%</b>'},{t:'<b>100%</b>'},'The binder and the three draws come off the contract — the final is what is left','','']}),
+  HTM({fontSize:'11.5px', color:C.faint, margin:'-4px 0 10px', lineHeight:1.6},
+    '<b>Work it covers</b> comes from the recap by category at the back of the estimate: the trades that finish by each ' +
+    'milestone, as a share of the work. The template fixes 40, 20 and 20 per cent and leaves the rest for the end; this ' +
+    'column is what a person checks each milestone against before the contract goes out.'),
   Card('Validation', h('div',{style:{fontSize:'12.5px', lineHeight:2}},
     h('div',null,'✓ Percentages total ', h('b',null,'100%'),' — saving is blocked otherwise'),
-    h('div',null,'✓ Final payment ', h('b',null,'5%'),' ≤ policy threshold — the final payment is standardised so the customer cannot delay closeout'),
-    h('div',null,'✓ Payment count ', h('b',null,'6'),' ≤ default cap without change orders'),
-    h('div',null,'✓ Deposit clock ', h('b',null,'5 calendar days'),' from acceptance')), {hard:true})]});
+    h('div',{style:{color:C.dg}},'⚠ Final payment ', h('b',null,'19.2%'),' is above the ', h('b',null,'7%'),' set in Markup defaults. The template leaves the remainder for the end, so every job built on it lands here — saving asks for a reason until the policy is settled'),
+    h('div',null,'✓ Payment count ', h('b',null,'5'),' ≤ default cap without change orders'),
+    h('div',null,'✓ Draw 1 clock ', h('b',null,'5 calendar days'),' from signing')), {hard:true})]});
 
 SCREENS.versions = () => jobPage({key:'versions', step:'versions', title:'10 · Send & versions',
  sub:'The signed proposal is the contract — there is no separate agreement created afterwards',
  children:[
   Tbl(['Version',{t:'Amount',n:true},'Sent','Status','Viewed','Signed','Template used',''],[
-    ['<b>v2</b> (current)',{t:'$62,300.00',n:true},'Aug 7, 17:40', Tag('Sent','ai'),'Aug 7, 19:02','—','Standard Agreement — large · v3',
+    ['<b>v2</b> (current)',{t:'$62,300.00',n:true},'Aug 7, 17:40', Tag('Sent','ai'),'Aug 7, 19:02','—','Resi Fixed Rate — Greater Than $30K — PA HIC · v2.8',
       h('div',{style:{display:'flex',gap:'6px'}}, Btn('View',{sm:true}), Btn('Resend',{sm:true, onClick:()=>toast('Proposal resent')}), Btn('Revise → v3',{sm:true}))],
-    ['v1',{t:'$58,120.00',n:true},'Aug 5, 11:15','Superseded','Aug 5, 13:44','—','Standard Agreement — large · v3',
+    ['v1',{t:'$58,120.00',n:true},'Aug 5, 11:15','Superseded','Aug 5, 13:44','—','Resi Fixed Rate — Greater Than $30K — PA HIC · v2.8',
       h('div',{style:{display:'flex',gap:'6px'}}, Btn('View',{sm:true}), Btn('Compare',{sm:true}))]], {min:'1080px'}),
   Card('Send', Stack(Lbl('To'), Fld('rchen@example.com'), Lbl('CC'), Fld('',{ph:'adjuster, spouse, property manager…'}),
     Lbl('Cover email'), Ta('Robert,\n\nAttached is our proposal for the fire restoration at 88 Hillcrest Drive, along with our scope of work, licensing, insurance certificate and photo documentation.\n\nThe total is $62,300.00. A $500 binder is due on acceptance, and you can pay it directly from the link in the proposal.\n\nHappy to walk through any of it.\n\nKyle Brennan\n3Rivers General Contracting',{min:170}),
@@ -1600,15 +1679,15 @@ SCREENS.schedules = () => Page({key:'schedules', title:'Payment schedules', sub:
  children:[
   Bar(Sel('Status: All',['Status: All','Draft','Active','Complete'],{w:'160px'}), Sel('Arm: All',['Arm: All','Commercial GC','Restoration'],{w:'160px'})),
   Tbl(['Lead','Client',{t:'Contract value',n:true},{t:'Payments',n:true},{t:'Binder',n:true},{t:'Deposit',n:true},{t:'Final',n:true},'Validation',''],[
-    ['<b style="color:#087BB2">L-2026-0415</b>','Robert Chen',{t:'$62,300.00',n:true},{t:'6',n:true},{t:'$500',n:true},{t:'40%',n:true},{t:'5%',n:true},
-      Tag('✓ 100% · final ≤7% · ≤6 payments','ok'), Btn('Open',{sm:true, onClick:()=>go('schedule')})],
+    ['<b style="color:#087BB2">L-2026-0415</b>','Robert Chen',{t:'$62,300.00',n:true},{t:'5',n:true},{t:'$500',n:true},{t:'40%',n:true},{t:'19.2%',n:true},
+      Tag('⚠ final 19.2% > 7% policy — reason required','dg'), Btn('Open',{sm:true, onClick:()=>go('schedule')})],
     ['<b style="color:#087BB2">L-2026-0411</b>','Gregory Palmer',{t:'$8,940.00',n:true},{t:'3',n:true},{t:'$500',n:true},{t:'50%',n:true},{t:'10%',n:true},
       Tag('⚠ final 10% > 7% policy — reason required','dg'), Btn('Open',{sm:true, onClick:()=>go('schedule')})]], {min:'1120px'}),
   Card('Schedule templates', Tbl(['Template',{t:'Payments',n:true},'Structure','Used by',''],[
     ['Standard schedule of values — 4 draws',{t:'4',n:true},'33% at start · 30% rough complete · 30% finish stage · 7% final','6 jobs', Btn('Edit',{sm:true})],
-    ['Standard restoration — 6 payments',{t:'6',n:true},'$500 binder · 40% deposit · 15/15/25 milestones · 5% final','4 jobs', Btn('Edit',{sm:true})],
+    ['Residential fixed rate — over $30K',{t:'5',n:true},'$500 binder · 40% within 5 calendar days · 20% · 20% · the remainder','4 jobs', Btn('Edit',{sm:true})],
     ['Standard commercial — 5 payments',{t:'5',n:true},'$500 binder · 30% deposit · 30/30 milestones · 10% final','2 jobs', Btn('Edit',{sm:true})],
-    ['Small job — 3 payments',{t:'3',n:true},'$500 binder · 50% deposit · 50% on completion','6 jobs', Btn('Edit',{sm:true})]], {flush:true}), {flush:true})]});
+    ['Residential fixed rate — under $30K',{t:'—',n:true},'Not seen yet — the estimator walked through the over-$30K template','6 jobs', Btn('Edit',{sm:true})]], {flush:true}), {flush:true})]});
 
 /* ================= SETTINGS ================= */
 SCREENS.s_ai = (p, st) => {
@@ -1689,7 +1768,7 @@ SCREENS.s_assign = () => Page({key:'s_assign', title:'Assignment Rules', sub:'Ho
     Chk('Auto-assign on lead creation'), Chk('Skip estimators at their maximum'))),
   Card('Estimators', Tbl(['Estimator','Active','Arms they receive',{t:'Max open leads',n:true},{t:'Currently open',n:true},'Level','Weight',''],
     USERS.filter(u=>u.role==='Sales Estimator').map(u=>[u.name,'☑',
-      Sel(u.arms,['Both','Commercial GC','Restoration'],{w:'150px'}), {t:Fld(u.max,{w:'70px'}),n:true},
+      Sel(u.arms,['Both','Commercial GC','Restoration'],{w:'150px'}), Fld(u.max,{w:'70px'}),
       {t: u.name==="Jathan D'Antonio"?18:u.name==='Kyle Brennan'?11:3, n:true},
       Sel(u.level,['Senior','Mid','Junior'],{w:'110px'}), Fld(u.level==='Junior'?'0.5':'1.0',{w:'70px'}), Btn('Remove',{sm:true})]), {flush:true}), {flush:true,
     actions:[Btn('+ Add estimator',{sm:true, kind:'pri'})]}),
@@ -1837,6 +1916,13 @@ SCREENS.s_cost = (p, st) => {
          {t:COSTCODES.filter(c=>c[2]===g[0]).length, n:true},'☑',
          h('div',{style:{display:'flex',gap:'6px'}}, Btn('Rename',{sm:true}), Btn('Retire',{sm:true}))]),
        {flush:true}), {flush:true}),
+   Card('Categories that came off one of their estimates — and the group each lands in',
+     Tbl(['Xactimate category',{t:'Share of that job',n:true},'Reporting group',''],
+       XCATS20.map(r=>({c:[h('b',null,r[0]), {t:r[1],n:true},
+         r[2] ? Sel(r[2], CCGROUPS.map(g=>g[0]+' '+g[1]), {w:'240px'})
+              : Sel('— choose a group —', ['— choose a group —'].concat(CCGROUPS.map(g=>g[0]+' '+g[1])), {w:'240px'}),
+         r[2] ? '' : Tag('Needs a decision','wn')], style: r[2] ? null : {background:'#FFFCF5'}})),
+       {flush:true}), {flush:true}),
    Card('Cost codes',
      Tbl(['Code','Name','Group','Cost type','Default labour rate','Legacy code','Active',''],
        COSTCODES.map(c=>[h('b',null,c[0]), c[1],
@@ -1846,7 +1932,7 @@ SCREENS.s_cost = (p, st) => {
    Card('How the two levels are used', Tbl(['Level','What it drives'],[
      ['<b>Group</b> — the twelve','The budget is built and reported at this level. The weekly progress review flags a group whose actual cost runs more than 10% over its budget. Job-level margin rolls up from here.'],
      ['<b>Code</b> — the detail','What a purchase order, a time entry or a supplier invoice is actually tagged with. Several codes roll into one group.'],
-     ['<b>Xactimate category</b> — what the estimate says','Every estimate line arrives with its Xactimate category (DMO, DRY, PNT…). The category decides the group, so a line is placed without anyone choosing. <b>The mapping is partial</b> until it is checked against four or five of their estimates.'],
+     ['<b>Xactimate category</b> — what the estimate says','The final draft does not print the category against each line. The platform proposes it from the description and proves the result against the recap by category printed at the back of the estimate; the category then decides the group, so nobody picks from twelve by hand.'],
      ['<b>Legacy code</b>','Where a job carries a cost code from the previous system. Filled in when historical jobs are brought across, so past cost stays comparable.']
    ], {flush:true}), {flush:true}));
  if(st.tab===1) pane = Stack(
@@ -1858,7 +1944,7 @@ SCREENS.s_cost = (p, st) => {
    
    Bar(Fld('',{ph:'Search…', w:'220px'}), Sp(), Btn('+ Add category',{kind:'pri'})),
    Tbl(['Category',{t:'Hourly rate',n:true},{t:'Overtime rate',n:true},'Active',''],
-     LABOUR.map(l=>[l[0], {t:Fld(l[1],{w:'100px'}),n:true}, {t:Fld(l[2],{w:'100px'}),n:true},'☑', Btn('Edit',{sm:true})])));
+     LABOUR.map(l=>[l[0], Fld(l[1],{w:'100px'}), Fld(l[2],{w:'100px'}),'☑', Btn('Edit',{sm:true})])));
  if(st.tab===3) pane = Stack(
    Bar(Fld('',{ph:'Search source description…', w:'280px'}), Sp(),
      h('span',{style:{fontSize:'12.5px', color:C.mut}},'142 learned mappings'), Btn('Export',{onClick:()=>toast('Dictionary exported')})),
@@ -1884,8 +1970,10 @@ SCREENS.s_markup = () => Page({key:'s_markup', title:'Markup defaults', sub:'Glo
     ['Default contingency', Fld('3%',{w:'90px'}), Fld('5%',{w:'90px'}), Btn('Edit',{sm:true})],['Sales tax — materials', Fld('7%',{w:'90px'}), Fld('7%',{w:'90px'}), Btn('Edit',{sm:true})],['Sales tax — cleaning', Fld('7%',{w:'90px'}), Fld('7%',{w:'90px'}), Btn('Edit',{sm:true})]]),
   Card('Payment policy defaults', Tbl(['Setting','Value'],[
     ['Binder amount', Fld('$500',{w:'120px'})],
-    ['Deposit — default percentage of contract value', Fld('40%',{w:'120px'})],
-    ['Deposit — days from acceptance to invoice', Fld('5 calendar days',{w:'170px'})],
+    ['Draw 1 (deposit) — percentage of contract value', Fld('40%',{w:'120px'})],
+    ['Draw 1 — due within', Fld('5 calendar days of signing',{w:'220px'})],
+    ['Draws 2 and 3 — percentage each, at a milestone', Fld('20%',{w:'120px'})],
+    ['Final payment', Fld('Whatever is left of the contract',{w:'260px'})],
     ['Maximum final payment', Fld('7%',{w:'120px'})],['Maximum final payment — enforcement', Sel('Warn and ask for a reason',['Warn and ask for a reason','Block the schedule','No check'],{w:'240px'})],
     ['Maximum payments without change orders', Fld('6',{w:'120px'})],
     ['Proposal expiry', Fld('30 days',{w:'120px'})]], {flush:true}), {flush:true})]});
@@ -1921,21 +2009,39 @@ SCREENS.s_labels = () => Page({key:'s_labels', title:'Photo label taxonomy', sub
    'Photos labelled below', Fld('60',{w:'70px'}),'% confidence are flagged', Tag('Needs review','dg'),'and excluded from generated reports until confirmed.'))])});
 
 SCREENS.s_contracts = () => Page({key:'s_contracts', title:'Contract templates',
- sub:'Templates banded by dollar amount — the correct one is selected automatically from the proposal total, and can be overridden',
+ sub:'Two templates, split at $30,000 — the right one is selected automatically from the proposal total, and can be overridden',
  actions:[Btn('+ Add template',{kind:'pri', onClick:()=>APP.mContract()})],
  children:[
   Tbl(['Template','Band from','Band to','Version','Active','Used by',''],
     CONTRACTS.map(c=>[ '<b>'+c[0]+'</b>', Fld(c[1],{w:'110px'}), Fld(c[2],{w:'110px'}), c[3], c[4],
-      c[0].includes('large') ? '1 open proposal' : '—',
+      c[0].includes('Greater') ? '1 open proposal' : '1 declined proposal',
       h('div',{style:{display:'flex',gap:'6px'}}, Btn('Edit',{sm:true}), Btn('Preview',{sm:true}), Btn('History',{sm:true}))]), {min:'1020px'}),
   Card('Merge variables available in a contract template', h('div',{style:{display:'flex', gap:'6px', flexWrap:'wrap'}},
     ...['{{client_name}}','{{client_type}}','{{property_address}}','{{billing_address}}','{{scope_summary}}','{{scope_table}}','{{total_amount}}','{{payment_schedule_table}}','{{proposal_date}}','{{proposal_version}}','{{estimator_name}}','{{company_license_no}}','{{claim_number}}','{{insurance_carrier}}'].map(v=>
       h('span',{key:v, style:{fontSize:'11.5px', fontFamily:'ui-monospace,Menlo,monospace', background:C.priL, color:C.priD,
         border:'1px solid #CFE4F2', borderRadius:'6px', padding:'3px 7px'}}, v)))),
-  Card('Version history — Standard Agreement — large', Tbl(['Version','Effective','Changed by','Change',{t:'Proposals using it',n:true}],[
-    ['<b>v3</b>','Jul 1, 2026','Joshua Tohey','Payment policy section 7 rewritten',{t:'4',n:true}],
-    ['v2','Mar 12, 2026','Joshua Tohey','Added change order clause',{t:'11',n:true}],
-    ['v1','Jan 2, 2026','Joshua Tohey','Initial',{t:'7',n:true}]], {flush:true}), {flush:true})]});
+  Card('Version history — Resi Fixed Rate — Greater Than $30K — PA HIC', Tbl(['Version','Effective','Changed by','Change',{t:'Proposals using it',n:true}],[
+    ['<b>v2.8</b>','Jul 1, 2026','Joshua Tohey','Credit card block no longer used — payment goes through their current system',{t:'4',n:true}],
+    ['v2.7','Mar 12, 2026','Joshua Tohey','Late fee wording',{t:'11',n:true}],
+    ['v2.6','Jan 2, 2026','Joshua Tohey','First version in this format',{t:'7',n:true}]], {flush:true}), {flush:true}),
+  Row(
+   Card('Payment schedule inside the template', Stack(
+    Tbl(['Payment',{t:'Amount',n:true},'When it falls due'],[
+     ['<b>A · Binder</b>',{t:'$500',n:true},'On signature — non-refundable'],
+     ['<b>B · Draw 1</b>',{t:'40%',n:true},'Within <b>5 calendar days</b> of signing. Material orders are placed once it is received'],
+     ['<b>C · Draw 2</b>',{t:'20%',n:true},'At a milestone typed into the template — <i>completion of drywall</i>'],
+     ['<b>D · Draw 3</b>',{t:'20%',n:true},'At the next milestone — <i>completion of painting</i>'],
+     ['<b>E · Final</b>',{t:'The rest',n:true},'After the punch list and the walkthrough — whatever is left of the contract']], {flush:true}),
+    HTM({fontSize:'11.5px', color:C.faint, padding:'0 16px 12px', lineHeight:1.6},
+     'Seen in the template for jobs over $30,000 on 25 Sep. The amounts are percentages of the total, so the spreadsheet ' +
+     'recalculates them when the total changes; only the milestone text is typed by hand. The template for jobs under ' +
+     '$30,000 has not been seen yet.')), {flush:true}),
+   Card('Clauses that carry over — and one that changes', HTM({fontSize:'12.5px', lineHeight:1.9},
+    '• Durations are in <b>calendar days</b> — “estimated to be completed within 43 calendar days”<br>' +
+    '• <b>Material orders are placed once the deposit is received</b><br>' +
+    '• A <b>5% fee</b> applies when paying by credit card, and late fees apply to invoices unpaid outside the terms<br>' +
+    '• <b>Changes:</b> the template requires the client to become a user of their current system, which is where the client ' +
+    'follows the job and pays. When the platform replaces it, that clause points at the client portal instead.')))]});
 
 SCREENS.s_docs = () => Page({key:'s_docs', title:'Company documents',
  sub:'Attached automatically to every proposal — the system warns when one is about to expire',
@@ -2402,10 +2508,10 @@ SCREENS.jobs = (p, st) => {
    (id, L) => toast('#' + id + ' moved to ' + L + (L==='Closed' ? ' — only once every purchase order and change order is reconciled' : '')));
  if(st.tab===1){
   const EV = {1:[['s','#086 Cardello Bldg — start'],['t','#088 Electrical · Three Rivers Electric']],3:[['t','#088 Electrical done']],
-   5:[['f','#085 Bergman — finish']],8:[['s','#090 Maple Ridge Unit 14 — start'],['m','#088 Milestone 2 · rough-in']],
+   5:[['f','#085 Bergman — finish']],8:[['s','#090 Maple Ridge Unit 14 — start'],['m','#088 Draw 2 · completion of drywall']],
    12:[['f','#082 Westmoreland — finish']],14:[['s','#091 Carnegie Office Park — start']],17:[['t','#088 Painting · Allegheny Drywall']],
-   22:[['t','#088 Flooring · crew R. Diaz · 3 d × 8 h']],24:[['f','#090 Maple Ridge Unit 14 — finish']],
-   25:[['m','#088 Milestone 3 · millwork, paint, floors']],26:[['f','#086 Cardello Bldg — finish']],30:[['f','#088 Robert Chen — finish'],['m','#088 Final payment']]};
+   19:[['m','#088 Draw 3 · completion of painting']],22:[['t','#088 Flooring · crew R. Diaz · 3 d × 8 h']],24:[['f','#090 Maple Ridge Unit 14 — finish']],
+   26:[['f','#086 Cardello Bldg — finish']],30:[['f','#088 Robert Chen — finish'],['m','#088 Final payment']]};
   const col = {s:C.pri, f:C.ink, m:C.wn, t:C.mut};
   const cell = (d, inMonth) => h('td',{key:d+'-'+inMonth, style:{verticalAlign:'top', height:'104px', width:'14.28%', padding:'6px',
     borderRight:'1px solid '+C.line, borderBottom:'1px solid '+C.line, background:inMonth?'#fff':'#FAFCFD'}},
@@ -2480,7 +2586,8 @@ SCREENS.job = (p, st) => {
       HTM({fontSize:'12px', color:C.mut}, 'Due ' + M.due),
       Btn('+ Task',{sm:true})]}); }),
    Card('How milestones and tasks work', HTM({fontSize:'12.5px', lineHeight:1.8},
-     '<b>A milestone is a payment in the contract.</b> The tasks inside it are the work that has to be finished for it to be reached, ' +
+     '<b>A milestone is a payment in the contract.</b> Draw 1, the deposit, has no tasks: it falls due within five calendar days of ' +
+     'signing, before work starts. The tasks inside each of the others are the work that has to be finished for it to be reached, ' +
      'so the count of tasks done is how close the next payment is. A task goes to a <b>subcontractor</b> — and then carries their ' +
      'purchase order — or to <b>someone internal</b>, for a number of days at a number of hours a day. A whole milestone can go ' +
      'to one company, or its tasks can be split between several. When the last task is marked done, the project manager confirms ' +
@@ -2533,22 +2640,24 @@ SCREENS.scopebuilder = () => {
    Bar(Sel('Job: #088 · REB - Robert Chen - Fire damage',['Job: #088 · REB - Robert Chen - Fire damage'],{w:'340px'}),
      Sel('Section: All',['Section: All','Current layout (demo)','Recon (final)'],{w:'200px'}),
      Sel('Room: All',['Room: All','Kitchen','Living / Dining','1st floor','Structural','Site'],{w:'170px'}),
-     Sel('Category: All',['Category: All','PNT','DRY','CAB','ELE','FCW','FNC'],{w:'170px'}),
+     Sel('Trade: All',['Trade: All','Painting','Drywall','Cabinetry','Electrical','Flooring','Finish carpentry'],{w:'170px'}),
      Chk('Hide lines already in a scope', false)),
+   HTM({fontSize:'12.5px', color:C.ok, background:'#F1FAF4', border:'1px solid #CFEBD9', borderRadius:'8px', padding:'9px 13px'},
+    '✓ <b>Every trade total matches the recap by category the estimate prints</b> — checked in Phase 2 on Aug 7, so the value behind each filter is the value the estimate says it is.'),
    h('div',{style:{display:'grid', gridTemplateColumns:'minmax(0,1fr) 340px', gap:'16px', alignItems:'start'}},
-    Card('Estimate lines — read from the Xactimate PDF in Phase 2',
-     Tbl(['','Section','Room','Cat.','Description',{t:'Qty',n:true},'Unit',{t:'Total',n:true},'In a scope'],
+    Card('Estimate lines — read from the final draft in Phase 2',
+     Tbl(['','Section','Room','Trade','Description',{t:'Qty',n:true},'Unit',{t:'Total',n:true},'In a scope'],
       LINES.map((l,i)=>({style:pick.includes(i)?{background:'#EDF5FA'}:null, c:[
         h('input',{type:'checkbox', defaultChecked:pick.includes(i), disabled:!!XIN[i], style:{accentColor:C.pri}}),
-        XSEC[i]?'Recon (final)':'Current layout (demo)', l[0], '<b>'+XCAT[i]+'</b>', l[1], {t:String(l[2]),n:true}, l[3], {t:'$'+l[5],n:true},
+        XSEC[i]?'Recon (final)':'Current layout (demo)', l[0], h('b',{style:{whiteSpace:'nowrap'}}, XTRADE[i]), l[1], {t:String(l[2]),n:true}, l[3], {t:'$'+l[5],n:true},
         XIN[i] ? Tag(XIN[i]) : '—']})), {flush:true, min:'1020px'}), {flush:true}),
     Card('New scope', Stack(
       HTM({fontSize:'13px'}, '<b>' + pick.length + ' lines selected</b> · ' + money(tot) + '.00'),
       Lbl('Title'), Fld('Painting — kitchen walls and ceilings, living and dining ceiling'),
       Lbl('Who does it'), Sel('Subcontractor · Allegheny Drywall & Finish',['Subcontractor · Allegheny Drywall & Finish','Subcontractor · another company in Painting','Internal crew'],{w:'100%'}),
-      Lbl('Milestone it belongs to'), Sel('Milestone 3 · Millwork, painting and flooring',['Milestone 1 · Demolition, mitigation, structure','Milestone 2 · Rough-in','Milestone 3 · Millwork, painting and flooring','Final · Punch list and closeout'],{w:'100%'}),
+      Lbl('Milestone it belongs to'), Sel('Draw 3 · Completion of painting',['Draw 2 · Completion of drywall','Draw 3 · Completion of painting','Final · Flooring, punch list and closeout'],{w:'100%'}),
       Chk('Create the purchase order as a draft'),
-      Btn('Create scope',{kind:'pri', onClick:()=>toast('SP-08 Painting created · purchase order draft for Allegheny Drywall & Finish · added to Milestone 3')}),
+      Btn('Create scope',{kind:'pri', onClick:()=>toast('SP-08 Painting created · purchase order draft for Allegheny Drywall & Finish · added to Draw 3')}),
       HTM({fontSize:'11.5px', color:C.faint, lineHeight:1.6},
        'The lines stay exactly as the estimate wrote them. The scope text is drafted from them and can be edited before it goes out.')),
      {hard:true})),
@@ -2556,7 +2665,8 @@ SCREENS.scopebuilder = () => {
      'Today the Operations Manager and the project manager read the Xactimate scope and decide by hand how much of it each ' +
      'company gets, then type that into a purchase order. <b>This screen does the same thing by ticking lines</b> — for ' +
      'example every ceiling line in every room for the painter. A line can only be in one scope, so nothing is given out twice ' +
-     'and nothing is left without an owner.'))]});
+     'and nothing is left without an owner. The final draft does not print a category against each line, so Phase 2 ' +
+     'places every line from its description and proves the result against the recap by category the estimate prints.'))]});
 };
 
 /* ---- Change orders ---- */
@@ -2698,11 +2808,10 @@ SCREENS.invoices = () => Page({key:'invoices', title:'Invoices',
     'The platform prepares the invoice and tells the team it is ready. <b>A person checks it and presses send.</b>')), {hard:true}),
   Card('Drafts from the contract — one for every payment, created when the job was converted', Stack(
    Tbl(['Invoice','Payment','Milestone',{t:'Amount',n:true},'Tasks done','Expected','State'],[
-    ['<b>Chen - Draw 1</b>','Deposit — 40%','—',{t:'$24,920.00',n:true},'—','Aug 12', Tag('Ready to send','ai')],
-    ['<b>Chen - Draw 2</b>','Milestone 1 — 15%','Demolition, mitigation and structural repair',{t:'$9,345.00',n:true},'3 of 4','Aug 29', Tag('Draft — milestone due in 2 days','wn')],
-    ['<b>Chen - Draw 3</b>','Milestone 2 — 15%','Rough-in — electrical, HVAC, drywall',{t:'$9,345.00',n:true},'0 of 3','Sep 8', Tag('Draft')],
-    ['<b>Chen - Draw 4</b>','Milestone 3 — 25%','Millwork, painting and flooring',{t:'$15,575.00',n:true},'0 of 3','Sep 25', Tag('Draft')],
-    ['<b>Chen - Draw 5</b>','Final — 5%','Punch list signed off, job closeout',{t:'$3,115.00',n:true},'0 of 2','Sep 30', Tag('Draft')]], {flush:true, min:'1060px'}),
+    ['<b>Chen - Draw 1</b>','Draw 1 — 40%','Deposit, within 5 calendar days of signing',{t:'$24,920.00',n:true},'—','Aug 12', Tag('Ready to send','ai')],
+    ['<b>Chen - Draw 2</b>','Draw 2 — 20%','Completion of drywall',{t:'$12,460.00',n:true},'3 of 7','Sep 8', Tag('Draft — team told Sep 5, three days before','wn')],
+    ['<b>Chen - Draw 3</b>','Draw 3 — 20%','Completion of painting',{t:'$12,460.00',n:true},'0 of 2','Sep 19', Tag('Draft')],
+    ['<b>Chen - Draw 4</b>','Final — the remainder','Flooring, punch list and closeout',{t:'$11,960.00',n:true},'0 of 3','Sep 30', Tag('Draft')]], {flush:true, min:'1060px'}),
    HTM({fontSize:'11.5px', color:C.faint, padding:'0 16px 12px', lineHeight:1.6},
     'The dates follow the schedule in Phase 3, so a draft moves when its milestone moves. The project manager and accounting are told ' +
     '<b>three days before a milestone falls due</b>. A draft becomes <b>Ready to send</b> when the project manager confirms the milestone on site.')),
@@ -2723,7 +2832,7 @@ SCREENS.invoices = () => Page({key:'invoices', title:'Invoices',
     ['<b>Acceptance + the 5-day rule</b>','The deposit, a percentage of contract value'],
     ['<b>A milestone marked reached</b>','That milestone’s percentage'],
     ['<b>A change order approved</b>','The change order amount, <b>beyond the six payments</b> the contract allows'],
-    ['<b>Completion</b>','The final payment']], {min:'520px'})),
+    ['<b>Completion</b>','The final payment — whatever is left of the contract']], {min:'520px'})),
    Card('How a client pays', Tbl(['Method','Tracked automatically','Behaviour'],[
     ['Card', Tag('Yes','ok'),'Paid through the link in the invoice; the invoice settles on its own'],
     ['ACH', Tag('Yes','ok'),'Same link; settlement can take a few days and the status follows it'],
@@ -2745,7 +2854,7 @@ SCREENS.invoice = (p) => { const i = INVOICES.find(x=>x.id===p) || INVOICES[0];
    Stack(
     Card('Where it came from', Tbl(['','Detail'],[
      ['<b>Contract</b>','Proposal v2, signed Aug 7, 2026 — $62,300.00'],
-     ['<b>Milestone</b>','2 · Deposit — 40% of contract value'],
+     ['<b>Milestone</b>','Draw 1 · Deposit — 40% of contract value'],
      ['<b>Rule</b>','Invoiced within 5 calendar days of acceptance'],
      ['<b>Cost codes</b>','Not applicable — this is a client payment, not a cost']], {min:'400px'})),
     Card('QuickBooks', Stack(
@@ -3833,16 +3942,16 @@ Object.assign(Component.prototype, {
        h('div',{style:{padding:'8px 9px', fontSize:'11.5px'}}, '☑ ', h('b',null,p[0]), h('div',{style:{color:C.faint}}, p[3])))))),
    okFoot('Selection saved')); },
  mOverrideTpl(){ modal('Override the contract template', Stack(
-   h('div',{style:{fontSize:'12.5px'}},'Automatically selected by amount ($62,300.00): ', h('b',null,'Standard Agreement — large · v3'),' — band $50,001 – $250,000'),
-   F('Use instead', Sel('Standard Agreement — large', CONTRACTS.map(c=>c[0]))),
+   h('div',{style:{fontSize:'12.5px'}},'Automatically selected by amount ($62,300.00): ', h('b',null,'Resi Fixed Rate — Greater Than $30K — PA HIC · v2.8'),' — for jobs over $30,000'),
+   F('Use instead', Sel('Resi Fixed Rate — Greater Than $30K — PA HIC', CONTRACTS.map(c=>c[0]))),
    F('Reason for the override (recorded on the proposal)', Ta(''))), okFoot('Template overridden')); },
  mIntro(){ modal('Introductory statement', Stack(
    Ta('Robert,\n\nThank you for having us out to 88 Hillcrest Drive. Enclosed is our complete proposal for the fire and smoke restoration, covering mitigation and odour control, demolition, structural repair, electrical and HVAC work, and the full finish package returning the first floor to pre-loss condition.\n\nIncluded with this proposal you will find our detailed scope of work, the payment schedule, our Pennsylvania contractor license, our certificate of insurance, and a full photo report documenting the current condition of the property.',{min:180}),
    h('div',{style:{display:'flex', gap:'8px'}}, Btn('Regenerate',{onClick:()=>toast('Redrafted')}), Fld('',{ph:'with instructions…'}))), okFoot('Introduction saved')); },
  mSendProp(){ modal('Send proposal package', Stack(
    h('div',{style:{fontSize:'13px', fontWeight:600}},'You are about to send proposal v2 to rchen@example.com.'),
-   Tbl(['Included','Component'],[['☑','Introductory statement'],['☑','Standard Agreement — large · v3'],
-     ['☑','Scope of work — narrative + table + Xactimate PDF'],['☑','Payment schedule — 6 payments'],['☑','GC License'],
+   Tbl(['Included','Component'],[['☑','Introductory statement'],['☑','Resi Fixed Rate — Greater Than $30K — PA HIC · v2.8'],
+     ['☑','Scope of work — narrative + table + Xactimate PDF'],['☑','Payment schedule — 5 payments'],['☑','GC License'],
      ['☑','Certificate of insurance <b style="color:#C8442E">⚠ expires in 21 days</b>'],['☑','Photo report — 12 pages']]),
    h('div',null, Chk('Payment link for the $500 binder'), Chk('Request a digital signature'), Chk('Start "Proposal Follow-Up — friendly"'))),
    [Btn('Cancel',{onClick:()=>closeM()}), Btn('Send now',{kind:'pri', onClick:()=>{closeM(); toast('Package sent · cadence started');}})]); },
@@ -3852,7 +3961,7 @@ Object.assign(Component.prototype, {
    F('Amount type', Sel('Percentage of contract value',['Percentage of contract value','Fixed amount'])),
    F('Value', Fld('')),
    F('Invoice trigger', Sel('On milestone marked complete',['On milestone marked complete','On acceptance','On a fixed date','Manually'])),
-   F('Position', Sel('After · Milestone 3', MILESTONES.map(m=>'After · '+m[1])))), okFoot('Milestone added')); },
+   F('Position', Sel('After · Draw 3', MILESTONES.map(m=>'After · '+m[1])))), okFoot('Milestone added')); },
  mCostCode(){ modal('Add a cost code', Stack(
    h('div',{style:{display:'flex', gap:'10px'}},
      h('div',{style:{flex:1}}, Lbl('Code'), Fld('')), h('div',{style:{flex:2}}, Lbl('Name'), Fld(''))),
