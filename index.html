@@ -622,7 +622,7 @@ class Component extends DCLogic {
   state = {
     open:{g_intake:1,g_est:1,g_prop:1,g_rec:0,g_sub:0,g_bill:0,g_field:0,g_set:1,x1:0,x2:0,x3:0,x4:0,x5:0,x6:0,x7:0,x8:0},
     cur:'dashboard', param:null, tab:0, arm:'All', hotView:'table', eqView:'table',
-    leads:LEADS.map(l=>({...l})), modal:null, toasts:[], palette:false, rail:false, flow:null
+    leads:B1.seed(), hot:B1.hot0(), views:B1.VIEWS0.slice(), draft:null, led:{}, modal:null, toasts:[], palette:false, rail:false, flow:null
   };
   componentDidMount(){
     APP = this;
@@ -802,7 +802,7 @@ function Palette(props){
   const items = [];
   Object.keys(TITLES).forEach(k => items.push({t:TITLES[k], s:'Screen', go:()=>go(k)}));
   props.leads.forEach(l => items.push({t:l.client+' · '+l.id, s:'Lead · '+l.arm, go:()=>go('lead', l.id)}));
-  CONTACTS.forEach((c,i) => items.push({t:c.n, s:'Contact', go:()=>go('contact', i)}));
+  B1.contacts(props.leads).forEach(c => items.push({t:c.n, s:'Contact', go:()=>go('contact', c.n)}));
   const f = q ? items.filter(i => (i.t+i.s).toLowerCase().includes(q.toLowerCase())).slice(0,9) : items.slice(0,8);
   return h('div',{style:{width:'100%', maxWidth:'620px', background:'#fff', borderRadius:'14px', overflow:'hidden',
     boxShadow:'0 24px 60px rgba(14,42,59,.3)', animation:'pop .2s ease both'}},
@@ -821,247 +821,8 @@ const LOCKED={
  'BILLING_RETIRED':['Invoices (AR) generated from the Phase 2 milestone triggers','Payment links, collections and the stern in-production cadence','Vendor invoices (AP) with OCR extraction','QuickBooks two-way sync','Payment runs — replacing the spreadsheet between BuilderTrend and PNC Pinnacle'],
  'FIELD & PAYROLL_RETIRED':['Mobile clock in / clock out against a specific job and cost code','Timesheets with AI validation of irregular or missing entries','Labour cost allocation feeding the Actual column of the Phase 2 budget','Payroll preparation — aggregation, overtime, structured summaries','Gusto sync — batch prepared here, payment executed manually by the client']};
 
-/* ================= DASHBOARD ================= */
-SCREENS.dashboard = (p, st) => Page({key:'dash', title:'Good morning, Joshua',
- sub:'Owner / Admin',
- actions:[h('div',{style:{display:'flex', gap:'4px', background:'#fff', border:'1px solid '+C.bd, borderRadius:'9px', padding:'4px'}},
-   ...['All','Commercial GC','Restoration'].map(a=>h('div',{key:a, onClick:()=>APP.setState({arm:a}),
-     style:{padding:'7px 13px', borderRadius:'6px', cursor:'pointer', fontSize:'12.5px', fontWeight:600, transition:'all .15s',
-       background:st.arm===a?C.pri:'transparent', color:st.arm===a?'#fff':C.mut}}, a)))],
- children:[
-  Tiles([['2','New / unassigned','hotlist',C.pri],['2','Emergency open','hotlist',C.dg],['1','Awaiting first contact','hotlist',C.cy],
-    ['2','Visits today','appointments',C.cy],['1','Awaiting proposal reply','proposals','#5CC6EC'],['1','Stalled / no reply','hotlist','#E0A63C']]),
-  h('div',{style:{display:'grid', gridTemplateColumns:'minmax(560px,1fr) minmax(280px,330px)', gap:'16px', alignItems:'start'}},
-   Stack(
-    Card('Needs a human', Tbl(['Lead','Client · why it stopped','Since',''],[
-      {c:['<b style="color:#087BB2">L-2026-0417</b>','<b>Sarah Mitchell</b><div style="color:#A5503F;font-size:12px">Emergency transfer not answered</div>','5 h',
-        Btn('Open',{kind:'danger', sm:true, onClick:()=>go('lead','L-2026-0417')})], style:{background:'#FDF6F4'}, hover:'#FBEDE9'},
-      ['<b style="color:#087BB2">L-2026-0415</b>','<b>Robert Chen</b><div style="color:#5B7387;font-size:12px">Cadence exhausted — no reply after 4 touches</div>','3 d',
-        Btn('Open',{sm:true, onClick:()=>go('lead','L-2026-0415')})],
-      ['<b style="color:#087BB2">L-2026-0413</b>','<b>Linda Vasquez</b><div style="color:#5B7387;font-size:12px">Qualification incomplete — AI could not confirm budget</div>','12 h',
-        Btn('Open',{sm:true, onClick:()=>go('lead','L-2026-0413')})],
-      ['—','<b>jhoward@example.com</b><div style="color:#5B7387;font-size:12px">Inbound email could not be parsed</div>','2 h',
-        Btn('Review',{sm:true, onClick:()=>go('inbox')})]], {flush:true}), {flush:true, hard:true}),
-    Card("Today's visits", Tbl(['Time','Estimator','Client','Address','Arm'],
-      APPTS.filter(a=>a.d==='Thu Aug 7'||a.d==='Fri Aug 8').map(a=>({
-        c:[a.t, a.est, '<b>'+a.client+'</b>', a.addr, Tag(a.arm, a.arm==='Restoration'?'ai':null)],
-        onClick:()=>go('lead', a.lead)})), {flush:true}), {flush:true,
-      actions:[Btn('Appointments →',{sm:true, onClick:()=>go('appointments')})]}),
-    Card('Jobs in estimating', Tbl(['Lead','Client','Estimator','Days since visit','What is missing'],[
-      ['<b style="color:#087BB2">L-2026-0408</b>','Northside Dental','Marcus Hale', Tag('13 days','dg'),'Estimate not uploaded'],
-      ['<b style="color:#087BB2">L-2026-0414</b>','Westmoreland Retail',"Jathan D'Antonio", Tag('6 days','wn'),'Estimate in review'],
-      ['<b style="color:#087BB2">L-2026-0415</b>','Robert Chen','Kyle Brennan', Tag('0 days','ok'),'Awaiting client signature']], {flush:true}),
-      {flush:true, actions:[Btn('Estimating queue →',{sm:true, onClick:()=>go('equeue')})]})),
-   Stack(
-    h('section',{style:{background:'linear-gradient(160deg,#0B5C88 0%,#087BB2 60%,#30A5DE 100%)', borderRadius:'12px', padding:'18px', color:'#fff'}},
-     h('div',{style:{fontFamily:BAR, fontSize:'10.5px', fontWeight:600, letterSpacing:'.12em', textTransform:'uppercase', opacity:.82}}, 'On call right now'),
-     h('div',{style:{fontFamily:BAR, fontSize:'21px', fontWeight:600, marginTop:'8px'}}, 'Joshua Tohey'),
-     h('div',{style:{fontSize:'13px', opacity:.9}}, '(412) 555-0100'),
-     h('div',{style:{height:'1px', background:'rgba(255,255,255,.25)', margin:'14px 0'}}),
-     h('div',{style:{display:'flex', justifyContent:'space-between', fontSize:'12.5px'}}, h('span',{style:{opacity:.85}},'Backup'), h('b',null,'Brian McClelland')),
-     h('div',{style:{display:'flex', justifyContent:'space-between', fontSize:'12.5px', marginTop:'6px'}},
-       h('span',{style:{opacity:.85}},'Coverage this week'), h('b',null,'⚠ 1 gap')),
-     h('button',{onClick:()=>go('s_oncall'), style:{font:'inherit', fontSize:'12.5px', fontWeight:600, color:C.priD, background:'#fff',
-       border:'none', borderRadius:'7px', padding:'9px 12px', width:'100%', marginTop:'16px', cursor:'pointer'}}, 'Manage on-call schedule')),
-    Card('Intake today', Stack(...[['AI calls answered','7'],['Leads created','4'],['Emails captured','3'],['Transfers failed','1']].map(r=>
-      h('div',{key:r[0], style:{display:'flex', justifyContent:'space-between', alignItems:'center', paddingBottom:'8px', borderBottom:'1px solid '+C.line}},
-        h('span',{style:{fontSize:'12.5px', color:C.mut}}, r[0]),
-        h('b',{style:{fontFamily:BAR, fontSize:'16px', color:r[0]==='Transfers failed'?C.dg:C.ink}}, r[1]))))),
-    Card('Quick actions', h('div',{style:{display:'flex', flexDirection:'column', gap:'8px'}},
-      Btn('+ New lead',{kind:'pri', onClick:()=>go('newlead')}),
-      Btn('Book a site visit',{onClick:()=>go('appointments')}),
-      Btn('Upload an estimate',{onClick:()=>APP.pickFile('estimate')})))))]});
-
 /* ================= PHASE 1 — INTAKE ================= */
 const armTag = a => Tag(a, a === 'Restoration' ? 'ai' : null);
-
-SCREENS.hotlist = (p, st) => {
- const leads = st.leads;
- const rows = leads.map(l => ({
-   c:[ l.emg ? Tag('EMG','dg') : '', '<b style="color:#087BB2">'+l.id+'</b>', '<b>'+l.client+'</b>', l.ctype, armTag(l.arm), l.job, l.src,
-       Tag(l.stage, l.stage==='Won'?'ok':l.stage==='Lost'?'dg':null), l.assigned || '<i style="color:#9DB2C1">unassigned</i>',
-       l.created, l.last, l.next, l.cad, {t: l.value ? '$'+l.value : '—', n:true} ],
-   onClick:()=>go('lead', l.id), style: l.emg ? {background:'#FDF6F4'} : null, hover: l.emg ? '#FBEDE9' : null }));
- const table = Tbl(['!','Lead ID','Client','Type','Arm','Job type','Source','Stage','Assigned','Created','Last contact','Next action','Cadence',{t:'Value',n:true}], rows, {min:'1500px'});
- const kanban = Kanban(HOT_STAGES,
-   L => leads.filter(l=>l.stage===L).map(l => KCard({key:l.id, drag:l.id, onClick:()=>go('lead',l.id), title:l.client,
-     meta:l.id+' · '+l.arm+' · '+l.job, foot: l.emg ? h('div',{style:{marginTop:'6px'}}, Tag('EMERGENCY','dg')) : null})),
-   (id, lane) => APP.setLeadStage(id, lane));
- return Page({key:'hot', title:'Hotlist', sub:'All incoming and active opportunities — every channel, one queue',
-  actions:[Btn('Export CSV',{onClick:()=>toast('CSV exported — current filter and sort')}), Btn('+ New lead',{kind:'pri', onClick:()=>go('newlead')})],
-  children:[
-   Bar(Fld('',{ph:'Search client, phone, address, lead ID…', w:'260px'}),
-     Sel('Arm: All',['Arm: All','Commercial GC','Restoration'],{w:'140px'}),
-     Sel('Emergency: All',['Emergency: All','Yes','No'],{w:'145px'}),
-     Sel('Stage: All',['Stage: All'].concat(HOT_STAGES),{w:'140px'}),
-     Sel('Assigned: All',['Assigned: All'].concat(USERS.map(u=>u.name)),{w:'160px'}),
-     Sel('Channel: All',['Channel: All','AI Call','Manual Call','Email','Web form','TPA assignment','Bid invitation'],{w:'170px'}),
-     Sel('Saved views',['Saved views','My leads','Unassigned','Emergencies','Stalled > 3 days','Visits this week'],{w:'150px'}),
-     Sp(),
-     Grp(Btn('Table',{kind: st.hotView==='table'?'pri':'ghost', onClick:()=>APP.setState({hotView:'table'})}),
-       Btn('Kanban',{kind: st.hotView==='kanban'?'pri':'ghost', onClick:()=>APP.setState({hotView:'kanban'})}))),
-   st.hotView === 'table' ? table : kanban,
-   Bar(h('span',{style:{fontSize:'12.5px', color:C.mut}},'Selected: 0 —'), Btn('Assign',{sm:true}), Btn('Change stage',{sm:true}),
-     Btn('Start cadence',{sm:true, onClick:()=>APP.mStartCadence()}), Btn('Archive',{sm:true, onClick:()=>APP.mArchive()}))]});
-};
-
-SCREENS.lead = (id, st) => {
- const l = st.leads.find(x=>x.id===id) || st.leads[0];
- const T = ['Overview','Qualification','Communications','Schedule','Files &amp; Photos','Automation','Activity'];
- const tab = st.tab;
- let pane = null;
- if(tab===0) pane = Stack(
-   Row(Card('Contact', Stack(Lbl('Client type'), Sel(l.ctype,['Individual','Organization']),
-       Lbl('Company name'), Fld(l.company), Lbl('Contact name'), Fld(l.client),
-       Lbl('Phone'), Fld(l.phone), Lbl('Alt phone'), Fld(l.phone2), Lbl('Email'), Fld(l.email),
-       Lbl('Preferred contact method'), Sel(l.pref,['Phone','Email','Text']))),
-     Card('Job site / property', Stack(Lbl('Address'), Fld(l.addr),
-       Lbl('City / State / ZIP'), h('div',{style:{display:'flex', gap:'8px'}}, Fld(l.city), Sel(l.state,['PA','OH','WV']), Fld(l.zip)),
-       Lbl('Billing address same as job site'), Sel('Yes',['Yes','No']),
-       Lbl('Property type'), Sel(l.ptype,[l.ptype,'Single family','Duplex','Multi-family','Commercial office','Retail strip','Warehouse']),
-       Lbl('Access notes'), Ta(l.access))),
-     Card('The job', Stack(Lbl('Business arm — drives everything downstream'), Sel(l.arm,['Commercial GC','Restoration']),
-       Lbl('Emergency'), Sel(l.emg?'Yes':'No',['Yes','No']),
-       Lbl('Job type'), Sel(l.job,[l.job,'Water damage','Fire damage','Mold','Storm damage','Tenant buildout','Renovation','Roof replacement','Other']),
-       Lbl('Loss / damage description'), Ta(l.desc),
-       Lbl(l.arm==='Restoration' ? 'Insurance carrier (Restoration only)' : 'Bid reference (Commercial GC only)'),
-       Fld(l.arm==='Restoration' ? l.carrier : l.bidref),
-       Lbl(l.arm==='Restoration' ? 'Claim number' : 'Bid due date'),
-       Fld(l.arm==='Restoration' ? l.claim : l.biddue)))),
-   Card('Availability for a visit — read this before you call', Ta(l.avail), {hard:true}),
-   
-   Card('Intake notes', Ta(l.notes)),
-   Card('Internal notes', Stack(Ta('',{ph:'Type a note… use @name to notify someone'}),
-     h('div',null, Btn('Add note',{kind:'pri', onClick:()=>toast('Note added')})))));
- if(tab===1) pane = Stack(
-   Tbl(['Criterion','Captured value','Assessment','Notes'],[
-     ['<b>SCOPE</b><div style="color:#7C93A5;font-size:11.5px">What are we doing?</div>', Ta(l.q.scope,{min:52}), Sel(l.q.sa,['Qualified','Not qualified','Unclear']), Ta('',{min:52})],
-     ['<b>BUDGET</b><div style="color:#7C93A5;font-size:11.5px">Investment expectation</div>', Ta(l.q.budget,{min:52}), Sel(l.q.ba,['Qualified','Not qualified','Unclear']), Ta('',{min:52})],
-     ['<b>TIMELINE</b><div style="color:#7C93A5;font-size:11.5px">When must it start / finish?</div>', Ta(l.q.time,{min:52}), Sel(l.q.ta,['Qualified','Not qualified','Unclear','—']), Ta('',{min:52})]]),
-   Card('Outcome', Stack(h('div',{style:{display:'flex', gap:'12px', flexWrap:'wrap'}},
-       h('div',{style:{flex:'1 1 240px'}}, Lbl('Overall'), Sel(l.q.out,['Qualified','Not qualified','Needs more info'])),
-       h('div',{style:{flex:'1 1 240px'}}, Lbl('Reason (required if not qualified)'),
-         Sel('—',['—','Out of service area','Budget too low','Timeline not workable','Job type not offered','Went with a competitor','No response']))),
-     h('div',{style:{fontSize:'12px', color:C.mut}}, 'AI-filled values carry the AI tag and stay editable — every human correction is stored as training feedback.'))));
- if(tab===2){
-   const thread = (icon, head, body, kind) => h('div',{key:head, style:{border:'1px solid '+C.bd, borderRadius:'10px', padding:'12px 14px', background:'#fff'}},
-     h('div',{style:{display:'flex', gap:'8px', alignItems:'center', fontSize:'12.5px', fontWeight:600, marginBottom:'6px'}},
-       h('span',null,icon), h('span',{style:{flex:1}, dangerouslySetInnerHTML:{__html:head}}), Tag(kind, kind==='SYSTEM'?'ai':null)),
-     h('div',{style:{fontSize:'12.5px', color:C.mut, lineHeight:1.6}, dangerouslySetInnerHTML:{__html:body}}));
-   pane = Stack(
-     Bar(Btn('All',{kind:'pri', sm:true}), Btn('Calls',{sm:true}), Btn('Email',{sm:true}), Btn('SMS',{sm:true}), Sp(),
-       Btn('Log a call',{sm:true, onClick:()=>APP.mLogCall()}), Btn('Send email',{sm:true, onClick:()=>APP.mSendMsg('Email')}),
-       Btn('Send SMS',{sm:true, onClick:()=>APP.mSendMsg('SMS')})),
-     thread('📞','<b>Inbound call · AI Receptionist</b> · Aug 7, 02:14 · 3:12',
-       'Classified <b>EMERGENCY</b> · Transferred to Brian McClelland — <b>not answered</b>','SYSTEM'),
-     thread('💬','<b>SMS sent</b> · Aug 7, 02:18 · Emergency Response · step 1 · Delivered',
-       '"We received your emergency call. A 3Rivers technician has been alerted and will contact you shortly. Ref L-2026-0417."','SYSTEM'),
-     thread('✉️','<b>Email sent</b> · Aug 7, 02:18 · Emergency Response · step 2 · Delivered · <i>not opened</i>',
-       'Subject: 3Rivers — emergency intake confirmation (L-2026-0417)','SYSTEM'),
-     thread('📞','<b>Outbound call</b> · Aug 7, 07:05 · 6:40',
-       'Notes: Reached the client. Water shut off at main. Dispatching mitigation crew for 9am. Confirmed carrier and claim number.','HUMAN — Joshua Tohey'));
- }
- if(tab===3){
-   const mine = APPTS.filter(a=>a.lead===l.id);
-   pane = Stack(
-     Card('Scheduled appointments', Tbl(['Date','Time','Type','Estimator','Status','Booked by',''],
-       (mine.length ? mine : [{d:'—',t:'—',est:'—',st:'No appointment booked',by:'—'}]).map(a=>[
-         a.d, a.t, 'On-site estimate visit', a.est, a.st, a.by,
-         h('div',{style:{display:'flex',gap:'6px'}}, Btn('Reschedule',{sm:true}), Btn('Cancel',{sm:true}))]), {flush:true}), {flush:true}),
-     Card('Book a visit', Stack(Lbl('Appointment type'), Sel('On-site estimate visit',['On-site estimate visit','Re-inspection','Follow-up meeting']),
-       Lbl('Estimator'), Sel(l.assigned||'—',['—'].concat(EST)),
-       Lbl('Available slots — live from Google Calendar, respecting the booking rules'),
-       h('div',{style:{display:'flex', gap:'8px', flexWrap:'wrap'}},
-         ...['Fri Aug 8 · 10:00','Fri Aug 8 · 14:00','Mon Aug 11 · 09:00','Mon Aug 11 · 13:30'].map(s=>Btn(s,{onClick:()=>toast('Slot held — '+s)}))),
-       h('div',null, Btn('Book & notify client',{kind:'pri', onClick:()=>toast('Visit booked · client and estimator notified')})))));
- }
- if(tab===4) pane = Stack(
-   Bar(Sel('Category: All',['Category: All','Site photos','Architectural drawings','Insurance documents','Estimate','Agreement','Other'],{w:'220px'}),
-     Sp(), Btn('+ Upload',{kind:'pri', onClick:()=>APP.pickFile('estimate')})),
-   Card('Documents', Tbl(['File','Category','Uploaded by','When','Size',''],[
-     ['claim_SF-2026-88413.pdf','Insurance documents','Inbox Capture (AI)','Aug 6, 16:31','412 KB', Btn('View',{sm:true})],
-     ['site_notes_0807.txt','Other','Joshua Tohey','Aug 7, 07:20','2 KB', Btn('View',{sm:true})]], {flush:true}), {flush:true}),
-   Card('Photos', Stack(Ph('Photos arrive from the Phase 2 inspection session, or can be uploaded here.'),
-     h('div',{style:{display:'flex', gap:'8px'}}, Btn('Upload photos',{onClick:()=>APP.pickFile('photos')}),
-       Btn('Open the photo set for this job →',{kind:'pri', onClick:()=>go('photos')})))));
- if(tab===5) pane = Stack(
-   Card('Active cadence', Stack(
-     h('div',{style:{fontSize:'13px'}}, h('b',null,'Emergency Response'), ' · step 3 of 3 · status: ', h('b',{style:{color:C.dg}},'Escalated')),
-     h('div',{style:{fontSize:'12.5px', color:C.mut}}, 'Stopped reason: transfer not answered → escalated to Operations Manager'),
-     h('div',{style:{display:'flex', gap:'8px', flexWrap:'wrap'}}, Btn('Pause',{onClick:()=>toast('Cadence paused')}),
-       Btn('Resume',{onClick:()=>toast('Cadence resumed')}), Btn('Stop',{onClick:()=>toast('Cadence stopped')}),
-       Sel('Switch cadence…',['Switch cadence…'].concat(CADENCES.map(c=>c.n)),{w:'250px'}))), {hard:true}),
-   Tbl(['Step','Channel','When','Template','Status','Sent at'],[
-     ['1','SMS','Immediately','Emergency acknowledgement', Tag('Sent','ok'),'Aug 7, 02:18'],
-     ['2','Email','Immediately','Emergency intake confirmation', Tag('Sent','ok'),'Aug 7, 02:18'],
-     ['3','AI voice call','After 30 minutes','Status check', Tag('Skipped','wn'),'— (human took over)']]));
- if(tab===6) pane = Stack(
-   Bar(Sel('Actor: All',['Actor: All','Human','AI','System'],{w:'150px'}),
-     Sel('Action: All',['Action: All','Created','Updated','Assigned','Sent','Stage changed'],{w:'170px'}), Sp(),
-     Btn('Export CSV',{onClick:()=>toast('CSV exported')})),
-   Tbl(['Timestamp','Actor','Type','Action','Detail'],[
-     ['Aug 7, 02:14','AI Receptionist', Tag('AI','ai'),'Lead created from call','Source: AI Call · classified EMERGENCY'],
-     ['Aug 7, 02:16','AI Receptionist', Tag('AI','ai'),'Transfer attempted','→ Brian McClelland (on-call primary) · not answered'],
-     ['Aug 7, 02:17','AI Receptionist', Tag('AI','ai'),'Escalated','Notified primary + backup + Operations Manager'],
-     ['Aug 7, 02:18','System', Tag('AI','ai'),'SMS sent','Template "Emergency acknowledgement" · delivered'],
-     ['Aug 7, 07:05','Joshua Tohey', Tag('Human'),'Call logged','Outbound · 6:40'],
-     ['Aug 7, 07:12','Joshua Tohey', Tag('Human'),'Field corrected','Insurance carrier: (blank) → State Farm']]));
- return Page({key:'lead'+l.id, crumb:['Hotlist', ()=>go('hotlist'), l.id],
-   title:l.client, sub:l.id+' · '+l.addr+', '+l.city+', '+l.state+' '+l.zip,
-   actions:[Btn('Reassign',{onClick:()=>APP.mReassign()}), Btn('Start cadence',{onClick:()=>APP.mStartCadence()}),
-     Btn('Archive',{onClick:()=>APP.mArchive()}),
-     Btn('Open estimating workflow →',{onClick:()=>go('estimate'), disabled:l.id!=='L-2026-0415'}),
-     Btn('Convert to job',{kind:'pri', disabled:true, title:'Enabled once the proposal is signed and the client has paid — converted by the Operations Manager'})],
-   children:[
-    h('div',{style:{display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center'}},
-      armTag(l.arm), l.emg ? Tag('EMERGENCY','dg') : null, Tag(l.ctype),
-      h('span',{style:{flex:1}}),
-      h('div',{style:{display:'flex', gap:'8px', alignItems:'center'}},
-        h('span',{style:{fontSize:'12px', color:C.faint}},'Stage'),
-        Sel(l.stage, HOT_STAGES, {w:'170px'}),
-        h('span',{style:{fontSize:'12px', color:C.faint}},'Assigned'),
-        Sel(l.assigned||'unassigned',['unassigned'].concat(USERS.map(u=>u.name)),{w:'180px'}))),
-    Tabs(T, tab), pane]});
-};
-
-SCREENS.newlead = () => Page({key:'newlead', crumb:['Hotlist', ()=>go('hotlist'), 'New lead'], title:'New lead',
- sub:'Manual intake — captures exactly the same fields the AI receptionist captures, so the record is identical regardless of channel',
- actions:[Btn('Cancel',{onClick:()=>go('hotlist')}), Btn('Save as draft',{onClick:()=>toast('Draft saved')}),
-   Btn('Create lead',{kind:'pri', onClick:()=>{toast('Lead created'); go('hotlist');}})],
- children:[
-  Card('1 · Who', Stack(Lbl('Search for an existing contact — duplicate detection runs while you type'),
-    Fld('',{ph:'Phone, email or name…'}),
-    Row(Stack(Lbl('Client type'), Sel('Individual',['Individual','Organization']), Lbl('Company name'), Fld(''), Lbl('Contact person'), Fld('')),
-      Stack(Lbl('First name'), Fld(''), Lbl('Last name'), Fld(''), Lbl('Preferred contact method'), Sel('Phone',['Phone','Email','Text'])),
-      Stack(Lbl('Phone'), Fld(''), Lbl('Alt phone'), Fld(''), Lbl('Email'), Fld(''))))),
-  Card('2 · What', Row(
-    Stack(Lbl('Business arm — required, drives everything downstream'), Sel('— select —',['— select —','Commercial GC','Restoration']),
-      Lbl('Is this an emergency?'), Sel('No',['No','Yes']),
-      h('div',{style:{fontSize:'11.5px', color:C.faint}},'Selecting Yes opens the emergency routing panel below.')),
-    Stack(Lbl('Job type'), Sel('— select —',['— select —','Water damage','Fire damage','Mold','Storm damage','Tenant buildout','Renovation','Roof replacement','Other']),
-      Lbl('Loss / damage description'), Ta('')),
-    Stack(Lbl('Insurance carrier (arm = Restoration)'), Fld(''), Lbl('Claim number'), Fld(''),
-      Lbl('Bid reference (arm = Commercial GC)'), Fld(''), Lbl('Bid due date'), Fld('')))),
-  Card('Emergency routing', Stack(
-    h('div',{style:{fontSize:'13px'}}, h('b',null,'On call right now: Joshua Tohey'), ' · (412) 555-0100'),
-    h('div',{style:{display:'flex', gap:'8px', flexWrap:'wrap'}},
-      Btn('📞 Call / transfer now',{kind:'pri', onClick:()=>toast('Dialling on-call primary…')}),
-      Btn('Call backup — Brian McClelland',{onClick:()=>toast('Dialling backup…')}))), {hard:true}),
-  
-  Card('3 · Where', Stack(Lbl('Job site address'), Fld(''),
-    Lbl('City / State / ZIP'), h('div',{style:{display:'flex', gap:'8px'}}, Fld(''), Sel('PA',['PA','OH','WV']), Fld('')),
-    Lbl('Billing address same as job site'), Sel('Yes',['Yes','No']),
-    Lbl('Property type'), Sel('— select —',['— select —','Single family','Duplex','Multi-family','Commercial office','Retail strip','Warehouse','Other']),
-    Lbl('Access notes'), Ta(''))),
-  Card('4 · Qualify — scope, budget, timeline', Stack(Lbl('Scope — what are we doing?'), Ta(''),
-    Lbl('Budget — investment expectation'), Ta(''), Lbl('Timeline — must start / must finish by'), Ta(''),
-    Lbl('Outcome'), Sel('Needs more info',['Qualified','Not qualified','Needs more info']))),
-  Card('5 · Next', Stack(Lbl('Availability for a visit — always ask; the estimator reads this before calling'), Ta(''),
-    Lbl('Assign to'), Sel('Auto-assign',['Auto-assign'].concat(EST)),
-    Lbl('Start cadence'), Sel('Default Lead Cadence',['None'].concat(CADENCES.map(c=>c.n))),
-    Lbl('Internal notes'), Ta(''))),
-  Card('+ Custom fields', Stack(Ph('Admin-defined fields render here, each scoped to Commercial GC, Restoration, or both.'),
-    h('div',null, Btn('Manage custom fields',{onClick:()=>go('s_fields')}))))]});
 
 SCREENS.calls = () => Page({key:'calls', title:'Calls', sub:'Every inbound call handled by the AI receptionist — whether or not it became a lead',
  actions:[Btn('Export CSV',{onClick:()=>toast('CSV exported')})],
@@ -1108,7 +869,7 @@ SCREENS.call = (i) => {
        Lbl('Address'), Fld('412 Sycamore St, Pittsburgh, PA 15201'),
        Lbl('Business arm'), Sel('Restoration',['Commercial GC','Restoration']),
        Lbl('Emergency — correctable'), Sel('Yes',['Yes','No']),
-       Lbl('Job type'), Sel('Water damage',['Water damage','Fire damage','Mold','Storm damage','Other']),
+       Lbl('Job type'), Sel('Water Damage Restoration', PROJTYPES),
        Lbl('Insurance carrier'), Fld('State Farm'),
        Lbl('Description'), Ta('Water pouring through kitchen ceiling. Client could not locate the water main shutoff.'),
        Lbl('Availability for a visit'), Fld('Immediate — client is home'),
@@ -1137,14 +898,14 @@ SCREENS.inbox = (p, st) => {
        Card('Extracted → lead fields', Stack(Lbl('Name'), Fld('J. Howard'), Lbl('Email'), Fld('jhoward@example.com'),
          Lbl('Phone — missing'), Fld('',{ph:'not found'}), Lbl('Address (incomplete)'), Fld('Bethel Park, PA'),
          Lbl('Business arm'), Sel('Restoration',['Commercial GC','Restoration']),
-         Lbl('Job type'), Sel('Water damage',['Water damage','Fire damage','Mold','Other']),
+         Lbl('Job type'), Sel('Water Damage Restoration', PROJTYPES),
          Lbl('Budget — missing'), Fld('',{ph:'not found'}), Lbl('Timeline — missing'), Fld('',{ph:'not found'})))),
      Card('Missing information — send an automated request', Stack(
        h('div',{style:{fontSize:'12.5px'}},'Requesting: ', h('b',null,'phone number · full address · budget expectation · timeline')),
        h('div',{style:{display:'flex', gap:'8px', alignItems:'center', flexWrap:'wrap'}},
          Sel('Missing info request',['Missing info request','Custom…'],{w:'220px'}), Btn('Preview'),
          Btn('Send request',{kind:'pri', onClick:()=>toast('Request sent — the reply merges back into this lead')})))),
-     Bar(Sp(), Btn('Ignore'), Sel('Attach to existing lead…',['Attach to existing lead…'].concat(LEADS.map(l=>l.id+' — '+l.client)),{w:'280px'}),
+     Bar(Sp(), Btn('Ignore'), Sel('Attach to existing lead…',['Attach to existing lead…'].concat(st.leads.slice(0,40).map(l=>l.id+' — '+l.client)),{w:'280px'}),
        Btn('Create lead',{kind:'pri', onClick:()=>toast('Lead created from message')})))));
  if(st.tab===1) pane = Stack(
    Tbl(['Address','Purpose','Auto-create leads','Default arm','Status',''],[
@@ -1216,52 +977,621 @@ SCREENS.appointments = (p, st) => {
    children:[Tabs(T, st.tab), pane]});
 };
 
-SCREENS.contacts = () => Page({key:'contacts', title:'Contacts', sub:'Individuals and organizations — 3Rivers does business with both',
- actions:[Btn('Export CSV',{onClick:()=>toast('CSV exported')}), Btn('+ New contact',{kind:'pri', onClick:()=>toast('New contact form')})],
- children:[
-  Bar(Fld('',{ph:'Search name, phone, email…', w:'240px'}), Sel('Type: All',['Type: All','Individual','Organization'],{w:'160px'}),
-    Sel('State: All',['State: All','PA','OH','WV'],{w:'130px'}), Sel('All',['All','Has open leads','No open leads'],{w:'170px'})),
-  Tbl(['Name','Type','Primary contact person','Phone','Email','City / State',{t:'Leads',n:true},{t:'Jobs',n:true},'Last activity'],
-    CONTACTS.map((c,i)=>({c:['<b>'+c.n+'</b>', c.t, c.p, c.ph, c.e, c.loc, {t:c.l,n:true}, {t:c.j,n:true}, c.last], onClick:()=>go('contact', i)})), {min:'1180px'})]});
+/* ================= BLOCK 1 — a working Phase 1 =================
+   Leads live in memory: what is done on one screen shows on the others. A refresh resets everything.
+   Calls, emails and messages are simulated — nothing leaves the browser. */
+const B1 = (() => {
+ const HOUR = 3600000, DAY = 24 * HOUR, TZ = 'America/New_York';
+ const dayKey = ms => new Date(ms).toLocaleDateString('en-US', {timeZone:TZ});
+ const fmtTime = ms => new Date(ms).toLocaleTimeString('en-US', {timeZone:TZ, hour:'numeric', minute:'2-digit'});
+ const fmtDay = ms => { const d = dayKey(ms), n = Date.now();
+   return d === dayKey(n) ? 'Today' : d === dayKey(n - DAY) ? 'Yesterday' : d === dayKey(n + DAY) ? 'Tomorrow'
+     : new Date(ms).toLocaleDateString('en-US', {timeZone:TZ, month:'short', day:'numeric'}); };
+ const fmt = ms => ms ? fmtDay(ms) + ', ' + fmtTime(ms) : '—';
+ const ago = ms => { const x = (Date.now() - ms) / HOUR; return x < 1 ? Math.max(1, Math.round(x * 60)) + ' min' : x < 48 ? Math.round(x) + ' h' : Math.round(x / 24) + ' d'; };
+ const money = v => v ? '$' + Number(v).toLocaleString('en-US') : '—';
+ const stagesFor = arm => (arm === 'Restoration' ? STAGES_R : STAGES_C).map(s => s[1]);
+ const SENT = arm => arm === 'Restoration' ? 'Proposal sent' : 'Proposal / bid submitted';
+ /* hours a lead may sit in a stage before it is flagged — the same figures as Settings → Pipeline & Stages */
+ const LIMIT = {'Restoration':{'New':0.25, 'Emergency dispatch':0.5, 'Assigned':4, 'Estimating':72},
+                'Commercial GC':{'New':24, 'Assigned':24, 'Estimating':120}};
+ const isOpen = l => !l.archived && l.stage !== 'Won' && l.stage !== 'Lost';
+ const over = l => { if(!isOpen(l)) return 0; const lim = (LIMIT[l.arm] || {})[l.stage]; if(lim == null) return 0;
+   const x = (Date.now() - l.stageAt) / HOUR - lim; return x > 0 ? x : 0; };
+ const overTxt = l => { const x = over(l); return !x ? '' : '+' + (x < 1 ? Math.max(1, Math.round(x * 60)) + 'm' : x < 48 ? Math.round(x) + 'h' : Math.round(x / 24) + 'd'); };
+ const SOURCES = ['AI call','Call taken by a person','Email','Web form','Referral','Bid invitation','Program assignment'];
+ const PTYPES = ['Single family','Duplex','Multi-family','Commercial office','Retail strip','Warehouse','Other'];
+ const cadDef = n => CADENCES.find(c => c.n === n);
+ const cadTxt = l => { const c = l.cad; if(!c || !c.name) return 'Not started';
+   return c.state + (c.state === 'Stopped' ? '' : ' · ' + c.step + ' of ' + c.total) + (c.why ? ' · ' + c.why : ''); };
+ const nextAction = l => {
+   if(!isOpen(l)) return {t:'—'};
+   if(l.emg && !l.lastAt) return {t:'Call back now', dg:true};
+   if(!l.assigned) return {t:'Assign an estimator'};
+   if(l.visit && l.visit.at > Date.now() - 2 * HOUR && l.stage === 'Visit scheduled') return {t:'Site visit · ' + fmt(l.visit.at)};
+   if(l.cad && l.cad.state === 'Running'){ const d = cadDef(l.cad.name), s = d && d.steps[l.cad.step - 1];
+     return {t:(s ? s[1] : 'Follow-up') + ' · ' + fmt(l.cad.nextAt)}; }
+   if(!l.lastAt) return {t:'First contact'};
+   if(l.cad && l.cad.state === 'Finished') return {t:'Stalled — no reply', dg:true};
+   return {t:'—'};
+ };
+ const needs = l => {            /* why a lead needs a person, or null */
+   if(!isOpen(l)) return null;
+   if(l.emg && !l.lastAt) return {why:'Emergency — no contact with the client yet', dg:true, since:l.createdAt};
+   if(l.cad && l.cad.state === 'Finished') return {why:'Follow-up finished — no reply after ' + l.cad.total + ' touches', since:l.cad.nextAt || l.stageAt};
+   if(over(l)) return {why:'Past the time limit for ' + l.stage + ' (' + overTxt(l) + ')', since:l.stageAt};
+   if(l.q && l.q.out === 'Needs more info' && l.stage !== 'New') return {why:'Qualification incomplete', since:l.stageAt};
+   return null;
+ };
 
-SCREENS.contact = (i, st) => {
- const c = CONTACTS[i==null?1:i];
- const T = ['Details','People','Properties','Leads','Jobs','Communications','Payments'];
- let pane = null;
- if(st.tab===0) pane = Row(
-   Card('Identity', Stack(Lbl('Type'), Sel(c.t,['Individual','Organization']), Lbl('Name / company'), Fld(c.n),
-     Lbl('Main phone'), Fld(c.ph), Lbl('Main email'), Fld(c.e), Lbl('Preferred contact method'), Sel('Email',['Phone','Email','Text']))),
-   Card('Classification', Stack(Lbl('Source'), Sel('Referral',['Referral','Google','Contractor Connection','Sedgwick','Web form','Repeat customer','Bid list']),
-     Lbl('Tags'), h('div',{style:{display:'flex', gap:'6px', flexWrap:'wrap'}}, Tag('Repeat customer ✕'), Tag('Commercial ✕'), Btn('+ Tag',{sm:true})),
-     Lbl('Notes'), Ta(''))));
- if(st.tab===1) pane = Stack(
-   Tbl(['Name','Role','Phone','Email','Primary',''],[
-     ['Rachel Owens','Facilities Director','(412) 555-0900','r.owens@alleghenypg.com','●', Btn('Edit',{sm:true})],
-     ['Tom Bricker','Accounts Payable','(412) 555-0903','ap@alleghenypg.com','', Btn('Edit',{sm:true})]]),
-   h('div',null, Btn('+ Add person',{kind:'pri'})));
- if(st.tab===2) pane = Stack(
-   Tbl(['Label','Address','Type','Billing address',''],[
-     ['HQ','2200 Liberty Ave, Suite 300, Pittsburgh, PA 15222','Commercial office','☑', Btn('Edit',{sm:true})],
-     ['Site B','915 Penn Ave, Pittsburgh, PA 15222','Commercial office','☐', Btn('Edit',{sm:true})]]),
-   h('div',null, Btn('+ Add property',{kind:'pri'})));
- if(st.tab===3) pane = Tbl(['Lead','Job type','Arm','Stage',{t:'Value',n:true},'Created'],
-   LEADS.filter(l=>l.client===c.n||l.company===c.n).map(l=>({c:['<b style="color:#087BB2">'+l.id+'</b>', l.job, armTag(l.arm), l.stage,
-     {t:l.value?'$'+l.value:'—',n:true}, l.created], onClick:()=>go('lead', l.id)})));
- if(st.tab===4) pane = Ph('Job records arrive in Phase 3. This tab shows every job for this contact with its status and value.');
- if(st.tab===5) pane = Ph('Full communication history across every lead and job for this contact — calls, emails, SMS.');
- if(st.tab===6) pane = Ph('Payment history arrives in Phase 4 — invoices, amounts, methods, dates.');
- return Page({key:'contact', crumb:['Contacts', ()=>go('contacts'), c.n], title:c.n,
-   sub:c.loc+' · '+c.l+' leads · '+c.j+' jobs · last activity '+c.last,
-   children:[h('div',null, Tag(c.t)), Tabs(T, st.tab), pane]});
+ /* ---------- seed: the seven detailed leads, plus generated ones so volume and ordering can be judged ---------- */
+ const JOBMAP = {'Water damage':'Water Damage Restoration','Fire damage':'Insurance Recon','Mold':'Insurance Mitigation','Storm damage':'Roof – Residential',
+   'Tenant buildout':'Office – Commercial Build','Roof replacement':'Roof – Commercial','Warehouse repair':'Commercial Repair'};
+ const SRCMAP = {'AI Call':'AI call','Manual Call':'Call taken by a person'};
+ const rng = seed => () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+   t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+ const act = (at, actor, type, action, detail) => ({at, actor, type, action, detail:detail || ''});
+ const mkCad = (name, step, state, nextAt, why) => { const d = cadDef(name); return {name, step, total:d ? d.steps.length : 4, state, nextAt, why:why || ''}; };
+ const seed = () => {
+   const now = Date.now(), R = rng(20260926), pick = a => a[Math.floor(R() * a.length)];
+   const base = [['L-2026-0417', 5, null, 5], ['L-2026-0416', 50, 22, 20], ['L-2026-0415', 150, 70, 60], ['L-2026-0414', 190, 44, 40],
+                 ['L-2026-0413', 13, 12.5, 12], ['L-2026-0412', 26, null, 26], ['L-2026-0411', 240, 120, 120]];
+   const out = LEADS.map(l => { const b = base.find(x => x[0] === l.id) || [l.id, 30, null, 30];
+     const o = Object.assign({}, l, {job:JOBMAP[l.job] || l.job, src:SRCMAP[l.src] || l.src, createdAt:now - b[1] * HOUR,
+       lastAt:b[2] == null ? null : now - b[2] * HOUR, stageAt:now - b[3] * HOUR, value:l.value ? Number(String(l.value).replace(/,/g, '')) : null,
+       archived:false, comms:[], q:Object.assign({}, l.q)});
+     o.cad = l.id === 'L-2026-0415' ? mkCad('Proposal Follow-Up — friendly', 3, 'Finished', now - 60 * HOUR)
+       : l.id === 'L-2026-0416' ? mkCad('Default Lead Cadence', 2, 'Running', now + 20 * HOUR)
+       : l.id === 'L-2026-0413' ? mkCad('Emergency Response', 1, 'Running', now + 1 * HOUR)
+       : l.id === 'L-2026-0414' ? mkCad('Default Lead Cadence', 2, 'Paused', null, 'Waiting on the client')
+       : l.id === 'L-2026-0411' ? mkCad('Default Lead Cadence', 3, 'Stopped', null, 'declined') : null;
+     if(l.id === 'L-2026-0416') o.visit = {at:now + 26 * HOUR, est:l.assigned};
+     if(l.id === 'L-2026-0411') o.lostReason = 'Went with a competitor';
+     if(l.id === 'L-2026-0417') o.stage = 'Emergency dispatch';
+     o.activity = [act(o.createdAt, o.src === 'AI call' ? 'AI Receptionist' : 'System', o.src === 'AI call' ? 'AI' : 'System', 'Lead created', 'Source: ' + o.src + (o.emg ? ' · classified EMERGENCY' : ''))];
+     if(o.assigned) o.activity.push(act(o.createdAt + HOUR, 'Brian McClelland', 'Human', 'Assigned', '→ ' + o.assigned));
+     return o; });
+   const FN = ['James','Maria','Robert','Linda','David','Karen','Paul','Nancy','Kevin','Denise','Frank','Angela','Eric','Rita','Gary','Janet','Steven','Diane','Mark','Sarah'];
+   const LN = ['Kowalski','Ferrante','Rizzo','Schaefer','Hughes','Mancini','Novotny','Brennan','Dorsey','Greco','Walsh','Costa','Szymanski','Hanlon','Duffy','Lombardi'];
+   const CO = ['Steel City Storage','Strip District Foods','Butler County Bank','Northside Lofts HOA','Monroeville Plaza LLC','Squirrel Hill Clinic','Ohio Valley Medical',
+     'Golden Triangle Realty','Lawrenceville Brewing','Carson Street Holdings','Penn Hills Senior Living','Mon Valley School District','Bloomfield Apartments','Three Rivers Dental','Robinson Auto Group'];
+   const ST = ['Butler St','Shady Ave','Orchard Dr','Penn Ave','Forbes Ave','Murray Ave','Brownsville Rd','Carson St','Liberty Ave','Babcock Blvd','Freeport Rd','Washington Rd'];
+   const CITY = [['Pittsburgh','PA','15201'],['Pittsburgh','PA','15217'],['Bethel Park','PA','15102'],['Monroeville','PA','15146'],['Greensburg','PA','15601'],
+     ['Cranberry Twp','PA','16066'],['Sewickley','PA','15143'],['Wheeling','WV','26003'],['Weirton','WV','26062'],['Steubenville','OH','43952'],['Youngstown','OH','44503']];
+   const JR = ['Water Damage Restoration','Insurance Mitigation','Insurance Recon','Roof – Residential','Structural Review','Waterproofing','Residential Plumbing'];
+   const JC = ['Office – Commercial Build','Office – Commercial Remodel','Roof – Commercial','Multi Room – Commercial Remodel','Commercial Repair','Commercial Electrical – Exterior',
+     'Concrete Flatwork','Kitchen – Residential Remodel','Bathroom – Residential Remodel','Deck – Residential Build','Whole House Remodel – Period Correct'];
+   const CARR = ['State Farm','Allstate','Erie Insurance','Nationwide','Travelers','Liberty Mutual'];
+   const wts = (arm) => arm === 'Restoration'
+     ? [['New',10],['Emergency dispatch',2],['Qualified',6],['Assigned',8],['Visit scheduled',10],['Estimating',8],['Proposal sent',10],['Won',6],['Lost',5]]
+     : [['New',7],['Bid invitation received',4],['Qualified',6],['Assigned',6],['Visit scheduled',6],['Estimating',6],['Proposal / bid submitted',7],['Won',4],['Lost',4]];
+   const wpick = w => { let t = w.reduce((a, x) => a + x[1], 0) * R(); for(const x of w){ t -= x[1]; if(t <= 0) return x[0]; } return w[0][0]; };
+   for(let i = 0; i < 68; i++){
+     const arm = R() < 0.6 ? 'Restoration' : 'Commercial GC', org = arm === 'Commercial GC' ? R() < 0.8 : R() < 0.15;
+     const fn = pick(FN), ln = pick(LN), co = pick(CO), c = pick(CITY), stage = wpick(wts(arm));
+     const past = ['Assigned','Visit scheduled','Estimating','Proposal sent','Proposal / bid submitted','Won','Lost'].indexOf(stage) >= 0;
+     const ageH = stage === 'New' || stage === 'Emergency dispatch' ? R() * 30 : stage === 'Qualified' || stage === 'Bid invitation received' ? 4 + R() * 60 : 24 + R() * 24 * 45;
+     const createdAt = now - ageH * HOUR, emg = arm === 'Restoration' && (stage === 'Emergency dispatch' || R() < 0.06);
+     const assigned = past || (stage === 'Qualified' && R() < 0.5) ? pick(EST) : null;
+     const stageAt = stage === 'New' ? createdAt : Math.max(createdAt, now - (stage === 'Assigned' ? R() * 9 : stage === 'Estimating' ? R() * 140 : R() * 200) * HOUR);
+     const lastAt = stage === 'New' && R() < 0.75 ? null : stage === 'Emergency dispatch' ? (R() < 0.5 ? null : now - R() * 2 * HOUR) : Math.min(now - R() * 40 * HOUR, now);
+     const src = arm === 'Commercial GC' ? pick(['Bid invitation','Web form','Referral','Email','Call taken by a person']) : pick(['AI call','AI call','Call taken by a person','Email','Web form','Referral','Program assignment']);
+     const l = {id:'L-2026-' + String(340 + i).padStart(4, '0'), client:org ? co : fn + ' ' + ln, ctype:org ? 'Organization' : 'Individual', company:org ? co : '',
+       arm, emg, job:pick(arm === 'Restoration' ? JR : JC), src, stage, assigned, createdAt, lastAt:lastAt && lastAt > createdAt ? lastAt : (lastAt ? createdAt + HOUR / 2 : null), stageAt,
+       value:R() < 0.3 ? null : Math.round((arm === 'Restoration' ? 4 + R() * 90 : 20 + R() * 480)) * 1000,
+       phone:'(' + pick(['412','724','304','740']) + ') 555-0' + String(100 + Math.floor(R() * 899)), phone2:'', email:(org ? 'office@' + co.toLowerCase().replace(/[^a-z]/g, '') : fn.toLowerCase() + '.' + ln.toLowerCase() + '@example') + '.com',
+       pref:pick(['Phone','Email','Text']), addr:(100 + Math.floor(R() * 8900)) + ' ' + pick(ST), city:c[0], state:c[1], zip:c[2],
+       ptype:org ? pick(['Commercial office','Retail strip','Warehouse','Multi-family']) : pick(['Single family','Single family','Duplex']), access:'',
+       desc:'', carrier:arm === 'Restoration' ? pick(CARR) : '', claim:arm === 'Restoration' && R() < 0.7 ? pick(['SF','AL','ER','NW']) + '-2026-' + Math.floor(10000 + R() * 89999) : '',
+       bidref:src === 'Bid invitation' ? 'BID-2026-' + Math.floor(100 + R() * 899) : '', biddue:'', avail:pick(['Weekday mornings','Any time','Evenings after 5pm','Weekends only','—']), notes:'',
+       q:{scope:'', sa:past ? 'Qualified' : 'Unclear', budget:'', ba:past ? 'Qualified' : 'Unclear', time:'', ta:past ? 'Qualified' : 'Unclear',
+          out:stage === 'New' || stage === 'Bid invitation received' ? 'Needs more info' : stage === 'Lost' && R() < 0.4 ? 'Not qualified' : 'Qualified'},
+       archived:false, comms:[], activity:[]};
+     if(stage === 'Lost') l.lostReason = pick(['Went with a competitor','Budget too low','No response','Timeline not workable']);
+     if(stage === 'Visit scheduled') l.visit = {at:now + (R() * 6 - 0.4) * DAY, est:assigned};
+     const open = stage !== 'Won' && stage !== 'Lost';
+     l.cad = !open ? (R() < 0.5 ? mkCad('Default Lead Cadence', 4, 'Stopped', null, stage === 'Won' ? 'signed' : 'declined') : null)
+       : stage === SENT(arm) ? (R() < 0.25 ? mkCad('Proposal Follow-Up — friendly', 3, 'Finished', now - R() * 90 * HOUR) : mkCad('Proposal Follow-Up — friendly', 1 + Math.floor(R() * 3), 'Running', now + R() * 60 * HOUR))
+       : stage === 'Emergency dispatch' ? mkCad('Emergency Response', 1, 'Running', now + R() * HOUR)
+       : stage === 'New' ? null
+       : R() < 0.15 ? mkCad('Default Lead Cadence', 1 + Math.floor(R() * 3), 'Paused', null, 'Waiting on the client')
+       : R() < 0.7 ? mkCad('Default Lead Cadence', 1 + Math.floor(R() * 4), 'Running', now + R() * 50 * HOUR) : null;
+     l.activity.push(act(createdAt, src === 'AI call' ? 'AI Receptionist' : 'System', src === 'AI call' ? 'AI' : 'System', 'Lead created', 'Source: ' + src + (emg ? ' · classified EMERGENCY' : '')));
+     if(assigned) l.activity.push(act(Math.min(createdAt + 2 * HOUR, now), 'Brian McClelland', 'Human', 'Assigned', '→ ' + assigned));
+     if(stage !== 'New') l.activity.push(act(stageAt, 'System', 'System', 'Stage changed', '→ ' + stage));
+     out.push(l);
+   }
+   return out;
+ };
+ const COLS = [['prio','!'],['id','Lead reference'],['client','Client'],['ctype','Client type'],['arm','Business arm'],['emg','Emergency'],['job','Job type'],
+   ['src','Source'],['stage','Stage'],['assigned','Assigned to'],['created','Created / Last contact'],['next','Next action'],['cad','Follow-up'],['value','Value']];
+ const hot0 = () => ({q:'', arm:'All', emg:'All', stage:'All', assigned:'All', src:'All', flag:'All', sort:{k:null, dir:1}, page:0, sel:{},
+   hide:{}, barm:'Restoration', viewName:''});
+ const draft0 = () => ({ctype:'Individual', company:'', person:'', first:'', last:'', pref:'Phone', phone:'', phone2:'', email:'', arm:'', emg:'No', job:'', desc:'',
+   carrier:'', claim:'', bidref:'', biddue:'', addr:'', city:'', state:'PA', zip:'', billing:'Yes', ptype:'', access:'', scope:'', budget:'', time:'', out:'Needs more info',
+   avail:'', assign:'Auto-assign', cad:'Default Lead Cadence', notes:'', src:'Call taken by a person', find:'', err:null});
+ const VIEWS0 = [{name:'Unassigned', f:{assigned:'Unassigned'}}, {name:'Emergencies', f:{emg:'Yes'}}, {name:'Over the time limit', f:{flag:'Over the time limit'}},
+   {name:'Needs a person', f:{flag:'Needs a person'}}, {name:'Visits scheduled', f:{stage:'Visit scheduled'}}];
+ const contactKey = l => l.company || l.client;
+ const contacts = leads => { const m = {}; leads.forEach(l => { const k = contactKey(l); const c = m[k] || (m[k] = {n:k, t:l.ctype, p:l.company ? (l.person || l.client === l.company ? (l.person || '—') : l.client) : '—', ph:l.phone, e:l.email,
+     loc:l.city + ', ' + l.state, state:l.state, leads:[], last:0}); c.leads.push(l); c.last = Math.max(c.last, l.lastAt || l.createdAt); });
+   return Object.keys(m).map(k => m[k]).sort((a, b) => b.last - a.last); };
+ const props = leads => { const m = {}; leads.forEach(l => { const k = l.addr + '|' + l.zip; const p = m[k] || (m[k] = {addr:l.addr, city:l.city, state:l.state, zip:l.zip, ptype:l.ptype, owner:contactKey(l), leads:[]}); p.leads.push(l); });
+   return Object.keys(m).map(k => m[k]); };
+ return {HOUR, DAY, fmt, fmtDay, fmtTime, dayKey, ago, money, stagesFor, SENT, isOpen, over, overTxt, SOURCES, PTYPES, cadDef, cadTxt, nextAction, needs, seed, act, mkCad,
+   COLS, hot0, draft0, VIEWS0, contactKey, contacts, props};
+})();
+
+/* ---------- controlled inputs (the value lives in the app state) ---------- */
+const FldC = (v, on, o) => { o = o || {}; return h('input', Object.assign({value:v == null ? '' : v, placeholder:o.ph || '', onChange:e => on(e.target.value),
+  style:Object.assign(inputStyle(o.w), o.bad ? {borderColor:C.dg} : {})}, o.bad ? {} : focusable)); };
+const SelC = (v, opts, on, o) => { o = o || {}; return h('select', Object.assign({value:v == null ? '' : v, onChange:e => on(e.target.value),
+  style:Object.assign(inputStyle(o.w), {cursor:'pointer'}, o.bad ? {borderColor:C.dg} : {})}, o.bad ? {} : focusable),
+  ...opts.map(x => h('option', {key:x, value:x}, x))); };
+const TaC = (v, on, o) => { o = o || {}; return h('textarea', Object.assign({value:v == null ? '' : v, placeholder:o.ph || '', onChange:e => on(e.target.value),
+  style:Object.assign(inputStyle('100%'), {minHeight:(o.min || 64) + 'px', resize:'vertical', lineHeight:1.5, fontFamily:'inherit'})}, focusable)); };
+const setHot = patch => APP.setState(s => ({hot:Object.assign({}, s.hot, {page:0}, patch)}));
+const overChip = l => { const t = B1.overTxt(l); return t ? h('span', {title:'Past the time limit for this stage', style:{color:C.dg, fontWeight:600, fontSize:'11.5px', marginLeft:'6px', whiteSpace:'nowrap'}}, '⏳ ' + t) : null; };
+const leadLink = l => h('b', {style:{color:C.pri, whiteSpace:'nowrap'}}, l.id);
+
+/* ---------- what the app can do to a lead ---------- */
+Object.assign(Component.prototype, {
+ b1Patch(ids, fn, log){
+   const now = Date.now(), set = {}; ids.forEach(i => set[i] = 1);
+   this.setState(s => ({leads:s.leads.map(l => { if(!set[l.id]) return l; const n = Object.assign({}, l, fn(l));
+     const e = log ? log(l, n) : null; if(e) n.activity = l.activity.concat([B1.act(now, 'Joshua Tohey', 'Human', e[0], e[1])]); return n; })}));
+ },
+ setLeadStage(id, stage){ this.b1Stage([id], stage); },
+ b1Stage(ids, stage){
+   if(stage === 'Lost'){ const v = {r:'Went with a competitor'};
+     return modal('Mark as lost', Stack(HTM({fontSize:'12.5px'}, 'A lost lead needs a reason. It stops the follow-up and stays on file.'),
+       Lbl('Reason'), h('select', {defaultValue:v.r, onChange:e => v.r = e.target.value, style:inputStyle()},
+         ...['Went with a competitor','Budget too low','Timeline not workable','Out of service area','Job type not offered','No response'].map(x => h('option', {key:x}, x)))),
+       [Btn('Cancel', {onClick:() => closeM()}), Btn('Mark as lost', {kind:'danger', onClick:() => { closeM();
+         this.b1Patch(ids, l => ({stage:'Lost', stageAt:Date.now(), lostReason:v.r, cad:l.cad && l.cad.state !== 'Stopped' ? Object.assign({}, l.cad, {state:'Stopped', why:'lost'}) : l.cad}),
+           () => ['Stage changed', '→ Lost · ' + v.r]); toast(ids.length + ' lead' + (ids.length > 1 ? 's' : '') + ' marked as lost'); }})]); }
+   this.b1Patch(ids, l => l.stage === stage ? {} : {stage, stageAt:Date.now()}, (l, n) => l.stage === stage ? null : ['Stage changed', l.stage + ' → ' + stage]);
+   toast((ids.length === 1 ? ids[0] : ids.length + ' leads') + ' → ' + stage);
+ },
+ b1Assign(ids){ const v = {to:EST[0]};
+   modal('Assign ' + (ids.length === 1 ? ids[0] : ids.length + ' leads'), Stack(Lbl('Estimator'),
+     h('select', {defaultValue:v.to, onChange:e => v.to = e.target.value, style:inputStyle()}, ...EST.concat(['Unassigned']).map(x => h('option', {key:x}, x))),
+     HTM({fontSize:'12px', color:C.mut}, 'The estimator is notified by phone and by email. A lead in New or Qualified moves to Assigned.')),
+     [Btn('Cancel', {onClick:() => closeM()}), Btn('Assign', {kind:'pri', onClick:() => { closeM(); const to = v.to === 'Unassigned' ? null : v.to;
+       this.b1Patch(ids, l => { const mv = to && (l.stage === 'New' || l.stage === 'Qualified' || l.stage === 'Bid invitation received');
+         return Object.assign({assigned:to}, mv ? {stage:'Assigned', stageAt:Date.now()} : {}); }, (l, n) => ['Assigned', (l.assigned || 'Unassigned') + ' → ' + (to || 'Unassigned')]);
+       toast((ids.length === 1 ? ids[0] : ids.length + ' leads') + ' assigned to ' + (to || 'nobody')); }})]); },
+ b1Cadence(ids){ const v = {c:CADENCES[0].n};
+   modal('Start a follow-up sequence', Stack(Lbl('Sequence'),
+     h('select', {defaultValue:v.c, onChange:e => v.c = e.target.value, style:inputStyle()}, ...CADENCES.map(c => h('option', {key:c.n}, c.n))),
+     HTM({fontSize:'12px', color:C.mut}, 'Simulated here: no message is sent. Use “Advance one step” on the lead to see how it moves.')),
+     [Btn('Cancel', {onClick:() => closeM()}), Btn('Start', {kind:'pri', onClick:() => { closeM();
+       this.b1Patch(ids, () => ({cad:B1.mkCad(v.c, 1, 'Running', Date.now() + B1.DAY)}), () => ['Follow-up started', v.c]); toast('Follow-up started — ' + v.c); }})]); },
+ b1CadCtl(id, what){
+   this.b1Patch([id], l => { const c = l.cad; if(!c) return {};
+     if(what === 'pause') return {cad:Object.assign({}, c, {state:'Paused', nextAt:null, why:'Paused by a person'})};
+     if(what === 'resume') return {cad:Object.assign({}, c, {state:'Running', nextAt:Date.now() + B1.DAY, why:''})};
+     if(what === 'stop') return {cad:Object.assign({}, c, {state:'Stopped', nextAt:null, why:'stopped by a person'})};
+     const d = B1.cadDef(c.name), s = d && d.steps[c.step - 1], last = c.step >= c.total;
+     return {lastAt:Date.now(), comms:l.comms.concat([{at:Date.now(), ch:s ? s[1] : 'Email', who:'SYSTEM', head:(s ? s[1] : 'Message') + ' sent · ' + c.name + ' · step ' + c.step, body:'Template: ' + (s ? s[3] : '') + ' (simulated — nothing was sent)'}]),
+       cad:Object.assign({}, c, last ? {state:'Finished', nextAt:Date.now()} : {step:c.step + 1, nextAt:Date.now() + B1.DAY})}; },
+     l => what === 'advance' ? ['Follow-up step sent', l.cad.name + ' · step ' + l.cad.step + ' of ' + l.cad.total] : ['Follow-up ' + (what === 'stop' ? 'stopped' : what === 'pause' ? 'paused' : 'resumed'), l.cad ? l.cad.name : '']);
+ },
+ b1Archive(ids){ const v = {r:'Duplicate'};
+   modal('Archive ' + (ids.length === 1 ? ids[0] : ids.length + ' leads'), Stack(HTM({fontSize:'12.5px'}, 'Archived leads leave the Hotlist and can be brought back from the Audit Log.'),
+     Lbl('Reason'), h('select', {defaultValue:v.r, onChange:e => v.r = e.target.value, style:inputStyle()}, ...['Duplicate','Spam / wrong number','Test record','Created by mistake'].map(x => h('option', {key:x}, x)))),
+     [Btn('Cancel', {onClick:() => closeM()}), Btn('Archive', {kind:'danger', onClick:() => { closeM();
+       this.b1Patch(ids, () => ({archived:true, archReason:v.r}), () => ['Archived', v.r]); this.setState(s => ({hot:Object.assign({}, s.hot, {sel:{}})})); toast(ids.length + ' archived'); }})]); },
+ b1Restore(id){ this.b1Patch([id], () => ({archived:false}), () => ['Restored', 'Back on the Hotlist']); toast(id + ' restored'); },
+ b1Save(id){
+   const ed = (this.state.led || {})[id]; if(!ed) return;
+   const names = {client:'Contact name', company:'Company name', phone:'Phone', phone2:'Alt phone', email:'Email', pref:'Preferred contact', addr:'Address', city:'City', state:'State', zip:'ZIP', ptype:'Property type',
+     access:'Access notes', arm:'Business arm', emg:'Emergency', job:'Job type', desc:'Description', carrier:'Insurance carrier', claim:'Claim number', bidref:'Bid reference', biddue:'Bid due date', avail:'Availability',
+     notes:'Intake notes', ctype:'Client type', 'q.scope':'Scope', 'q.budget':'Budget', 'q.time':'Timeline', 'q.sa':'Scope assessment', 'q.ba':'Budget assessment', 'q.ta':'Timeline assessment', 'q.out':'Qualification outcome'};
+   const now = Date.now();
+   this.setState(s => ({led:Object.assign({}, s.led, {[id]:undefined}), leads:s.leads.map(l => { if(l.id !== id) return l; const n = Object.assign({}, l, {q:Object.assign({}, l.q)}), logs = [];
+     Object.keys(ed).forEach(k => { const isQ = k.indexOf('q.') === 0, old = isQ ? l.q[k.slice(2)] : l[k]; let val = ed[k]; if(k === 'emg') val = val === 'Yes';
+       if(String(old == null ? '' : old) === String(val == null ? '' : val)) return; if(isQ) n.q[k.slice(2)] = val; else n[k] = val;
+       logs.push(B1.act(now, 'Joshua Tohey', 'Human', 'Field corrected', (names[k] || k) + ': ' + (old === true ? 'Yes' : old === false ? 'No' : (old || '(blank)')) + ' → ' + (val === true ? 'Yes' : val === false ? 'No' : (val || '(blank)')))); });
+     if(n.arm !== l.arm && B1.stagesFor(n.arm).indexOf(n.stage) < 0) n.stage = n.stage === B1.SENT(l.arm) ? B1.SENT(n.arm) : 'New';
+     if(n.q.out === 'Qualified' && l.q.out !== 'Qualified' && n.stage === 'New'){ n.stage = 'Qualified'; n.stageAt = now; logs.push(B1.act(now, 'System', 'System', 'Stage changed', 'New → Qualified')); }
+     n.activity = l.activity.concat(logs); return n; })}));
+   toast('Saved — ' + id);
+ },
+ b1LogCall(id){ const v = {n:'', dir:'Outbound'};
+   modal('Log a call', Stack(Lbl('Direction'), h('select', {defaultValue:v.dir, onChange:e => v.dir = e.target.value, style:inputStyle()}, h('option', null, 'Outbound'), h('option', null, 'Inbound')),
+     Lbl('Notes'), h('textarea', {onChange:e => v.n = e.target.value, placeholder:'What was said, and what happens next', style:Object.assign(inputStyle(), {minHeight:'90px'})})),
+     [Btn('Cancel', {onClick:() => closeM()}), Btn('Save call', {kind:'pri', onClick:() => { closeM();
+       this.b1Patch([id], l => ({lastAt:Date.now(), comms:l.comms.concat([{at:Date.now(), ch:'Call', who:'HUMAN — Joshua Tohey', head:v.dir + ' call', body:v.n || '(no notes)'}])}), () => ['Call logged', v.dir]); toast('Call logged'); }})]); },
+ b1Msg(id, ch){ const v = {n:''};
+   modal('Send ' + ch + ' (simulated)', Stack(Lbl('Message'), h('textarea', {onChange:e => v.n = e.target.value, style:Object.assign(inputStyle(), {minHeight:'110px'})}),
+     HTM({fontSize:'12px', color:C.mut}, 'Nothing is sent from this prototype. The message is added to the thread so the flow can be seen.')),
+     [Btn('Cancel', {onClick:() => closeM()}), Btn('Send', {kind:'pri', onClick:() => { closeM();
+       this.b1Patch([id], l => ({lastAt:Date.now(), comms:l.comms.concat([{at:Date.now(), ch, who:'HUMAN — Joshua Tohey', head:ch + ' sent', body:v.n || '(empty)'}])}), () => [ch + ' sent', '']); toast(ch + ' added to the thread'); }})]); },
+ b1Note(id, text){ if(!text) return; this.b1Patch([id], l => ({inotes:(l.inotes || []).concat([{at:Date.now(), by:'Joshua Tohey', t:text}])}), () => ['Note added', text.slice(0, 60)]);
+   this.setState(s => ({led:Object.assign({}, s.led, {['note' + id]:''})})); toast('Note added'); },
+ b1Book(id, at, est){
+   this.b1Patch([id], l => Object.assign({visit:{at, est}, assigned:l.assigned || est}, B1.stagesFor(l.arm).indexOf(l.stage) < B1.stagesFor(l.arm).indexOf('Visit scheduled') ? {stage:'Visit scheduled', stageAt:Date.now()} : {}),
+     () => ['Visit booked', B1.fmt(at) + ' · ' + est]); toast('Visit booked — ' + B1.fmt(at));
+ },
+ b1Create(){
+   const d = this.state.draft || B1.draft0(), miss = [];
+   const name = d.ctype === 'Organization' ? d.company.trim() : (d.first + ' ' + d.last).trim();
+   if(!name) miss.push(d.ctype === 'Organization' ? 'company' : 'name'); if(!d.phone.trim()) miss.push('phone'); if(!d.arm) miss.push('arm'); if(!d.job) miss.push('job');
+   if(miss.length){ this.setState({draft:Object.assign({}, d, {err:miss})}); return toast('Missing: ' + miss.join(', '), 'dg'); }
+   const leads = this.state.leads, now = Date.now(), emg = d.emg === 'Yes';
+   const num = leads.reduce((a, l) => Math.max(a, parseInt(l.id.slice(-4), 10)), 0) + 1, id = 'L-2026-' + String(num).padStart(4, '0');
+   let to = d.assign === 'Auto-assign' ? null : d.assign === 'Leave unassigned' ? null : d.assign;
+   if(d.assign === 'Auto-assign' && d.out === 'Qualified'){ const load = {}; EST.forEach(e => load[e] = 0); leads.forEach(l => { if(l.assigned && B1.isOpen(l) && load[l.assigned] != null) load[l.assigned]++; });
+     to = EST.slice().sort((a, b) => load[a] - load[b])[0]; }
+   const stage = emg && d.arm === 'Restoration' ? 'Emergency dispatch' : to ? 'Assigned' : d.out === 'Qualified' ? 'Qualified' : 'New';
+   const acts = [B1.act(now, 'Joshua Tohey', 'Human', 'Lead created', 'Source: ' + d.src + (emg ? ' · EMERGENCY' : ''))];
+   if(to) acts.push(B1.act(now, d.assign === 'Auto-assign' ? 'System' : 'Joshua Tohey', d.assign === 'Auto-assign' ? 'System' : 'Human', 'Assigned', '→ ' + to + (d.assign === 'Auto-assign' ? ' (assignment rules: fewest open leads)' : '')));
+   const cadName = emg ? 'Emergency Response' : d.cad === 'None' ? null : d.cad;
+   if(cadName) acts.push(B1.act(now, 'System', 'System', 'Follow-up started', cadName));
+   const lead = {id, client:name, ctype:d.ctype, company:d.ctype === 'Organization' ? d.company.trim() : '', person:d.person, arm:d.arm, emg, job:d.job, src:d.src, stage, assigned:to,
+     createdAt:now, lastAt:null, stageAt:now, value:null, phone:d.phone, phone2:d.phone2, email:d.email, pref:d.pref, addr:d.addr, city:d.city, state:d.state, zip:d.zip, ptype:d.ptype || 'Other', access:d.access,
+     desc:d.desc, carrier:d.carrier, claim:d.claim, bidref:d.bidref, biddue:d.biddue, avail:d.avail, notes:d.notes, q:{scope:d.scope, sa:d.scope ? 'Qualified' : 'Unclear', budget:d.budget, ba:d.budget ? 'Qualified' : 'Unclear', time:d.time, ta:d.time ? 'Qualified' : 'Unclear', out:d.out},
+     archived:false, comms:[], activity:acts, cad:cadName ? B1.mkCad(cadName, 1, 'Running', now + (emg ? B1.HOUR / 2 : B1.DAY)) : null, isNew:true};
+   this.setState({leads:[lead].concat(leads), draft:null}); toast('Lead created — ' + id); go('lead', id);
+ },
+ b1Csv(rows){
+   const esc = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+   const txt = [['Lead reference','Client','Client type','Business arm','Emergency','Job type','Source','Stage','Assigned to','Created','Last contact','Next action','Follow-up','Value']]
+     .concat(rows.map(l => [l.id, l.client, l.ctype, l.arm, l.emg ? 'Yes' : 'No', l.job, l.src, l.stage, l.assigned || 'Unassigned', B1.fmt(l.createdAt), B1.fmt(l.lastAt), B1.nextAction(l).t, B1.cadTxt(l), l.value || '']))
+     .map(r => r.map(esc).join(',')).join('\n');
+   const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([txt], {type:'text/csv'})); a.download = 'hotlist.csv'; document.body.appendChild(a); a.click(); a.remove();
+   toast('CSV exported — ' + rows.length + ' leads, current filters and order');
+ },
+ b1SaveView(){ const v = {n:''};
+   modal('Save this view', Stack(Lbl('Name'), h('input', {autoFocus:true, onChange:e => v.n = e.target.value, placeholder:'e.g. My restoration leads', style:inputStyle()}),
+     HTM({fontSize:'12px', color:C.mut}, 'Keeps the filters, the sorting and the visible columns.')),
+     [Btn('Cancel', {onClick:() => closeM()}), Btn('Save view', {kind:'pri', onClick:() => { if(!v.n.trim()) return; closeM(); const hs = this.state.hot;
+       const f = {q:hs.q, arm:hs.arm, emg:hs.emg, stage:hs.stage, assigned:hs.assigned, src:hs.src, flag:hs.flag, sort:hs.sort, hide:hs.hide};
+       this.setState(s => ({views:s.views.filter(x => x.name !== v.n.trim()).concat([{name:v.n.trim(), f, mine:true}]), hot:Object.assign({}, s.hot, {viewName:v.n.trim()})})); toast('View saved — ' + v.n.trim()); }})]); },
+ b1Cols(){
+   const draw = () => { const hide = this.state.hot.hide;
+     modal('Columns', h('div', {style:{display:'grid', gridTemplateColumns:'1fr 1fr', gap:'8px 18px'}}, ...B1.COLS.filter(c => c[0] !== 'id').map(c =>
+       h('label', {key:c[0], style:{display:'flex', gap:'8px', alignItems:'center', fontSize:'13px', cursor:'pointer'}},
+         h('input', {type:'checkbox', checked:!hide[c[0]], onChange:() => { this.setState(s => ({hot:Object.assign({}, s.hot, {hide:Object.assign({}, s.hot.hide, {[c[0]]:!s.hot.hide[c[0]]})})}), draw); }, style:{accentColor:C.pri}}),
+         c[0] === 'prio' ? 'Priority' : c[1]))), [Btn('Done', {kind:'pri', onClick:() => closeM()})]); };
+   draw();
+ }
+});
+
+/* ================= DASHBOARD — every number comes from the leads ================= */
+SCREENS.dashboard = (p, st) => {
+ const all = st.leads.filter(l => !l.archived && (st.arm === 'All' || l.arm === st.arm)), open = all.filter(B1.isOpen), today = B1.dayKey(Date.now());
+ const cnt = f => open.filter(f).length;
+ const jump = patch => () => { APP.setState({hot:Object.assign(B1.hot0(), {arm:st.arm}, patch)}); go('hotlist'); };
+ const tile = (n, label, on, col) => h('div', {key:label, onClick:on, style:{background:'#fff', border:'1px solid ' + C.bd, borderTop:'3px solid ' + col, borderRadius:'10px', padding:'14px 15px', cursor:'pointer'}},
+   h('div', {style:{fontFamily:BAR, fontSize:'30px', fontWeight:600, lineHeight:1, color:col === C.dg && n ? C.dg : C.ink}}, String(n)), h('div', {style:{fontSize:'12px', color:C.mut, marginTop:'6px'}}, label));
+ const visits = all.filter(l => l.visit && l.stage === 'Visit scheduled' && l.visit.at > Date.now() - 3 * B1.HOUR).sort((a, b) => a.visit.at - b.visit.at);
+ const need = open.map(l => ({l, n:B1.needs(l)})).filter(x => x.n).sort((a, b) => (b.n.dg ? 1 : 0) - (a.n.dg ? 1 : 0) || a.n.since - b.n.since);
+ const est = open.filter(l => l.stage === 'Estimating').sort((a, b) => a.stageAt - b.stageAt);
+ const newToday = st.leads.filter(l => B1.dayKey(l.createdAt) === today);
+ return Page({key:'dash', title:'Good morning, Joshua', sub:'Owner / Admin · every figure on this screen is counted from the leads, so it moves as they move',
+  actions:[h('div', {style:{display:'flex', gap:'4px', background:'#fff', border:'1px solid ' + C.bd, borderRadius:'9px', padding:'4px'}},
+    ...['All','Commercial GC','Restoration'].map(a => h('div', {key:a, onClick:() => APP.setState({arm:a}),
+      style:{padding:'7px 13px', borderRadius:'6px', cursor:'pointer', fontSize:'12.5px', fontWeight:600, background:st.arm === a ? C.pri : 'transparent', color:st.arm === a ? '#fff' : C.mut}}, a)))],
+  children:[
+   h('div', {style:{display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))', gap:'12px'}},
+    tile(cnt(l => !l.assigned), 'New / unassigned', jump({assigned:'Unassigned'}), C.pri),
+    tile(cnt(l => l.emg), 'Emergency open', jump({emg:'Yes'}), C.dg),
+    tile(cnt(l => l.assigned && !l.lastAt), 'Awaiting first contact', jump({flag:'No contact yet'}), C.cy),
+    tile(visits.filter(l => B1.dayKey(l.visit.at) === today).length, 'Visits today', () => go('appointments'), C.cy),
+    tile(cnt(l => l.stage === B1.SENT(l.arm)), 'Awaiting proposal reply', jump({stage:st.arm === 'Commercial GC' ? 'Proposal / bid submitted' : 'Proposal sent'}), '#5CC6EC'),
+    tile(cnt(l => l.cad && l.cad.state === 'Finished'), 'Stalled / no reply', jump({flag:'Stalled'}), '#E0A63C')),
+   h('div', {style:{display:'grid', gridTemplateColumns:'minmax(560px,1fr) minmax(280px,330px)', gap:'16px', alignItems:'start'}},
+    Stack(
+     Card('Needs a human' + (need.length ? ' · ' + need.length : ''), need.length ? Tbl(['Lead','Client · why it stopped','Since',''],
+       need.slice(0, 8).map(x => ({c:[leadLink(x.l), '<b>' + x.l.client + '</b><div style="color:' + (x.n.dg ? '#A5503F' : '#5B7387') + ';font-size:12px">' + x.n.why + '</div>', B1.ago(x.n.since),
+         Btn('Open', {kind:x.n.dg ? 'danger' : 'ghost', sm:true, onClick:() => go('lead', x.l.id)})], style:x.n.dg ? {background:'#FDF6F4'} : null, hover:x.n.dg ? '#FBEDE9' : null})), {flush:true})
+       : HTM({padding:'18px', fontSize:'12.5px', color:C.mut}, 'Nothing needs a person right now.'),
+       {flush:true, hard:true, actions:need.length > 8 ? [Btn('All ' + need.length + ' →', {sm:true, onClick:jump({flag:'Needs a person'})})] : []}),
+     Card('Upcoming visits', visits.length ? Tbl(['When','Estimator','Client','Address','Arm'], visits.slice(0, 6).map(l => ({
+       c:[B1.fmt(l.visit.at), l.visit.est || '—', '<b>' + l.client + '</b>', l.addr + ', ' + l.city, armTag(l.arm)], onClick:() => go('lead', l.id)})), {flush:true})
+       : HTM({padding:'18px', fontSize:'12.5px', color:C.mut}, 'No visits booked.'), {flush:true, actions:[Btn('Appointments →', {sm:true, onClick:() => go('appointments')})]}),
+     Card('Jobs in estimating', est.length ? Tbl(['Lead','Client','Estimator','In estimating for','State'], est.slice(0, 6).map(l => ({
+       c:[leadLink(l), l.client, l.assigned || '—', Tag(B1.ago(l.stageAt), B1.over(l) ? 'dg' : 'ok'), B1.over(l) ? 'Past the time limit' : 'On time'], onClick:() => go('lead', l.id)})), {flush:true})
+       : HTM({padding:'18px', fontSize:'12.5px', color:C.mut}, 'No leads in estimating.'), {flush:true, actions:[Btn('Estimating queue →', {sm:true, onClick:() => go('equeue')})]})),
+    Stack(
+     h('section', {style:{background:'linear-gradient(160deg,#0B5C88 0%,#087BB2 60%,#30A5DE 100%)', borderRadius:'12px', padding:'18px', color:'#fff'}},
+      h('div', {style:{fontFamily:BAR, fontSize:'10.5px', fontWeight:600, letterSpacing:'.12em', textTransform:'uppercase', opacity:.82}}, 'On call right now'),
+      h('div', {style:{fontFamily:BAR, fontSize:'21px', fontWeight:600, marginTop:'8px'}}, 'Joshua Tohey'),
+      h('div', {style:{fontSize:'13px', opacity:.9}}, '(412) 555-0100'),
+      h('div', {style:{height:'1px', background:'rgba(255,255,255,.25)', margin:'14px 0'}}),
+      h('div', {style:{display:'flex', justifyContent:'space-between', fontSize:'12.5px'}}, h('span', {style:{opacity:.85}}, 'Backup'), h('b', null, 'Brian McClelland')),
+      h('div', {style:{display:'flex', justifyContent:'space-between', fontSize:'12.5px', marginTop:'6px'}}, h('span', {style:{opacity:.85}}, 'Coverage this week'), h('b', null, '⚠ 1 gap')),
+      h('button', {onClick:() => go('s_oncall'), style:{font:'inherit', fontSize:'12.5px', fontWeight:600, color:C.priD, background:'#fff', border:'none', borderRadius:'7px', padding:'9px 12px', width:'100%', marginTop:'16px', cursor:'pointer'}}, 'Manage on-call schedule')),
+     Card('Intake today', Stack(...[['Leads created', newToday.length], ['From AI calls', newToday.filter(l => l.src === 'AI call').length],
+       ['From email or web form', newToday.filter(l => l.src === 'Email' || l.src === 'Web form').length], ['Emergencies', newToday.filter(l => l.emg).length]].map(r =>
+       h('div', {key:r[0], style:{display:'flex', justifyContent:'space-between', alignItems:'center', paddingBottom:'8px', borderBottom:'1px solid ' + C.line}},
+         h('span', {style:{fontSize:'12.5px', color:C.mut}}, r[0]), h('b', {style:{fontFamily:BAR, fontSize:'16px', color:r[0] === 'Emergencies' && r[1] ? C.dg : C.ink}}, String(r[1])))))),
+     Card('Quick actions', h('div', {style:{display:'flex', flexDirection:'column', gap:'8px'}},
+       Btn('+ New lead', {kind:'pri', onClick:() => go('newlead')}), Btn('Book a site visit', {onClick:() => go('appointments')}), Btn('Upload an estimate', {onClick:() => APP.pickFile('estimate')})))))]});
 };
 
-SCREENS.properties = () => Page({key:'props', title:'Properties', sub:'Every job site and billing address on file — one contact can own several',
- actions:[Btn('+ New property',{kind:'pri'})],
- children:[
-  Bar(Fld('',{ph:'Search address…', w:'240px'}), Sel('State: All',['State: All','PA','OH','WV'],{w:'130px'}),
-    Sel('Type: All',['Type: All','Single family','Duplex','Commercial office','Retail strip','Warehouse'],{w:'190px'})),
-  Tbl(['Address','City','State','ZIP','Property type','Owner / contact','Billing address',{t:'Leads',n:true}],
-    PROPS.map(r=>[r[0],r[1],r[2],r[3],r[4],r[5],r[6],{t:r[7],n:true}]))]});
+/* ================= HOTLIST ================= */
+const hotFilter = (leads, f) => { const q = (f.q || '').trim().toLowerCase();
+ return leads.filter(l => !l.archived
+   && (f.arm === 'All' || l.arm === f.arm) && (f.emg === 'All' || (l.emg ? 'Yes' : 'No') === f.emg) && (f.stage === 'All' || l.stage === f.stage)
+   && (f.assigned === 'All' || (f.assigned === 'Unassigned' ? !l.assigned : l.assigned === f.assigned)) && (f.src === 'All' || l.src === f.src)
+   && (f.flag === 'All' || (f.flag === 'Over the time limit' ? !!B1.over(l) : f.flag === 'Needs a person' ? !!B1.needs(l) : f.flag === 'No contact yet' ? (B1.isOpen(l) && !!l.assigned && !l.lastAt)
+        : f.flag === 'Stalled' ? !!(B1.isOpen(l) && l.cad && l.cad.state === 'Finished') : f.flag === 'Open only' ? B1.isOpen(l) : true))
+   && (!q || (l.client + ' ' + l.company + ' ' + l.id + ' ' + l.phone + ' ' + l.addr + ' ' + l.city + ' ' + l.email).toLowerCase().indexOf(q) >= 0)); };
+const hotSortVal = {prio:l => l.emg ? 0 : 1, id:l => l.id, client:l => l.client.toLowerCase(), ctype:l => l.ctype, arm:l => l.arm, emg:l => l.emg ? 0 : 1, job:l => l.job, src:l => l.src,
+ stage:l => B1.stagesFor(l.arm).indexOf(l.stage), assigned:l => l.assigned ? l.assigned.toLowerCase() : '~', created:l => l.createdAt, next:l => B1.nextAction(l).t, cad:l => B1.cadTxt(l), value:l => l.value};
+const hotSort = (rows, sort) => { const pin = l => B1.isOpen(l) && l.emg ? 0 : 1, v = sort.k && hotSortVal[sort.k];
+ return rows.slice().sort((a, b) => { const p = pin(a) - pin(b); if(p) return p;
+   if(!v){ const o = (B1.over(b) ? 1 : 0) - (B1.over(a) ? 1 : 0); return o || b.createdAt - a.createdAt; }
+   const x = v(a), y = v(b); if(x == null || y == null) return x == null ? (y == null ? 0 : 1) : -1; return sort.dir * (x < y ? -1 : x > y ? 1 : 0); }); };
+
+SCREENS.hotlist = (p, st) => {
+ const f = st.hot, PER = 25, total = st.leads.filter(l => !l.archived).length;
+ const rows = hotSort(hotFilter(st.leads, f), f.sort), pages = Math.max(1, Math.ceil(rows.length / PER)), page = Math.min(f.page, pages - 1), shown = rows.slice(page * PER, page * PER + PER);
+ const selIds = Object.keys(f.sel).filter(k => f.sel[k]), selLeads = st.leads.filter(l => f.sel[l.id]), oneArm = selLeads.length && selLeads.every(l => l.arm === selLeads[0].arm);
+ const active = ['arm','emg','stage','assigned','src','flag'].filter(k => f[k] !== 'All').length + (f.q ? 1 : 0);
+ const stageOpts = f.arm === 'All' ? HOT_STAGES.concat(['Emergency dispatch','Bid invitation received','Proposal / bid submitted']) : B1.stagesFor(f.arm);
+ const cell = {
+  prio:l => l.emg ? Tag('EMERGENCY', 'dg') : '',
+  id:l => leadLink(l),
+  client:l => h('a', {title:'Open the contact', onClick:e => { e.stopPropagation(); go('contact', B1.contactKey(l)); }, style:{fontWeight:600, color:C.ink, cursor:'pointer', borderBottom:'1px dotted ' + C.faint}}, l.client),
+  ctype:l => l.ctype === 'Organization' ? 'Company' : 'Person', arm:l => armTag(l.arm), emg:l => l.emg ? h('b', {style:{color:C.dg}}, 'Yes') : 'No', job:l => l.job, src:l => l.src,
+  stage:l => h('span', {style:{whiteSpace:'nowrap'}}, Tag(l.stage, l.stage === 'Won' ? 'ok' : l.stage === 'Lost' ? 'dg' : null), overChip(l)),
+  assigned:l => l.assigned || Tag('Unassigned', 'wn'),
+  created:l => h('div', null, h('div', null, B1.fmt(l.createdAt)), h('div', {style:{fontSize:'11.5px', color:l.lastAt ? C.faint : C.dg, fontWeight:l.lastAt ? 400 : 600}}, l.lastAt ? 'Last contact ' + B1.fmt(l.lastAt) : 'No contact attempt yet')),
+  next:l => { const n = B1.nextAction(l); return h('span', {style:n.dg ? {color:C.dg, fontWeight:600} : null}, n.t); },
+  cad:l => { const c = l.cad; return !c ? h('span', {style:{color:C.faint}}, 'Not started') : h('span', {style:{color:c.state === 'Finished' ? C.wn : c.state === 'Running' ? C.ink : C.mut}}, B1.cadTxt(l)); },
+  value:l => B1.money(l.value)};
+ const cols = B1.COLS.filter(c => !f.hide[c[0]]);
+ const th = {position:'sticky', top:0, zIndex:2, background:'#F8FBFD', borderBottom:'1px solid ' + C.bd, textAlign:'left', padding:'10px 12px', fontFamily:BAR, fontSize:'10.5px', fontWeight:600, letterSpacing:'.09em', textTransform:'uppercase', whiteSpace:'nowrap', cursor:'pointer', userSelect:'none'};
+ const allOn = shown.length && shown.every(l => f.sel[l.id]);
+ const table = h('div', {style:{overflowX:'auto', borderRadius:'12px', border:'1px solid ' + C.bd, background:'#fff'}},
+  h('table', {style:{width:'100%', borderCollapse:'collapse', fontSize:'12.5px', minWidth:(520 + cols.length * 95) + 'px'}},
+   h('thead', null, h('tr', null,
+     h('th', {style:Object.assign({}, th, {width:'30px', cursor:'default'})}, h('input', {type:'checkbox', title:'Select the leads on this page', checked:!!allOn,
+       onChange:() => { const sel = Object.assign({}, f.sel); shown.forEach(l => sel[l.id] = !allOn); APP.setState(s => ({hot:Object.assign({}, s.hot, {sel})})); }, style:{accentColor:C.pri}})),
+     ...cols.map(c => { const on = f.sort.k === c[0]; return h('th', {key:c[0], onClick:() => setHot({sort:{k:c[0], dir:on ? -f.sort.dir : 1}}),
+       style:Object.assign({}, th, {color:on ? C.pri : C.faint, textAlign:c[0] === 'value' ? 'right' : 'left'})}, c[1], h('span', {style:{opacity:on ? 1 : .35, marginLeft:'5px'}}, on ? (f.sort.dir === 1 ? '▲' : '▼') : '⇅')); }))),
+   h('tbody', null, ...shown.map(l => h('tr', {key:l.id, onClick:() => go('lead', l.id),
+     style:{cursor:'pointer', background:l.emg && B1.isOpen(l) ? '#FDF6F4' : l.isNew ? '#F1FAF4' : 'transparent', boxShadow:l.emg && B1.isOpen(l) ? 'inset 3px 0 0 ' + C.dg : 'none'}},
+     h('td', {onClick:e => e.stopPropagation(), style:{padding:'11px 12px', borderBottom:'1px solid ' + C.line, verticalAlign:'top'}},
+       h('input', {type:'checkbox', 'aria-label':'Select ' + l.id, checked:!!f.sel[l.id], onChange:() => APP.setState(s => ({hot:Object.assign({}, s.hot, {sel:Object.assign({}, s.hot.sel, {[l.id]:!s.hot.sel[l.id]})})})), style:{accentColor:C.pri}})),
+     ...cols.map(c => h('td', {key:c[0], style:{padding:'11px 12px', borderBottom:'1px solid ' + C.line, verticalAlign:'top', textAlign:c[0] === 'value' ? 'right' : 'left', whiteSpace:c[0] === 'value' || c[0] === 'id' ? 'nowrap' : 'normal'}}, cell[c[0]](l))))),
+    shown.length ? null : h('tr', null, h('td', {colSpan:cols.length + 1, style:{padding:'34px', textAlign:'center', color:C.mut}}, 'No leads match these filters.')))));
+ const pager = h('div', {style:{display:'flex', alignItems:'center', gap:'10px', fontSize:'12.5px', color:C.mut}},
+  h('span', null, rows.length ? 'Showing ' + (page * PER + 1) + '–' + (page * PER + shown.length) + ' of ' : '', h('b', {style:{color:C.ink}}, rows.length + (rows.length === 1 ? ' lead' : ' leads')), active ? ' matching the filters · ' + total + ' in total' : ' in total'),
+  Sp(), Btn('‹ Previous', {sm:true, disabled:page === 0, onClick:() => APP.setState(s => ({hot:Object.assign({}, s.hot, {page:page - 1})}))}),
+  h('span', null, 'Page ', h('b', {style:{color:C.ink}}, String(page + 1)), ' of ' + pages),
+  Btn('Next ›', {sm:true, disabled:page >= pages - 1, onClick:() => APP.setState(s => ({hot:Object.assign({}, s.hot, {page:page + 1})}))}));
+ const lanes = B1.stagesFor(f.barm), brows = hotSort(hotFilter(st.leads, Object.assign({}, f, {arm:f.barm, stage:'All'})), {k:null, dir:1});
+ const board = Stack(
+  h('div', {style:{display:'flex', gap:'4px', background:'#fff', border:'1px solid ' + C.bd, borderRadius:'9px', padding:'4px', alignSelf:'flex-start'}},
+    ...['Restoration','Commercial GC'].map(a => h('div', {key:a, onClick:() => setHot({barm:a}), style:{padding:'7px 13px', borderRadius:'6px', cursor:'pointer', fontSize:'12.5px', fontWeight:600,
+      background:f.barm === a ? C.pri : 'transparent', color:f.barm === a ? '#fff' : C.mut}}, (a === 'Restoration' ? 'Restoration / Insurance' : a) + ' · ' + hotFilter(st.leads, Object.assign({}, f, {arm:a, stage:'All'})).length))),
+  Kanban(lanes, L => { const cs = brows.filter(l => l.stage === L);
+     return [h('div', {key:'n', style:{fontSize:'11px', color:C.faint, padding:'0 2px'}}, cs.length + (cs.length === 1 ? ' lead' : ' leads') + (cs.some(x => x.value) ? ' · ' + B1.money(cs.reduce((a, x) => a + (x.value || 0), 0)) : ''))]
+      .concat(cs.slice(0, 12).map(l => KCard({key:l.id, drag:l.id, onClick:() => go('lead', l.id), title:l.client, meta:l.id + ' · ' + l.job + (l.assigned ? ' · ' + l.assigned.split(' ')[0] : ''),
+        foot:h('div', {style:{marginTop:'6px', display:'flex', gap:'6px', flexWrap:'wrap', alignItems:'center'}}, l.emg ? Tag('EMERGENCY', 'dg') : null, l.assigned ? null : Tag('Unassigned', 'wn'), overChip(l))})))
+      .concat(cs.length > 12 ? [h('div', {key:'more', style:{fontSize:'11.5px', color:C.mut, textAlign:'center', padding:'4px'}}, '+ ' + (cs.length - 12) + ' more — use the table')] : []); },
+   (id, L) => { const l = st.leads.find(x => x.id === id); if(l && l.stage !== L) APP.b1Stage([id], L); }),
+  HTM({fontSize:'11.5px', color:C.faint}, 'Drag a card to another column to change its stage. Each business arm has its own stages, so the board shows one arm at a time.'));
+ return Page({key:'hot', title:'Hotlist', sub:'All incoming and active opportunities — every channel, one queue',
+  actions:[Btn('Export CSV', {onClick:() => APP.b1Csv(rows)}), Btn('+ New lead', {kind:'pri', onClick:() => go('newlead')})],
+  children:[
+   Bar(FldC(f.q, v => setHot({q:v}), {ph:'Search client, phone, address, reference…', w:'250px'}),
+     SelC(f.arm === 'All' ? 'Arm: All' : f.arm, ['Arm: All','Commercial GC','Restoration'], v => setHot({arm:v === 'Arm: All' ? 'All' : v, stage:'All'}), {w:'140px'}),
+     SelC(f.emg === 'All' ? 'Emergency: All' : f.emg, ['Emergency: All','Yes','No'], v => setHot({emg:v === 'Emergency: All' ? 'All' : v}), {w:'145px'}),
+     SelC(f.stage === 'All' ? 'Stage: All' : f.stage, ['Stage: All'].concat(stageOpts), v => setHot({stage:v === 'Stage: All' ? 'All' : v}), {w:'150px'}),
+     SelC(f.assigned === 'All' ? 'Assigned: All' : f.assigned, ['Assigned: All','Unassigned'].concat(EST), v => setHot({assigned:v === 'Assigned: All' ? 'All' : v}), {w:'160px'}),
+     SelC(f.src === 'All' ? 'Source: All' : f.src, ['Source: All'].concat(B1.SOURCES), v => setHot({src:v === 'Source: All' ? 'All' : v}), {w:'160px'}),
+     SelC(f.flag === 'All' ? 'State: All' : f.flag, ['State: All','Open only','Needs a person','Over the time limit','No contact yet','Stalled'], v => setHot({flag:v === 'State: All' ? 'All' : v}), {w:'170px'}),
+     active ? Btn('Clear ' + active, {sm:true, onClick:() => APP.setState(s => ({hot:Object.assign(B1.hot0(), {hide:s.hot.hide, barm:s.hot.barm, sel:s.hot.sel})}))}) : null,
+     Sp(),
+     SelC(f.viewName || 'Saved views', ['Saved views'].concat(st.views.map(v => v.name)).concat(['＋ Save this view…']), v => {
+       if(v === '＋ Save this view…') return APP.b1SaveView(); if(v === 'Saved views') return setHot({viewName:''});
+       const w = st.views.find(x => x.name === v); if(w) APP.setState(s => ({hot:Object.assign(B1.hot0(), {hide:s.hot.hide, barm:s.hot.barm}, w.f, {viewName:v})})); }, {w:'165px'}),
+     Btn('Columns' + (Object.keys(f.hide).filter(k => f.hide[k]).length ? ' · ' + Object.keys(f.hide).filter(k => f.hide[k]).length + ' hidden' : ''), {sm:true, onClick:() => APP.b1Cols()}),
+     Grp(Btn('Table', {kind:st.hotView === 'table' ? 'pri' : 'ghost', onClick:() => APP.setState({hotView:'table'})}), Btn('Kanban', {kind:st.hotView === 'kanban' ? 'pri' : 'ghost', onClick:() => APP.setState({hotView:'kanban'})}))),
+   st.hotView === 'table' ? table : board,
+   st.hotView === 'table' ? pager : null,
+   st.hotView === 'table' ? h('div', {style:{display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center', background:selIds.length ? '#0E2A3B' : '#fff', color:selIds.length ? '#fff' : C.mut, border:'1px solid ' + (selIds.length ? '#0E2A3B' : C.bd), borderRadius:'10px', padding:'9px 11px', position:'sticky', bottom:'10px'}},
+     h('b', {style:{fontSize:'12.5px'}}, 'Selected: ' + selIds.length),
+     Btn('Assign', {sm:true, disabled:!selIds.length, onClick:() => APP.b1Assign(selIds)}),
+     Btn('Change stage', {sm:true, disabled:!selIds.length || !oneArm, title:oneArm ? '' : 'Select leads from one business arm — each arm has its own stages', onClick:() => { const v = {s:B1.stagesFor(selLeads[0].arm)[0]};
+       modal('Change stage — ' + selIds.length + ' leads', Stack(Lbl('New stage'), h('select', {defaultValue:v.s, onChange:e => v.s = e.target.value, style:inputStyle()}, ...B1.stagesFor(selLeads[0].arm).map(x => h('option', {key:x}, x)))),
+         [Btn('Cancel', {onClick:() => closeM()}), Btn('Change stage', {kind:'pri', onClick:() => { closeM(); APP.b1Stage(selIds, v.s); }})]); }}),
+     Btn('Start follow-up', {sm:true, disabled:!selIds.length, onClick:() => APP.b1Cadence(selIds)}),
+     Btn('Archive', {sm:true, disabled:!selIds.length, onClick:() => APP.b1Archive(selIds)}),
+     selIds.length && !oneArm ? h('span', {style:{fontSize:'11.5px', opacity:.8}}, 'One business arm at a time to change stage') : null,
+     Sp(), selIds.length ? Btn('Clear selection', {sm:true, onClick:() => APP.setState(s => ({hot:Object.assign({}, s.hot, {sel:{}})}))}) : null) : null]});
+};
+
+/* ================= LEAD RECORD ================= */
+SCREENS.lead = (id, st) => {
+ const l = st.leads.find(x => x.id === id) || st.leads[0], ed = (st.led || {})[l.id] || {}, dirty = Object.keys(ed).length > 0;
+ const val = k => ed[k] !== undefined ? ed[k] : (k.indexOf('q.') === 0 ? l.q[k.slice(2)] : k === 'emg' ? (l.emg ? 'Yes' : 'No') : l[k]);
+ const set = k => v => APP.setState(s => ({led:Object.assign({}, s.led, {[l.id]:Object.assign({}, (s.led || {})[l.id], {[k]:v})})}));
+ const F = (label, k, o) => Stack(Lbl(label), FldC(val(k), set(k), o));
+ const S = (label, k, opts) => Stack(Lbl(label), SelC(val(k), opts.indexOf(val(k)) < 0 && val(k) ? [val(k)].concat(opts) : opts, set(k)));
+ const A = (label, k, o) => Stack(Lbl(label), TaC(val(k), set(k), o));
+ const arm = val('arm'), T = ['Overview','Qualification','Communications','Schedule','Files &amp; Photos','Automation','Activity'], tab = st.tab;
+ const saveBar = dirty ? h('div', {style:{display:'flex', gap:'10px', alignItems:'center', background:'#FBF3E2', border:'1px solid #F0E2C0', borderRadius:'10px', padding:'9px 12px', position:'sticky', top:'8px', zIndex:5}},
+   h('b', {style:{fontSize:'12.5px', color:C.wn}}, Object.keys(ed).length + ' unsaved change' + (Object.keys(ed).length > 1 ? 's' : '')), Sp(),
+   Btn('Discard', {sm:true, onClick:() => APP.setState(s => ({led:Object.assign({}, s.led, {[l.id]:undefined})}))}), Btn('Save changes', {sm:true, kind:'pri', onClick:() => APP.b1Save(l.id)})) : null;
+ let pane = null;
+ if(tab === 0) pane = Stack(
+   Row(Card('Contact', Stack(S('Client type', 'ctype', ['Individual','Organization']), F('Company name', 'company'), F('Contact name', 'client'), F('Phone', 'phone'), F('Alt phone', 'phone2'), F('Email', 'email'),
+       S('Preferred contact method', 'pref', ['Phone','Email','Text']), h('div', null, Btn('Open the contact →', {sm:true, onClick:() => go('contact', B1.contactKey(l))})))),
+     Card('Job site / property', Stack(F('Address', 'addr'), Lbl('City / State / ZIP'),
+       h('div', {style:{display:'flex', gap:'8px'}}, FldC(val('city'), set('city')), SelC(val('state'), ['PA','OH','WV'], set('state'), {w:'90px'}), FldC(val('zip'), set('zip'), {w:'110px'})),
+       S('Property type', 'ptype', B1.PTYPES), A('Access notes', 'access'))),
+     Card('The job', Stack(S('Business arm — drives everything downstream', 'arm', ['Commercial GC','Restoration']), S('Emergency', 'emg', ['Yes','No']), S('Job type', 'job', PROJTYPES), A('Loss / damage description', 'desc'),
+       arm === 'Restoration' ? F('Insurance carrier (Restoration only)', 'carrier') : F('Bid reference (Commercial GC only)', 'bidref'),
+       arm === 'Restoration' ? F('Claim number', 'claim') : F('Bid due date', 'biddue')))),
+   Card('Availability for a visit — read this before you call', TaC(val('avail'), set('avail')), {hard:true}),
+   Card('Intake notes', TaC(val('notes'), set('notes'))),
+   Card('Internal notes', Stack(...(l.inotes || []).map((n, i) => h('div', {key:i, style:{fontSize:'12.5px', borderBottom:'1px solid ' + C.line, paddingBottom:'8px'}}, h('b', null, n.by), ' · ', h('span', {style:{color:C.faint}}, B1.fmt(n.at)), h('div', null, n.t))),
+     TaC((st.led || {})['note' + l.id] || '', v => APP.setState(s => ({led:Object.assign({}, s.led, {['note' + l.id]:v})})), {ph:'Type a note… use @name to notify someone'}),
+     h('div', null, Btn('Add note', {kind:'pri', onClick:() => APP.b1Note(l.id, (st.led || {})['note' + l.id])})))));
+ if(tab === 1) pane = Stack(
+   Tbl(['Criterion','Captured value','Assessment'], [
+     ['<b>SCOPE</b><div style="color:#7C93A5;font-size:11.5px">What are we doing?</div>', TaC(val('q.scope'), set('q.scope'), {min:52}), SelC(val('q.sa'), ['Qualified','Not qualified','Unclear'], set('q.sa'))],
+     ['<b>BUDGET</b><div style="color:#7C93A5;font-size:11.5px">Investment expectation</div>', TaC(val('q.budget'), set('q.budget'), {min:52}), SelC(val('q.ba'), ['Qualified','Not qualified','Unclear'], set('q.ba'))],
+     ['<b>TIMELINE</b><div style="color:#7C93A5;font-size:11.5px">When must it start / finish?</div>', TaC(val('q.time'), set('q.time'), {min:52}), SelC(val('q.ta'), ['Qualified','Not qualified','Unclear','—'], set('q.ta'))]]),
+   Card('Outcome', Stack(h('div', {style:{maxWidth:'320px'}}, Lbl('Overall'), SelC(val('q.out'), ['Qualified','Not qualified','Needs more info'], set('q.out'))),
+     HTM({fontSize:'12px', color:C.mut}, 'Saving the outcome as <b>Qualified</b> moves a lead that is still in New to Qualified. A lead that is not qualified is closed from the stage selector, as Lost, with a reason.'))));
+ if(tab === 2){
+   const ic = {Call:'📞', Email:'✉️', SMS:'💬', 'AI voice call':'📞'};
+   pane = Stack(
+     Bar(HTM({fontSize:'12.5px', color:C.mut}, l.comms.length + ' in the thread · last contact ' + (l.lastAt ? B1.fmt(l.lastAt) : 'never')), Sp(),
+       Btn('Log a call', {sm:true, onClick:() => APP.b1LogCall(l.id)}), Btn('Send email', {sm:true, onClick:() => APP.b1Msg(l.id, 'Email')}), Btn('Send SMS', {sm:true, onClick:() => APP.b1Msg(l.id, 'SMS')})),
+     ...(l.comms.length ? l.comms.slice().reverse().map((c, i) => h('div', {key:i, style:{border:'1px solid ' + C.bd, borderRadius:'10px', padding:'12px 14px', background:'#fff'}},
+       h('div', {style:{display:'flex', gap:'8px', alignItems:'center', fontSize:'12.5px', fontWeight:600, marginBottom:'6px'}}, h('span', null, ic[c.ch] || '💬'), h('span', {style:{flex:1}}, c.head + ' · ' + B1.fmt(c.at)), Tag(c.who, c.who === 'SYSTEM' ? 'ai' : null)),
+       h('div', {style:{fontSize:'12.5px', color:C.mut, lineHeight:1.6}}, c.body)))
+       : [Ph('No calls, emails or texts yet. Calls, emails and texts share one thread, in date order.')]));
+ }
+ if(tab === 3){
+   const base = new Date(); base.setMinutes(0, 0, 0); const slots = [26, 30, 50, 74].map(x => base.getTime() + x * B1.HOUR), est = l.assigned || EST[0];
+   pane = Stack(
+     Card('Scheduled visit', l.visit ? Tbl(['When','Type','Estimator','Status'], [[B1.fmt(l.visit.at), 'On-site estimate visit', l.visit.est || '—', l.visit.at < Date.now() ? Tag('Completed', 'ok') : Tag('Booked', 'ai')]], {flush:true})
+       : HTM({padding:'16px', fontSize:'12.5px', color:C.mut}, 'No site visit booked.'), {flush:true}),
+     Card(l.visit ? 'Move the visit' : 'Book a visit', Stack(HTM({fontSize:'12.5px', color:C.mut}, 'Estimator: <b>' + est + '</b>. Booking moves the lead to <b>Visit scheduled</b> and shows the visit on the Dashboard.'),
+       Lbl('Available slots — in the real platform these come from the estimator’s Google Calendar'),
+       h('div', {style:{display:'flex', gap:'8px', flexWrap:'wrap'}}, ...slots.map(s => Btn(B1.fmt(s), {onClick:() => APP.b1Book(l.id, s, est)}))))));
+ }
+ if(tab === 4) pane = Stack(Card('Documents', Ph('Documents attached to the lead appear here — the claim assignment, drawings, insurance paperwork.')),
+   Card('Photos', Stack(Ph('Photos arrive from the Phase 2 inspection session, or can be uploaded here.'), h('div', null, Btn('Upload photos', {onClick:() => APP.pickFile('photos')})))));
+ if(tab === 5){
+   const c = l.cad, d = c && B1.cadDef(c.name);
+   pane = Stack(
+     Card('Follow-up sequence', c ? Stack(
+       h('div', {style:{fontSize:'13px'}}, h('b', null, c.name), ' · step ' + c.step + ' of ' + c.total + ' · status: ', h('b', {style:{color:c.state === 'Running' ? C.ok : c.state === 'Finished' ? C.wn : C.mut}}, c.state), c.why ? ' · ' + c.why : ''),
+       c.state === 'Running' ? HTM({fontSize:'12.5px', color:C.mut}, 'Next step due ' + B1.fmt(c.nextAt)) : null,
+       h('div', {style:{display:'flex', gap:'8px', flexWrap:'wrap'}},
+         Btn('Advance one step (simulate)', {kind:'pri', disabled:c.state !== 'Running', onClick:() => APP.b1CadCtl(l.id, 'advance')}),
+         Btn('Pause', {disabled:c.state !== 'Running', onClick:() => APP.b1CadCtl(l.id, 'pause')}), Btn('Resume', {disabled:c.state !== 'Paused', onClick:() => APP.b1CadCtl(l.id, 'resume')}),
+         Btn('Stop', {disabled:c.state === 'Stopped' || c.state === 'Finished', onClick:() => APP.b1CadCtl(l.id, 'stop')}), Btn('Switch sequence…', {onClick:() => APP.b1Cadence([l.id])})))
+       : Stack(HTM({fontSize:'12.5px', color:C.mut}, 'No follow-up sequence running.'), h('div', null, Btn('Start a sequence', {kind:'pri', onClick:() => APP.b1Cadence([l.id])}))), {hard:true}),
+     d ? Tbl(['Step','Channel','When','Template','Status'], d.steps.map((s, i) => [s[0], s[1], s[2], s[3],
+       i + 1 < c.step || c.state === 'Finished' ? Tag('Sent', 'ok') : i + 1 === c.step && c.state === 'Running' ? Tag('Next', 'ai') : c.state === 'Stopped' || c.state === 'Paused' ? Tag(c.state) : Tag('Queued')])) : null);
+ }
+ if(tab === 6) pane = Tbl(['Timestamp','Actor','Type','Action','Detail'], l.activity.slice().reverse().map(a => [B1.fmt(a.at), a.actor, Tag(a.type, a.type === 'Human' ? null : 'ai'), '<b>' + a.action + '</b>', a.detail]));
+ const stages = B1.stagesFor(l.arm);
+ return Page({key:'lead' + l.id, crumb:['Hotlist', () => go('hotlist'), l.id], title:l.client, sub:l.id + ' · ' + [l.addr, l.city, l.state + ' ' + l.zip].filter(x => x && x.trim()).join(', '),
+   actions:[Btn('Reassign', {onClick:() => APP.b1Assign([l.id])}), Btn('Start follow-up', {onClick:() => APP.b1Cadence([l.id])}),
+     l.archived ? Btn('Restore', {onClick:() => APP.b1Restore(l.id)}) : Btn('Archive', {onClick:() => APP.b1Archive([l.id])}),
+     Btn('Open estimating workflow →', {onClick:() => go('estimate'), disabled:['Estimating', B1.SENT(l.arm), 'Won'].indexOf(l.stage) < 0, title:'Available once the visit is done and the lead is in Estimating'}),
+     Btn('Convert to job', {kind:'pri', disabled:true, title:'Enabled once the proposal is signed and the client has paid — converted by the Operations Manager'})],
+   children:[
+    h('div', {style:{display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center'}},
+      armTag(l.arm), l.emg ? Tag('EMERGENCY', 'dg') : null, Tag(l.ctype === 'Organization' ? 'Company' : 'Person'), Tag(l.src), l.archived ? Tag('ARCHIVED · ' + (l.archReason || ''), 'wn') : null, overChip(l),
+      l.lostReason && l.stage === 'Lost' ? Tag('Lost · ' + l.lostReason, 'dg') : null,
+      h('span', {style:{flex:1}}),
+      h('span', {style:{fontSize:'12px', color:C.faint}}, 'Stage'), SelC(l.stage, stages, v => APP.b1Stage([l.id], v), {w:'190px'}),
+      h('span', {style:{fontSize:'12px', color:C.faint}}, 'Assigned'),
+      SelC(l.assigned || 'Unassigned', ['Unassigned'].concat(EST), v => APP.b1Patch([l.id], x => Object.assign({assigned:v === 'Unassigned' ? null : v}, v !== 'Unassigned' && (x.stage === 'New' || x.stage === 'Qualified') ? {stage:'Assigned', stageAt:Date.now()} : {}),
+        (o, n) => ['Assigned', (o.assigned || 'Unassigned') + ' → ' + (n.assigned || 'Unassigned')]), {w:'180px'})),
+    h('div', {style:{display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(170px,1fr))', gap:'10px'}},
+      ...[['Created', B1.fmt(l.createdAt)], ['Last contact', l.lastAt ? B1.fmt(l.lastAt) : 'No contact attempt yet'], ['Next action', B1.nextAction(l).t], ['Follow-up', B1.cadTxt(l)], ['Value', B1.money(l.value)]].map(r =>
+        h('div', {key:r[0], style:{background:'#fff', border:'1px solid ' + C.bd, borderRadius:'9px', padding:'9px 12px'}}, h('div', {style:{fontSize:'10.5px', color:C.faint, textTransform:'uppercase', letterSpacing:'.08em', fontFamily:BAR, fontWeight:600}}, r[0]),
+          h('div', {style:{fontSize:'12.5px', fontWeight:600, marginTop:'3px'}}, r[1])))),
+    Tabs(T, tab), tab < 2 ? saveBar : null, pane]});
+};
+
+/* ================= NEW LEAD ================= */
+SCREENS.newlead = (p, st) => {
+ const d = st.draft || B1.draft0(), up = k => v => APP.setState(s => ({draft:Object.assign({}, s.draft || B1.draft0(), {[k]:v, err:null})}));
+ const bad = k => !!(d.err && d.err.indexOf(k) >= 0), org = d.ctype === 'Organization';
+ const probe = (d.find || d.phone || d.email || (org ? d.company : d.last) || '').trim().toLowerCase();
+ const dups = probe.length >= 4 ? B1.contacts(st.leads).filter(c => (c.n + ' ' + c.ph + ' ' + c.e).toLowerCase().replace(/[()\s-]/g, '').indexOf(probe.replace(/[()\s-]/g, '')) >= 0).slice(0, 3) : [];
+ const use = c => { const l = c.leads[0], nm = l.client.split(' ');
+   APP.setState(s => ({draft:Object.assign({}, s.draft || B1.draft0(), {ctype:c.t, company:l.company, first:c.t === 'Individual' ? nm[0] : '', last:c.t === 'Individual' ? nm.slice(1).join(' ') : '', phone:l.phone, email:l.email, pref:l.pref,
+     addr:l.addr, city:l.city, state:l.state, zip:l.zip, ptype:l.ptype, find:'', err:null})})); toast('Contact details filled from ' + c.n); };
+ return Page({key:'newlead', crumb:['Hotlist', () => go('hotlist'), 'New lead'], title:'New lead',
+  sub:'Manual intake — captures exactly the same fields the AI receptionist captures, so the record is identical regardless of channel',
+  actions:[Btn('Cancel', {onClick:() => { APP.setState({draft:null}); go('hotlist'); }}), Btn('Clear form', {onClick:() => APP.setState({draft:null})}), Btn('Create lead', {kind:'pri', onClick:() => APP.b1Create()})],
+  children:[
+   d.err ? HTM({fontSize:'12.5px', color:C.dg, background:C.dgL, border:'1px solid #F0D6D1', borderRadius:'8px', padding:'9px 13px'}, '<b>Four things are required:</b> who the client is, a phone number, the business arm and the job type. Missing: ' + d.err.join(', ') + '.') : null,
+   Card('1 · Who', Stack(Lbl('Search for an existing contact — duplicate detection runs while you type'), FldC(d.find, up('find'), {ph:'Phone, email or name…'}),
+     dups.length ? h('div', {style:{background:'#FBF3E2', border:'1px solid #F0E2C0', borderRadius:'8px', padding:'10px 12px'}},
+       h('b', {style:{fontSize:'12.5px', color:C.wn}}, 'Possible existing contact' + (dups.length > 1 ? 's' : '')),
+       ...dups.map(c => h('div', {key:c.n, style:{display:'flex', gap:'10px', alignItems:'center', fontSize:'12.5px', marginTop:'6px'}},
+         h('span', {style:{flex:1}}, h('b', null, c.n), ' · ' + c.ph + ' · ' + c.leads.length + ' lead' + (c.leads.length > 1 ? 's' : '') + ' on file'), Btn('Use this contact', {sm:true, onClick:() => use(c)})))) : null,
+     Row(Stack(Lbl('Client type'), SelC(d.ctype, ['Individual','Organization'], up('ctype')), Lbl('Company name' + (org ? ' *' : '')), FldC(d.company, up('company'), {bad:bad('company')}), Lbl('Contact person'), FldC(d.person, up('person'))),
+       Stack(Lbl('First name' + (org ? '' : ' *')), FldC(d.first, up('first'), {bad:bad('name')}), Lbl('Last name' + (org ? '' : ' *')), FldC(d.last, up('last'), {bad:bad('name')}), Lbl('Preferred contact method'), SelC(d.pref, ['Phone','Email','Text'], up('pref'))),
+       Stack(Lbl('Phone *'), FldC(d.phone, up('phone'), {bad:bad('phone'), ph:'(412) 555-0100'}), Lbl('Alt phone'), FldC(d.phone2, up('phone2')), Lbl('Email'), FldC(d.email, up('email')))))),
+   Card('2 · What', Row(
+     Stack(Lbl('Business arm * — drives everything downstream'), SelC(d.arm || '— select —', ['— select —','Commercial GC','Restoration'], v => up('arm')(v === '— select —' ? '' : v), {bad:bad('arm')}),
+       Lbl('Is this an emergency?'), SelC(d.emg, ['No','Yes'], up('emg')), Lbl('How it came in'), SelC(d.src, B1.SOURCES.filter(s => s !== 'AI call'), up('src'))),
+     Stack(Lbl('Job type *'), SelC(d.job || '— select —', ['— select —'].concat(PROJTYPES), v => up('job')(v === '— select —' ? '' : v), {bad:bad('job')}), Lbl('Loss / damage description'), TaC(d.desc, up('desc'))),
+     d.arm === 'Commercial GC' ? Stack(Lbl('Bid reference'), FldC(d.bidref, up('bidref')), Lbl('Bid due date'), FldC(d.biddue, up('biddue'), {ph:'e.g. Oct 22, 2026'}))
+       : d.arm === 'Restoration' ? Stack(Lbl('Insurance carrier'), FldC(d.carrier, up('carrier')), Lbl('Claim number'), FldC(d.claim, up('claim')))
+       : Stack(HTM({fontSize:'12.5px', color:C.faint, marginTop:'24px'}, 'Choose the business arm: insurance fields appear for Restoration, bid fields for Commercial GC.')))),
+   d.emg === 'Yes' ? Card('Emergency routing', Stack(
+     h('div', {style:{fontSize:'13px'}}, h('b', null, 'On call right now: Joshua Tohey'), ' · (412) 555-0100'),
+     h('div', {style:{display:'flex', gap:'8px', flexWrap:'wrap'}}, Btn('📞 Call / transfer now', {kind:'pri', onClick:() => toast('Dialling on-call primary… (simulated)')}), Btn('Call backup — Brian McClelland', {onClick:() => toast('Dialling backup… (simulated)')})),
+     HTM({fontSize:'12px', color:C.mut}, 'An emergency on the restoration side is created in <b>Emergency dispatch</b>, goes to the top of the Hotlist and starts the Emergency Response sequence.')), {hard:true}) : null,
+   Card('3 · Where', Stack(Lbl('Job site address'), FldC(d.addr, up('addr')), Lbl('City / State / ZIP'),
+     h('div', {style:{display:'flex', gap:'8px'}}, FldC(d.city, up('city')), SelC(d.state, ['PA','OH','WV'], up('state'), {w:'90px'}), FldC(d.zip, up('zip'), {w:'120px'})),
+     Row(Stack(Lbl('Billing address same as job site'), SelC(d.billing, ['Yes','No'], up('billing'))), Stack(Lbl('Property type'), SelC(d.ptype || '— select —', ['— select —'].concat(B1.PTYPES), v => up('ptype')(v === '— select —' ? '' : v)))),
+     Lbl('Access notes'), TaC(d.access, up('access')))),
+   Card('4 · Qualify — scope, budget, timeline', Stack(Lbl('Scope — what are we doing?'), TaC(d.scope, up('scope')), Lbl('Budget — investment expectation'), TaC(d.budget, up('budget')),
+     Lbl('Timeline — must start / must finish by'), TaC(d.time, up('time')), Lbl('Outcome'), SelC(d.out, ['Qualified','Not qualified','Needs more info'], up('out')))),
+   Card('5 · Next', Stack(Lbl('Availability for a visit — always ask; the estimator reads this before calling'), TaC(d.avail, up('avail')),
+     Row(Stack(Lbl('Assign to'), SelC(d.assign, ['Auto-assign','Leave unassigned'].concat(EST), up('assign')),
+         HTM({fontSize:'11.5px', color:C.faint}, 'Auto-assign follows the assignment rules: a qualified lead goes to the estimator with the fewest open leads.')),
+       Stack(Lbl('Start follow-up'), SelC(d.emg === 'Yes' ? 'Emergency Response' : d.cad, ['None'].concat(CADENCES.map(c => c.n)), up('cad')))),
+     Lbl('Internal notes'), TaC(d.notes, up('notes')))),
+   Bar(HTM({fontSize:'12.5px', color:C.mut}, 'Creating the lead puts it on the Hotlist and the Dashboard straight away.'), Sp(), Btn('Create lead', {kind:'pri', onClick:() => APP.b1Create()}))]});
+};
+
+/* ================= CONTACTS & PROPERTIES — built from the leads ================= */
+SCREENS.contacts = (p, st) => {
+ const f = st.cf || {q:'', t:'All', s:'All', o:'All'}, set = k => v => APP.setState(s => ({cf:Object.assign({}, s.cf || {q:'', t:'All', s:'All', o:'All'}, {[k]:v})}));
+ const q = f.q.trim().toLowerCase();
+ const list = B1.contacts(st.leads.filter(l => !l.archived)).filter(c => (f.t === 'All' || c.t === f.t) && (f.s === 'All' || c.state === f.s)
+   && (f.o === 'All' || (f.o === 'Has open leads') === c.leads.some(B1.isOpen)) && (!q || (c.n + ' ' + c.ph + ' ' + c.e).toLowerCase().indexOf(q) >= 0));
+ return Page({key:'contacts', title:'Contacts', sub:'Individuals and organizations — a contact is created with its first lead, and every later lead lands on the same record',
+  children:[
+   Bar(FldC(f.q, set('q'), {ph:'Search name, phone, email…', w:'240px'}), SelC(f.t === 'All' ? 'Type: All' : f.t, ['Type: All','Individual','Organization'], v => set('t')(v === 'Type: All' ? 'All' : v), {w:'160px'}),
+     SelC(f.s === 'All' ? 'State: All' : f.s, ['State: All','PA','OH','WV'], v => set('s')(v === 'State: All' ? 'All' : v), {w:'130px'}),
+     SelC(f.o, ['All','Has open leads','No open leads'], set('o'), {w:'170px'}), Sp(), HTM({fontSize:'12.5px', color:C.mut}, '<b>' + list.length + '</b> contacts')),
+   Tbl(['Name','Type','Primary contact person','Phone','Email','City / State', {t:'Leads', n:true}, {t:'Open', n:true}, 'Last activity'],
+     list.map(c => ({c:['<b>' + c.n + '</b>', c.t === 'Organization' ? 'Company' : 'Person', c.p, c.ph, c.e, c.loc, {t:c.leads.length, n:true}, {t:c.leads.filter(B1.isOpen).length, n:true}, B1.fmtDay(c.last)],
+       onClick:() => go('contact', c.n), style:c.leads.length > 1 ? {background:'#FAFDFF'} : null})), {min:'1180px'})]});
+};
+SCREENS.contact = (key, st) => {
+ const all = B1.contacts(st.leads), c = all.find(x => x.n === key) || all[0], l0 = c.leads[0];
+ const T = ['Leads','Details','Properties','Jobs','Payments'];
+ const pr = B1.props(c.leads);
+ let pane = null;
+ if(st.tab === 0) pane = Tbl(['Lead','Job type','Arm','Stage','Assigned to', {t:'Value', n:true}, 'Created'],
+   c.leads.slice().sort((a, b) => b.createdAt - a.createdAt).map(l => ({c:[leadLink(l), l.job, armTag(l.arm), Tag(l.stage, l.stage === 'Won' ? 'ok' : l.stage === 'Lost' ? 'dg' : null), l.assigned || '—', {t:B1.money(l.value), n:true}, B1.fmt(l.createdAt)], onClick:() => go('lead', l.id)})));
+ if(st.tab === 1) pane = Row(
+   Card('Identity', Tbl(['',''], [['<b>Type</b>', c.t === 'Organization' ? 'Company' : 'Person'], ['<b>Name</b>', c.n], ['<b>Contact person</b>', c.p], ['<b>Phone</b>', c.ph], ['<b>Email</b>', c.e], ['<b>Preferred contact</b>', l0.pref]], {flush:true}), {flush:true}),
+   Card('Where these come from', HTM({fontSize:'12.5px', lineHeight:1.8}, 'The contact is built from its leads. Editing a lead’s contact details updates what is shown here. In the platform the contact is its own record, with several people and several properties.')));
+ if(st.tab === 2) pane = Tbl(['Address','City','State','ZIP','Property type', {t:'Leads', n:true}], pr.map(x => [x.addr, x.city, x.state, x.zip, x.ptype, {t:x.leads.length, n:true}]));
+ if(st.tab === 3) pane = Ph('Job records arrive in Phase 3. This tab shows every job for this contact with its status and value.');
+ if(st.tab === 4) pane = Ph('Payment history arrives in Phase 4 — invoices, amounts, methods, dates.');
+ return Page({key:'contact' + c.n, crumb:['Contacts', () => go('contacts'), c.n], title:c.n,
+   sub:c.loc + ' · ' + c.leads.length + ' lead' + (c.leads.length > 1 ? 's' : '') + ' · ' + c.leads.filter(B1.isOpen).length + ' open · last activity ' + B1.fmtDay(c.last),
+   actions:[Btn('+ New lead for this contact', {kind:'pri', onClick:() => { const nm = l0.client.split(' ');
+     APP.setState({draft:Object.assign(B1.draft0(), {ctype:c.t, company:l0.company, first:c.t === 'Individual' ? nm[0] : '', last:c.t === 'Individual' ? nm.slice(1).join(' ') : '', phone:l0.phone, email:l0.email, pref:l0.pref,
+       addr:l0.addr, city:l0.city, state:l0.state, zip:l0.zip, ptype:l0.ptype})}); go('newlead'); }})],
+   children:[h('div', {style:{display:'flex', gap:'8px'}}, Tag(c.t === 'Organization' ? 'Company' : 'Person'), c.leads.length > 1 ? Tag('Returning client · ' + c.leads.length + ' leads', 'ok') : null), Tabs(T, st.tab), pane]});
+};
+SCREENS.properties = (p, st) => {
+ const f = st.pf || {q:'', s:'All'}, set = k => v => APP.setState(s => ({pf:Object.assign({}, s.pf || {q:'', s:'All'}, {[k]:v})})), q = f.q.trim().toLowerCase();
+ const list = B1.props(st.leads.filter(l => !l.archived && l.addr)).filter(x => (f.s === 'All' || x.state === f.s) && (!q || (x.addr + ' ' + x.city + ' ' + x.owner).toLowerCase().indexOf(q) >= 0));
+ return Page({key:'props', title:'Properties', sub:'Every job site on file — kept apart from the contact, because one client can own several buildings',
+  children:[
+   Bar(FldC(f.q, set('q'), {ph:'Search address or owner…', w:'260px'}), SelC(f.s === 'All' ? 'State: All' : f.s, ['State: All','PA','OH','WV'], v => set('s')(v === 'State: All' ? 'All' : v), {w:'130px'}), Sp(),
+     HTM({fontSize:'12.5px', color:C.mut}, '<b>' + list.length + '</b> properties')),
+   Tbl(['Address','City','State','ZIP','Property type','Owner / contact', {t:'Leads', n:true}],
+     list.map(x => ({c:[x.addr, x.city, x.state, x.zip, x.ptype, '<b>' + x.owner + '</b>', {t:x.leads.length, n:true}], onClick:() => go('contact', x.owner)})))]});
+};
 
 /* ================= PHASE 2 — ESTIMATING & PROPOSALS ================= */
 const STEPS=[['estimate','Estimate intake','done'],['mapping','Line item mapping','done'],['scope','Scope structuring','done'],
