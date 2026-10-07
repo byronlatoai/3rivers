@@ -2028,10 +2028,10 @@ const B3 = (() => {
    if(lvl === 8) j = T.pay(T.sign(j, lead, t0), t0 + HOUR, hash(lead.id) % 3 ? 'Credit card' : 'ACH');
    if(lvl === 9) j = T.decline(j, t0, lead.lostReason || 'No response');
    return j; };
- const seed = leads => { const p2 = {};
+ const seed = leads => { const p2 = {}; let aged = 0;   /* one job left waiting eight days for its estimate, so the ageing flag can be seen */
    leads.forEach(l => { const s = l.stage, x = hash(l.id); let lvl = 0;
      if(l.id === 'L-2026-0415') lvl = 7; else if(s === 'Estimating') lvl = x % 6; else if(s === B1.SENT(l.arm)) lvl = 6 + x % 2; else if(s === 'Won') lvl = 8; else if(s === 'Lost' && l.assigned && x % 2) lvl = 9;
-     if(!lvl) return; const j = build(l, lvl);
+     if(!lvl){ if(s === 'Estimating' && !aged){ aged = 1; l.stageAt = Math.min(l.stageAt, Date.now() - 8 * DAY); l.createdAt = Math.min(l.createdAt, l.stageAt - 2 * DAY); } return; } const j = build(l, lvl);
      if(l.id === 'L-2026-0415'){ const now = Date.now(); j.hist = [{v:1, at:now - 5 * DAY, who:'Kyle Brennan', total:58120, n:39}]; j.est.v = 2; j.est.at = now - 3 * DAY; j.est.file = 'CHEN_R_FIRE_08-2026';
        j.bud.vers = [{v:3, at:now - 3 * DAY + 2 * HOUR, who:'Kyle Brennan', cost:budCost(j), why:'Baseline'}, {v:2, at:now - 4 * DAY, who:'Kyle Brennan', cost:30410, why:'Structural header added'}, {v:1, at:now - 5 * DAY, who:'Kyle Brennan', cost:29880, why:'Initial from estimate v1'}];
        j.reports = [{at:now - 3 * DAY + 3 * HOUR, who:'Kyle Brennan', n:63, pages:12, layout:'6 per page'}, {at:now - 5 * DAY, who:'Kyle Brennan', n:41, pages:8, layout:'6 per page'}];
@@ -2461,7 +2461,7 @@ SCREENS.schedule = (p, st) => b3Page(st, 'schedule', '9 · Payment schedule & mi
    modal('Add a milestone', Stack(Lbl('Name'), h('input', {autoFocus:true, defaultValue:'Draw ' + (rows.filter(m => m.type === '%').length + 1), onChange:e => v.n = e.target.value, style:inputStyle()}),
      Lbl('Trigger / milestone'), h('input', {onChange:e => v.tr = e.target.value, placeholder:'e.g. Completion of flooring', style:inputStyle()}), Lbl('Percentage'), h('input', {defaultValue:'10', onChange:e => v.p = e.target.value, style:inputStyle('90px')})),
      [Btn('Cancel', {onClick:() => closeM()}), Btn('Add', {kind:'pri', onClick:() => { closeM(); setS(r => { r.splice(r.length - 1, 0, {name:v.n || 'Draw ' + (r.filter(m => m.type === '%').length + 1), trig:v.tr || 'Milestone to be named', type:'%', pct:v.p, inv:'On milestone marked complete', cov:'—'}); return r; }); }})]); };
- const errs = []; if(sc.neg) errs.push('The payments add up to more than the contract value'); if(sc.count > 5) errs.push('More than 5 payments — the default cap without change orders');
+ const errs = []; if(sc.neg) errs.push('The payments add up to more than the contract value');
  if(sc.needWhy && !job.schedWhy.trim()) errs.push('The final payment is above policy — a reason is required');
  return {sub:'Contract value <b>' + B3.M(sc.total) + '</b> · ' + sc.count + ' payments · from the contract template for jobs ' + (small ? 'under' : 'over') + ' $30,000 · defines every invoice Phase 4 will create', children:[
   small ? Card('', HTM({fontSize:'12.5px', color:C.wn}, '<b>The under-$30,000 template has not been received from the client yet.</b> This schedule starts from the over-$30,000 structure until it is.')) : null,
@@ -2477,7 +2477,7 @@ SCREENS.schedule = (p, st) => b3Page(st, 'schedule', '9 · Payment schedule & mi
     h('div', {style:sc.neg ? {color:C.dg} : null}, sc.neg ? '⚠ The payments add up to more than the contract value — lower a percentage' : '✓ The payments total 100% of the contract value'),
     h('div', {style:sc.needWhy ? {color:C.dg} : null}, sc.needWhy ? '⚠ Final payment ' : '✓ Final payment ', h('b', null, sc.finPct + '%'), sc.needWhy ? ' is above the 7% set in Markup defaults. The template leaves the remainder for the end, so confirming asks for a reason until the policy is settled' : ' is within the 7% set in Markup defaults'),
     sc.needWhy ? h('div', {style:{margin:'4px 0 8px', maxWidth:'560px'}}, FldC(job.schedWhy, v => APP.b3Set(id, j => Object.assign({}, j, {schedWhy:v, schedOk:false})), {ph:'Reason for a final payment above policy', bad:!job.schedWhy.trim()})) : null,
-    h('div', {style:sc.count > 5 ? {color:C.dg} : null}, (sc.count > 5 ? '⚠' : '✓') + ' Payment count ', h('b', null, sc.count), sc.count > 5 ? ' is above the default cap of 5 without change orders' : ' ≤ default cap without change orders'),
+    h('div', {style:sc.count > 6 ? {color:C.dg} : null}, (sc.count > 6 ? '⚠' : '✓') + ' Payment count ', h('b', null, sc.count), sc.count > 6 ? ' is above six, the maximum without change orders — a warning, it does not block' : ' — six is the maximum without change orders'),
     h('div', null, '✓ Draw 1 clock ', h('b', null, '5 calendar days'), ' from signing')), {hard:true}),
   Bar(errs.length ? h('span', {style:{fontSize:'12px', color:C.dg, fontWeight:600}}, errs[0]) : null, Sp(),
     job.schedOk ? Btn('Continue to send →', {kind:'pri', onClick:() => go('versions')})
