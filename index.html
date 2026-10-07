@@ -207,7 +207,7 @@ const ONCALL=[
  ['BACKUP','Joshua Tohey','Joshua Tohey','Nora Cruz','Brian McClelland','Nora Cruz','Brian McClelland','Brian McClelland']];
 const STAGES_R=[['1','New','Lead created','15 min','—'],['2','Emergency dispatch','Emergency = Yes','immediate','Emergency Response'],['3','Qualified','Qualification outcome = Qualified','—','Default Lead Cadence'],['4','Assigned','Estimator assigned','4 h to first contact','—'],['5','Visit scheduled','Appointment booked','—','Appointment reminders'],['6','Estimating','Visit completed','3 days','—'],['7','Proposal sent','→ Phase 2','—','Proposal Follow-Up — friendly'],['8','Won','Proposal signed + binder paid','—','—'],['9','Lost','Terminal — reason required','—','—']];
 const STAGES_C=[['1','New','Lead created','1 business day','—'],['2','Bid invitation received','Bid reference present','—','—'],['3','Qualified','Qualification outcome = Qualified','—','Default Lead Cadence'],['4','Assigned','Estimator assigned','1 business day','—'],['5','Visit scheduled','Appointment booked','—','Appointment reminders'],['6','Estimating','Visit completed','5 days','—'],['7','Proposal / bid submitted','→ Phase 2','—','Proposal Follow-Up — friendly'],['8','Won','Proposal signed + binder paid','—','—'],['9','Lost','Terminal — reason required','—','—']];
-const JOB={id:'L-2026-0415',client:'Robert Chen',arm:'Restoration',div:'Reconstruction',job:'Fire damage',addr:'88 Hillcrest Dr, Mt Lebanon, PA 15228',carrier:'Allstate',claim:'AL-772104',adjuster:'M. Reyes · (412) 555-0188',pm:'Marcus Hale',sup:'Danny Kovach',est:'Kyle Brennan',visit:'Aug 7, 08:00',total:'62,300.00',tgm:'45%'};
+const JOB={id:'L-2026-0415',client:'Robert Chen',arm:'Restoration',div:'Insurance rebuild',job:'Fire damage',addr:'88 Hillcrest Dr, Mt Lebanon, PA 15228',carrier:'Allstate',claim:'AL-772104',adjuster:'M. Reyes · (412) 555-0188',pm:'Marcus Hale',sup:'Danny Kovach',est:'Kyle Brennan',visit:'Aug 7, 08:00',total:'62,300.00',tgm:'45%'};
 const QUEUE=[
  {id:'L-2026-0415',client:'Robert Chen',arm:'Restoration',job:'Fire damage',est:'Kyle Brennan',visit:'Aug 7',days:0,e:'Reviewed',s:'Structured',b:'Baseline locked',p:'63',pr:'Sent · v2',v:'62,300'},
  {id:'L-2026-0416',client:'Allegheny Property Group',arm:'Commercial GC',job:'Tenant buildout',est:"Jathan D'Antonio",visit:'Aug 8',days:0,e:'—',s:'—',b:'—',p:'0',pr:'—',v:'184,500'},
@@ -254,17 +254,17 @@ const SCOPEPKGS=[
 /* ---- Phase 3 · jobs, as Josh defined them on 18 Sep ---- */
 const STAGES=['Pre-construction','Production','Punch list','Closeout','Closed'];
 const JOBS=[
- {id:'088',n:'REB - Robert Chen - Fire damage',claim:'AL-772104',div:'Reconstruction',pm:'Marcus Hale',st:'Production',v:62300,ps:'Aug 17',as:'Aug 18',pf:'Sep 30',af:'—',now:'Structural repair · Baldwin Carpentry',flag:''},
+ {id:'088',n:'REB - Robert Chen - Fire damage',claim:'AL-772104',div:'Insurance rebuild',pm:'Marcus Hale',st:'Production',v:62300,ps:'Aug 17',as:'Aug 18',pf:'Sep 30',af:'—',now:'Structural repair · Baldwin Carpentry',flag:''},
  {id:'089',n:'COM - Allegheny Property Group - Tenant buildout',claim:'',div:'Commercial',pm:'Marcus Hale',st:'Production',v:196900,ps:'Jul 20',as:'Jul 22',pf:'Nov 14',af:'—',now:'Framing · Baldwin Carpentry',flag:''},
  {id:'082',n:'COM - Westmoreland Retail - Roof replacement',claim:'',div:'Commercial',pm:'Danny Kovach',st:'Production',v:240000,ps:'Jun 1',as:'Jun 3',pf:'Sep 12',af:'—',now:'Roofing · Ohio Valley Roofing',flag:'Behind schedule'},
  {id:'080',n:'COM - Massage Envy - Lobby remodel',claim:'',div:'Commercial',pm:'Danny Kovach',st:'Punch list',v:56052,ps:'May 18',as:'May 18',pf:'Aug 22',af:'—',now:'Punch walk · 7 items open',flag:'Past projected finish'},
  {id:'085',n:'MIT - Bergman - Water - CC',claim:'AL-770044',div:'Mitigation',pm:'Kyle Brennan',st:'Production',v:18900,ps:'Aug 17',as:'Aug 17',pf:'Sep 5',af:'—',now:'Drying · internal crew',flag:''},
  {id:'086',n:'MIT - Cardello Bldg - Water - SED',claim:'ER-118902',div:'Mitigation',pm:'Kyle Brennan',st:'Pre-construction',v:34200,ps:'Sep 1',as:'—',pf:'Sep 26',af:'—',now:'Crew booked for Sep 1',flag:''},
- {id:'077',n:'REB - Bella Gerlich - Whole home renovation',claim:'',div:'Reconstruction',pm:'Marcus Hale',st:'Production',v:440900,ps:'Apr 6',as:'Apr 13',pf:'Dec 19',af:'—',now:'Change order waiting 19 days',flag:'Change order pending'},
- {id:'083',n:'REB - Greensburg - Water damage - CC',claim:'SF-310455',div:'Reconstruction',pm:'Danny Kovach',st:'Production',v:76400,ps:'Jul 6',as:'Jul 8',pf:'Oct 3',af:'—',now:'Drywall · Allegheny Drywall & Finish',flag:''},
+ {id:'077',n:'REB - Bella Gerlich - Whole home renovation',claim:'',div:'Insurance rebuild',pm:'Marcus Hale',st:'Production',v:440900,ps:'Apr 6',as:'Apr 13',pf:'Dec 19',af:'—',now:'Change order waiting 19 days',flag:'Change order pending'},
+ {id:'083',n:'REB - Greensburg - Water damage - CC',claim:'SF-310455',div:'Insurance rebuild',pm:'Danny Kovach',st:'Production',v:76400,ps:'Jul 6',as:'Jul 8',pf:'Oct 3',af:'—',now:'Drywall · Allegheny Drywall & Finish',flag:''},
  {id:'090',n:'MIT - Maple Ridge Village Unit 14 - Water - SED',claim:'SE-551207',div:'Mitigation',pm:'Kyle Brennan',st:'Pre-construction',v:12800,ps:'Sep 8',as:'—',pf:'Sep 24',af:'—',now:'Waiting on the building manager',flag:''},
  {id:'091',n:'COM - Carnegie Office Park - Suite 200',claim:'',div:'Commercial',pm:'Danny Kovach',st:'Pre-construction',v:96400,ps:'Sep 14',as:'—',pf:'Jan 22',af:'—',now:'Bid package out · 3 of 4 trades awarded',flag:''},
- {id:'079',n:'REB - Linda Vasquez - Water damage',claim:'NW-208841',div:'Reconstruction',pm:'Marcus Hale',st:'Closeout',v:18940,ps:'Jun 22',as:'Jun 24',pf:'Aug 20',af:'Aug 19',now:'2 purchase orders to reconcile',flag:''},
+ {id:'079',n:'REB - Linda Vasquez - Water damage',claim:'NW-208841',div:'Insurance rebuild',pm:'Marcus Hale',st:'Closeout',v:18940,ps:'Jun 22',as:'Jun 24',pf:'Aug 20',af:'Aug 19',now:'2 purchase orders to reconcile',flag:''},
  {id:'076',n:'MIT - Okafor - Water - CC',claim:'AL-765002',div:'Mitigation',pm:'Kyle Brennan',st:'Closed',v:9420,ps:'Jul 13',as:'Jul 13',pf:'Jul 24',af:'Jul 23',now:'Reconciled Aug 3',flag:''}];
 const TOCONVERT=[
  {lead:'L-2026-0403',client:'Paul Dimarco',job:'Fire damage',div:'Mitigation',v:'41,800.00',paid:'Binder paid Aug 26',est:"Jathan D'Antonio",tpa:'SED',claim:'SE-553018'},
@@ -622,7 +622,7 @@ class Component extends DCLogic {
   state = {
     open:{g_intake:1,g_est:1,g_prop:1,g_rec:0,g_sub:0,g_bill:0,g_field:0,g_set:1,x1:0,x2:0,x3:0,x4:0,x5:0,x6:0,x7:0,x8:0},
     cur:'dashboard', param:null, tab:0, arm:'All', hotView:'table', eqView:'table',
-    leads:B1.seed(), hot:B1.hot0(), views:B1.VIEWS0.slice(), draft:null, led:{}, modal:null, toasts:[], palette:false, rail:false, flow:null
+    leads:B2S.leads, calls:B2S.calls, inbox:B2S.inbox, p2:B2S.p2, jid:'L-2026-0415', p2ui:{}, mrev:null, mex:{}, hot:B1.hot0(), views:B1.VIEWS0.slice(), draft:null, led:{}, modal:null, toasts:[], palette:false, rail:false, flow:null
   };
   componentDidMount(){
     APP = this;
@@ -1032,6 +1032,8 @@ const B1 = (() => {
    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
  const act = (at, actor, type, action, detail) => ({at, actor, type, action, detail:detail || ''});
  const mkCad = (name, step, state, nextAt, why) => { const d = cadDef(name); return {name, step, total:d ? d.steps.length : 4, state, nextAt, why:why || ''}; };
+ /* a visit falls in working hours, on the hour or the half hour, Monday to Friday */
+ const snap = ms => { const d = new Date(ms); d.setHours(8 + d.getHours() % 9, d.getMinutes() < 30 ? 0 : 30, 0, 0); while(d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1); return d.getTime(); };
  const seed = () => {
    const now = Date.now(), R = rng(20260926), pick = a => a[Math.floor(R() * a.length)];
    const base = [['L-2026-0417', 5, null, 5], ['L-2026-0416', 50, 22, 20], ['L-2026-0415', 150, 70, 60], ['L-2026-0414', 190, 44, 40],
@@ -1045,9 +1047,11 @@ const B1 = (() => {
        : l.id === 'L-2026-0413' ? mkCad('Emergency Response', 1, 'Running', now + 1 * HOUR)
        : l.id === 'L-2026-0414' ? mkCad('Default Lead Cadence', 2, 'Paused', null, 'Waiting on the client')
        : l.id === 'L-2026-0411' ? mkCad('Default Lead Cadence', 3, 'Stopped', null, 'declined') : null;
-     if(l.id === 'L-2026-0416') o.visit = {at:now + 26 * HOUR, est:l.assigned};
+     if(l.id === 'L-2026-0416') o.visit = {at:snap(now + 26 * HOUR), est:l.assigned};
      if(l.id === 'L-2026-0411') o.lostReason = 'Went with a competitor';
-     if(l.id === 'L-2026-0417') o.stage = 'Emergency dispatch';
+     if(l.id === 'L-2026-0417'){ o.stage = 'Emergency dispatch'; o.cad = mkCad('Emergency Response', 2, 'Running', now + HOUR / 2);
+       o.comms = [{at:o.createdAt, ch:'Call', who:'SYSTEM', head:'Inbound call · AI Receptionist · 3:12', body:'Classified EMERGENCY. Transfer to the on-call primary: not answered. Backup and Operations Manager notified.'},
+         {at:o.createdAt + 4 * 60000, ch:'SMS', who:'SYSTEM', head:'SMS sent · Emergency Response · step 1', body:'“We received your emergency call. A 3Rivers technician has been alerted and will contact you shortly. Ref L-2026-0417.”'}]; }
      o.activity = [act(o.createdAt, o.src === 'AI call' ? 'AI Receptionist' : 'System', o.src === 'AI call' ? 'AI' : 'System', 'Lead created', 'Source: ' + o.src + (o.emg ? ' · classified EMERGENCY' : ''))];
      if(o.assigned) o.activity.push(act(o.createdAt + HOUR, 'Brian McClelland', 'Human', 'Assigned', '→ ' + o.assigned));
      return o; });
@@ -1088,7 +1092,7 @@ const B1 = (() => {
           out:stage === 'New' || stage === 'Bid invitation received' ? 'Needs more info' : stage === 'Lost' && R() < 0.4 ? 'Not qualified' : 'Qualified'},
        archived:false, comms:[], activity:[]};
      if(stage === 'Lost') l.lostReason = pick(['Went with a competitor','Budget too low','No response','Timeline not workable']);
-     if(stage === 'Visit scheduled') l.visit = {at:now + (R() * 6 - 0.4) * DAY, est:assigned};
+     if(stage === 'Visit scheduled') l.visit = {at:snap(now + (R() * 6 + 0.2) * DAY), est:assigned};
      const open = stage !== 'Won' && stage !== 'Lost';
      l.cad = !open ? (R() < 0.5 ? mkCad('Default Lead Cadence', 4, 'Stopped', null, stage === 'Won' ? 'signed' : 'declined') : null)
        : stage === SENT(arm) ? (R() < 0.25 ? mkCad('Proposal Follow-Up — friendly', 3, 'Finished', now - R() * 90 * HOUR) : mkCad('Proposal Follow-Up — friendly', 1 + Math.floor(R() * 3), 'Running', now + R() * 60 * HOUR))
@@ -1106,7 +1110,7 @@ const B1 = (() => {
  const COLS = [['prio','!'],['id','Lead reference'],['client','Client'],['ctype','Client type'],['arm','Business arm'],['emg','Emergency'],['job','Job type'],
    ['src','Source'],['stage','Stage'],['assigned','Assigned to'],['created','Created / Last contact'],['next','Next action'],['cad','Follow-up'],['value','Value']];
  const hot0 = () => ({q:'', arm:'All', emg:'All', stage:'All', assigned:'All', src:'All', flag:'All', sort:{k:null, dir:1}, page:0, sel:{},
-   hide:{}, barm:'Restoration', viewName:''});
+   hide:{ctype:true, emg:true}, barm:'Restoration', viewName:''});
  const draft0 = () => ({ctype:'Individual', company:'', person:'', first:'', last:'', pref:'Phone', phone:'', phone2:'', email:'', arm:'', emg:'No', job:'', desc:'',
    carrier:'', claim:'', bidref:'', biddue:'', addr:'', city:'', state:'PA', zip:'', billing:'Yes', ptype:'', access:'', scope:'', budget:'', time:'', out:'Needs more info',
    avail:'', assign:'Auto-assign', cad:'Default Lead Cadence', notes:'', src:'Call taken by a person', find:'', err:null});
@@ -1268,6 +1272,8 @@ SCREENS.dashboard = (p, st) => {
    h('div', {style:{fontFamily:BAR, fontSize:'30px', fontWeight:600, lineHeight:1, color:col === C.dg && n ? C.dg : C.ink}}, String(n)), h('div', {style:{fontSize:'12px', color:C.mut, marginTop:'6px'}}, label));
  const visits = all.filter(l => l.visit && l.stage === 'Visit scheduled' && l.visit.at > Date.now() - 3 * B1.HOUR).sort((a, b) => a.visit.at - b.visit.at);
  const need = open.map(l => ({l, n:B1.needs(l)})).filter(x => x.n).sort((a, b) => (b.n.dg ? 1 : 0) - (a.n.dg ? 1 : 0) || a.n.since - b.n.since);
+ const extra = (st.inbox || []).filter(m => m.status === 'Needs a person').map(m => ['—', '<b>' + m.from + '</b><div style="color:#5B7387;font-size:12px">Inbound email could not be read into a lead</div>', B1.ago(m.at), Btn('Review', {sm:true, onClick:() => { APP.setState({mrev:m.id}); go('inbox'); }})])
+   .concat((st.calls || []).filter(c => !c.handled && !c.leadId).map(c => ['—', '<b>' + c.from + '</b><div style="color:#5B7387;font-size:12px">Abandoned call — call back</div>', B1.ago(c.at), Btn('Open', {sm:true, onClick:() => go('call', c.id)})]));
  const est = open.filter(l => l.stage === 'Estimating').sort((a, b) => a.stageAt - b.stageAt);
  const newToday = st.leads.filter(l => B1.dayKey(l.createdAt) === today);
  return Page({key:'dash', title:'Good morning, Joshua', sub:'Owner / Admin · every figure on this screen is counted from the leads, so it moves as they move',
@@ -1284,9 +1290,9 @@ SCREENS.dashboard = (p, st) => {
     tile(cnt(l => l.cad && l.cad.state === 'Finished'), 'Stalled / no reply', jump({flag:'Stalled'}), '#E0A63C')),
    h('div', {style:{display:'grid', gridTemplateColumns:'minmax(560px,1fr) minmax(280px,330px)', gap:'16px', alignItems:'start'}},
     Stack(
-     Card('Needs a human' + (need.length ? ' · ' + need.length : ''), need.length ? Tbl(['Lead','Client · why it stopped','Since',''],
+     Card('Needs a human' + (need.length + extra.length ? ' · ' + (need.length + extra.length) : ''), need.length + extra.length ? Tbl(['Lead','Client · why it stopped','Since',''],
        need.slice(0, 8).map(x => ({c:[leadLink(x.l), '<b>' + x.l.client + '</b><div style="color:' + (x.n.dg ? '#A5503F' : '#5B7387') + ';font-size:12px">' + x.n.why + '</div>', B1.ago(x.n.since),
-         Btn('Open', {kind:x.n.dg ? 'danger' : 'ghost', sm:true, onClick:() => go('lead', x.l.id)})], style:x.n.dg ? {background:'#FDF6F4'} : null, hover:x.n.dg ? '#FBEDE9' : null})), {flush:true})
+         Btn('Open', {kind:x.n.dg ? 'danger' : 'ghost', sm:true, onClick:() => go('lead', x.l.id)})], style:x.n.dg ? {background:'#FDF6F4'} : null, hover:x.n.dg ? '#FBEDE9' : null})).concat(extra), {flush:true})
        : HTM({padding:'18px', fontSize:'12.5px', color:C.mut}, 'Nothing needs a person right now.'),
        {flush:true, hard:true, actions:need.length > 8 ? [Btn('All ' + need.length + ' →', {sm:true, onClick:jump({flag:'Needs a person'})})] : []}),
      Card('Upcoming visits', visits.length ? Tbl(['When','Estimator','Client','Address','Arm'], visits.slice(0, 6).map(l => ({
@@ -1348,7 +1354,7 @@ SCREENS.hotlist = (p, st) => {
  const th = {position:'sticky', top:0, zIndex:2, background:'#F8FBFD', borderBottom:'1px solid ' + C.bd, textAlign:'left', padding:'10px 12px', fontFamily:BAR, fontSize:'10.5px', fontWeight:600, letterSpacing:'.09em', textTransform:'uppercase', whiteSpace:'nowrap', cursor:'pointer', userSelect:'none'};
  const allOn = shown.length && shown.every(l => f.sel[l.id]);
  const table = h('div', {style:{overflowX:'auto', borderRadius:'12px', border:'1px solid ' + C.bd, background:'#fff'}},
-  h('table', {style:{width:'100%', borderCollapse:'collapse', fontSize:'12.5px', minWidth:(520 + cols.length * 95) + 'px'}},
+  h('table', {style:{width:'100%', borderCollapse:'collapse', fontSize:'12.5px', minWidth:(360 + cols.length * 80) + 'px'}},
    h('thead', null, h('tr', null,
      h('th', {style:Object.assign({}, th, {width:'30px', cursor:'default'})}, h('input', {type:'checkbox', title:'Select the leads on this page', checked:!!allOn,
        onChange:() => { const sel = Object.assign({}, f.sel); shown.forEach(l => sel[l.id] = !allOn); APP.setState(s => ({hot:Object.assign({}, s.hot, {sel})})); }, style:{accentColor:C.pri}})),
@@ -1396,7 +1402,7 @@ SCREENS.hotlist = (p, st) => {
      Grp(Btn('Table', {kind:st.hotView === 'table' ? 'pri' : 'ghost', onClick:() => APP.setState({hotView:'table'})}), Btn('Kanban', {kind:st.hotView === 'kanban' ? 'pri' : 'ghost', onClick:() => APP.setState({hotView:'kanban'})}))),
    st.hotView === 'table' ? table : board,
    st.hotView === 'table' ? pager : null,
-   st.hotView === 'table' ? h('div', {style:{display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center', background:selIds.length ? '#0E2A3B' : '#fff', color:selIds.length ? '#fff' : C.mut, border:'1px solid ' + (selIds.length ? '#0E2A3B' : C.bd), borderRadius:'10px', padding:'9px 11px', position:'sticky', bottom:'10px'}},
+   st.hotView === 'table' ? h('div', {style:{display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center', background:selIds.length ? '#0E2A3B' : '#fff', color:selIds.length ? '#fff' : C.mut, border:'1px solid ' + (selIds.length ? '#0E2A3B' : C.bd), borderRadius:'10px', padding:'9px 11px'}},
      h('b', {style:{fontSize:'12.5px'}}, 'Selected: ' + selIds.length),
      Btn('Assign', {sm:true, disabled:!selIds.length, onClick:() => APP.b1Assign(selIds)}),
      Btn('Change stage', {sm:true, disabled:!selIds.length || !oneArm, title:oneArm ? '' : 'Select leads from one business arm — each arm has its own stages', onClick:() => { const v = {s:B1.stagesFor(selLeads[0].arm)[0]};
@@ -1482,7 +1488,7 @@ SCREENS.lead = (id, st) => {
  return Page({key:'lead' + l.id, crumb:['Hotlist', () => go('hotlist'), l.id], title:l.client, sub:l.id + ' · ' + [l.addr, l.city, l.state + ' ' + l.zip].filter(x => x && x.trim()).join(', '),
    actions:[Btn('Reassign', {onClick:() => APP.b1Assign([l.id])}), Btn('Start follow-up', {onClick:() => APP.b1Cadence([l.id])}),
      l.archived ? Btn('Restore', {onClick:() => APP.b1Restore(l.id)}) : Btn('Archive', {onClick:() => APP.b1Archive([l.id])}),
-     Btn('Open estimating workflow →', {onClick:() => go('estimate'), disabled:['Estimating', B1.SENT(l.arm), 'Won'].indexOf(l.stage) < 0, title:'Available once the visit is done and the lead is in Estimating'}),
+     Btn('Open estimating workflow →', {onClick:() => APP.b3Open(l.id), disabled:['Estimating', B1.SENT(l.arm), 'Won'].indexOf(l.stage) < 0, title:'Available once the visit is done and the lead is in Estimating'}),
      Btn('Convert to job', {kind:'pri', disabled:true, title:'Enabled once the proposal is signed and the client has paid — converted by the Operations Manager'})],
    children:[
     h('div', {style:{display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center'}},
@@ -1593,341 +1599,1002 @@ SCREENS.properties = (p, st) => {
      list.map(x => ({c:[x.addr, x.city, x.state, x.zip, x.ptype, '<b>' + x.owner + '</b>', {t:x.leads.length, n:true}], onClick:() => go('contact', x.owner)})))]});
 };
 
-/* ================= PHASE 2 — ESTIMATING & PROPOSALS ================= */
-const STEPS=[['estimate','Estimate intake','done'],['mapping','Line item mapping','done'],['scope','Scope structuring','done'],
- ['budget','Budget & cost','locked'],['narrative','Scope narrative','done'],['photos','Photos','63'],
- ['photoreport','Photo report','done'],['proposal','Proposal builder','v2'],['schedule','Payment schedule','done'],
- ['versions','Send & versions','Sent'],['acceptance','Acceptance','—']];
+/* ================= BLOCK 2 — the channels of Phase 1 =================
+   Calls, Inbox Capture and Appointments run on the same leads as the Hotlist.
+   Nothing is really dialled, received or sent: the "Simulate" buttons stand in for the phone line, the mailbox and the website. */
+const B2 = (() => {
+ const H = B1.HOUR, POOL = [
+  {first:'Helen', last:'Kaczmarek', phone:'(412) 555-0611', email:'helen.k@example.com', addr:'217 Maple Ridge Rd', city:'Pittsburgh', state:'PA', zip:'15221', carrier:'State Farm'},
+  {first:'Omar', last:'Haddad', phone:'(724) 555-0288', email:'omar.haddad@example.com', addr:'54 Quarry Ln', city:'Greensburg', state:'PA', zip:'15601', carrier:'Erie Insurance'},
+  {first:'Grace', last:'Whitfield', phone:'(412) 555-0934', email:'g.whitfield@example.com', addr:'1180 Negley Ave', city:'Pittsburgh', state:'PA', zip:'15206', carrier:'Allstate'},
+  {first:'Victor', last:'Stanek', phone:'(304) 555-0452', email:'vstanek@example.com', addr:'9 Harbor View Dr', city:'Wheeling', state:'WV', zip:'26003', carrier:'Nationwide'},
+  {first:'Priya', last:'Deshmukh', phone:'(412) 555-0177', email:'priya.d@example.com', addr:'660 Beechview Ave', city:'Pittsburgh', state:'PA', zip:'15216', carrier:'Travelers'}];
+ const CO = [{company:'Ridgeline Property Management', person:'Carla Mendez', phone:'(412) 555-0820', email:'carla@ridgelinepm.com', addr:'3400 Smallman St', city:'Pittsburgh', state:'PA', zip:'15201'},
+  {company:'Ironworks Lofts HOA', person:'Dennis Park', phone:'(412) 555-0366', email:'board@ironworkslofts.org', addr:'88 Foundry Way', city:'Pittsburgh', state:'PA', zip:'15222'},
+  {company:'Tri-County Pediatrics', person:'Dr. Lena Ortiz', phone:'(724) 555-0719', email:'office@tricountypeds.com', addr:'1502 Route 19', city:'Cranberry Twp', state:'PA', zip:'16066'}];
+ let n = 0; const person = () => POOL[n++ % POOL.length], company = () => CO[n++ % CO.length];
+ const tr = (name, addr, carrier, emg, booked) => emg ? [
+   ['AI','00:00','Thank you for calling 3Rivers General Contracting. This line is answered twenty-four hours. Can you tell me what is happening?'],
+   ['Caller','00:06','There is water coming through my ceiling, it is pouring, I do not know what to do.'],
+   ['AI','00:12','I understand, that sounds urgent. I am flagging this as an emergency. First, can I confirm the address?'],
+   ['Caller','00:19', addr + '.'], ['AI','00:27','And your name and a number to call you back on?'], ['Caller','00:31', name + '.'],
+   ['AI','00:40','Do you have homeowner’s insurance, and do you know the carrier?'], ['Caller','00:45', carrier + '.'],
+   ['AI','00:52','Thank you. I am connecting you to our on-call technician now. Please stay on the line.']]
+  : [['AI','00:00','Thank you for calling 3Rivers General Contracting. How can we help?'],
+   ['Caller','00:05','We had a leak a few days ago and there is damage to the ceiling and one wall. I would like someone to look at it.'],
+   ['AI','00:14','Of course. Is anything still leaking, or is anyone at risk right now?'], ['Caller','00:19','No, it is dry now.'],
+   ['AI','00:24','Good. Can I take your name, a phone number and the address of the property?'], ['Caller','00:30', name + ', ' + addr + '.'],
+   ['AI','00:44','Is this going through insurance, and do you have a budget or a date in mind?'], ['Caller','00:51', carrier + ', claim is open. I would like it fixed this month.'],
+   ['AI','01:02', booked ? 'We can send an estimator. I have tomorrow at 10 or Friday at 2 — which works?' : 'Thank you. An estimator will call you today to arrange a visit.'],
+   booked ? ['Caller','01:10','Tomorrow at 10 is fine.'] : ['Caller','01:08','Thanks.']];
+ const seed = leads => {
+   const now = Date.now(), calls = [], inbox = [];
+   leads.filter(l => l.src === 'AI call').sort((a, b) => b.createdAt - a.createdAt).slice(0, 12).forEach((l, i) => {
+     const noAns = l.emg && !l.lastAt;
+     calls.push({id:'C-' + (500 - i), at:l.createdAt, from:l.phone, name:l.client, dur:l.emg ? '3:12' : '4:0' + (i % 9), cls:l.emg ? 'EMERGENCY' : 'Non-emergency',
+       out:l.emg ? 'Lead created · transfer ' + (noAns ? 'not answered' : 'answered') : l.visit ? 'Lead created · visit booked' : 'Lead created', to:l.emg ? 'Brian McClelland' : '—', res:l.emg ? (noAns ? 'Not answered' : 'Answered') : '—',
+       leadId:l.id, handled:!noAns, transcript:tr(l.client + ', ' + l.phone, l.addr + ', ' + l.city, l.carrier || 'No insurance', l.emg, !!l.visit)}); });
+   calls.push({id:'C-480', at:now - 9 * H, from:'(724) 555-0812', name:'', dur:'0:48', cls:'Non-emergency', out:'Not qualified — outside the service area', to:'—', res:'—', leadId:'', handled:true,
+     transcript:[['AI','00:00','Thank you for calling 3Rivers General Contracting. How can we help?'], ['Caller','00:05','I need a roof repaired in Erie.'], ['AI','00:12','I am sorry, Erie is outside the area we cover. I can give you our website in case that changes.']]});
+   calls.push({id:'C-479', at:now - 26 * H, from:'(412) 555-0990', name:'', dur:'0:12', cls:'—', out:'ABANDONED — call-back task created', to:'—', res:'—', leadId:'', handled:false, transcript:[['AI','00:00','Thank you for calling 3Rivers General Contracting. How can we help?'], ['Caller','00:04','(caller hung up)']]});
+   leads.filter(l => l.src === 'Email' || l.src === 'Web form').sort((a, b) => b.createdAt - a.createdAt).slice(0, 8).forEach((l, i) => {
+     inbox.push({id:'M-' + (300 - i), at:l.createdAt, from:l.src === 'Web form' ? 'noreply@3riverscm.com' : l.email, subj:l.src === 'Web form' ? 'Website enquiry — ' + l.job : 'Request for an estimate — ' + l.addr, src:l.src,
+       status:'Parsed', leadId:l.id, missing:i % 3 === 1 ? ['budget', 'timeline'] : [], body:'Hello, I am writing about work needed at ' + l.addr + ', ' + l.city + '. ' + (l.desc || 'Please call me to arrange a visit.') + '\n\n' + l.client + ' · ' + l.phone,
+       ex:{name:l.client, email:l.email, phone:l.phone, addr:l.addr, city:l.city, state:l.state, arm:l.arm, job:l.job}}); });
+   inbox.push({id:'M-280', at:now - 2 * H, from:'jhoward@example.com', subj:'(no subject)', src:'Email', status:'Needs a person', leadId:'', missing:['phone', 'full address', 'budget', 'timeline'],
+     body:'hey — got your number from a friend. we had some kind of leak upstairs and there is a stain spreading on the ceiling downstairs. can someone come look? im in bethel park. thanks — J',
+     ex:{name:'J. Howard', email:'jhoward@example.com', phone:'', addr:'', city:'Bethel Park', state:'PA', arm:'Restoration', job:'Water Damage Restoration'}});
+   inbox.sort((a, b) => b.at - a.at); calls.sort((a, b) => (a.handled ? 1 : 0) - (b.handled ? 1 : 0) || b.at - a.at);   /* calls waiting for a call back come first */
+   return {calls, inbox};
+ };
+ return {person, company, tr, seed};
+})();
 
-const jobHeader = (cur) => {
- const done = STEPS.filter(s=>s[2]!=='—').length, total = STEPS.length, pct = Math.round(done/total*100);
- const next = STEPS.findIndex(s=>s[2]==='—');
- return h('div',{style:{background:'#fff', border:'1px solid '+C.bd, borderRadius:'12px', overflow:'hidden'}},
-  h('div',{style:{display:'flex', gap:'12px', alignItems:'center', flexWrap:'wrap', padding:'13px 16px', borderBottom:'1px solid '+C.line}},
-   h('b',{style:{fontFamily:BAR, fontSize:'16px'}}, JOB.client), armTag(JOB.arm), Tag(JOB.job),
-   h('span',{style:{fontSize:'12px', color:C.mut}}, JOB.id+' · '+JOB.addr+' · claim '+JOB.claim),
-   h('span',{style:{flex:1}}), h('b',{style:{fontFamily:BAR, fontSize:'17px'}}, '$'+JOB.total),
-   Btn('Open lead record',{sm:true, onClick:()=>go('lead','L-2026-0415')})),
-  h('div',{style:{display:'flex', gap:'18px', alignItems:'center', flexWrap:'wrap', padding:'9px 16px', borderBottom:'1px solid '+C.line, fontSize:'11.5px'}},
-   ...[['Division',JOB.div],['Carrier',JOB.carrier],['Claim',JOB.claim],['Adjuster',JOB.adjuster],
-       ['Project manager',JOB.pm],['Superintendent',JOB.sup],['Target gross margin',JOB.tgm]]
-     .map(f=>h('span',{key:f[0]}, h('span',{style:{color:C.faint}}, f[0]+' '), h('b',null, f[1])))),
-  h('div',{style:{display:'flex', gap:'14px', alignItems:'center', flexWrap:'wrap', padding:'10px 16px', background:'#F8FBFD', borderBottom:'1px solid '+C.line, fontSize:'12px'}},
-   h('span',{style:{color:C.faint}},'Status'), h('b',null, eqLane(QUEUE[0])), h('span',{style:{flex:1}}),
-   h('span',{style:{color:C.faint}},'Progress'),
-   h('div',{style:{width:'180px', height:'7px', borderRadius:'99px', background:'#E3ECF2', overflow:'hidden'}},
-    h('div',{style:{width:pct+'%', height:'100%', background:'linear-gradient(90deg,'+C.pri+','+C.cy+')', transition:'width .6s ease'}})),
-   h('b',null, done+' of '+total+' steps'),
-   h('span',{style:{color:C.mut}},'Next: '+(next>=0 ? (next+1)+' · '+STEPS[next][1] : 'job complete'))),
-  h('div',{style:{display:'flex', flexWrap:'wrap'}},
-   ...STEPS.map((s,i)=>h('div',{key:s[0], onClick:()=>go(s[0]),
-     style:{flex:'1 0 128px', padding:'9px 11px', cursor:'pointer', borderRight:'1px solid '+C.line, borderTop:'1px solid '+C.line,
-      background:cur===s[0]?C.pri:'#fff', color:cur===s[0]?'#fff':C.ink, transition:'all .16s'},
-     onMouseEnter:e=>{ if(cur!==s[0]) e.currentTarget.style.background='#F4F8FB'; },
-     onMouseLeave:e=>{ if(cur!==s[0]) e.currentTarget.style.background='#fff'; }},
-    h('div',{style:{fontSize:'11.5px', fontWeight:600}}, (i+1)+' · '+s[1]),
-    h('div',{style:{fontSize:'10.5px', opacity:.7, marginTop:'2px'}}, s[2]==='done'?'✓ complete':s[2])))));
-};
-const jobPage = (o) => Page(Object.assign({}, o, {children:[jobHeader(o.step)].concat(o.children||[])}));
+Object.assign(Component.prototype, {
+ /* one way to make a lead, whatever the channel */
+ b2Lead(d, actor, type){
+   const s = this.state, now = Date.now(), num = s.leads.reduce((a, l) => Math.max(a, parseInt(l.id.slice(-4), 10)), 0) + 1, id = 'L-2026-' + String(num).padStart(4, '0');
+   const emg = !!d.emg, stage = emg && d.arm === 'Restoration' ? 'Emergency dispatch' : d.visit ? 'Visit scheduled' : d.assigned ? 'Assigned' : 'New';
+   const cad = emg ? 'Emergency Response' : 'Default Lead Cadence';
+   const lead = Object.assign({id, client:'', ctype:'Individual', company:'', arm:'Restoration', emg, job:PROJTYPES[28], src:'AI call', stage, assigned:null, createdAt:now, lastAt:null, stageAt:now, value:null,
+     phone:'', phone2:'', email:'', pref:'Phone', addr:'', city:'', state:'PA', zip:'', ptype:'Single family', access:'', desc:'', carrier:'', claim:'', bidref:'', biddue:'', avail:'', notes:'',
+     q:{scope:'', sa:'Unclear', budget:'', ba:'Unclear', time:'', ta:'Unclear', out:'Needs more info'}, archived:false, comms:[], cad:B1.mkCad(cad, 1, 'Running', now + (emg ? B1.HOUR / 2 : B1.DAY)), isNew:true,
+     activity:[B1.act(now, actor, type, 'Lead created', 'Source: ' + d.src + (emg ? ' · classified EMERGENCY' : '')), B1.act(now, 'System', 'System', 'Follow-up started', cad)]}, d, {id, emg, stage});
+   if(lead.visit) lead.activity.push(B1.act(now, actor, type, 'Visit booked', B1.fmt(lead.visit.at) + ' · ' + lead.visit.est));
+   return lead;
+ },
+ b2Call(kind){
+   closeM(); const now = Date.now(), p = B2.person(), name = p.first + ' ' + p.last, st = this.state, cid = 'C-' + (501 + st.calls.filter(c => c.sim).length);
+   const base = {id:cid, at:now, from:p.phone, name, sim:true};
+   if(kind === 'abandoned'){ const c = Object.assign(base, {name:'', dur:'0:09', cls:'—', out:'ABANDONED — call-back task created', to:'—', res:'—', leadId:'', handled:false, transcript:[['AI','00:00','Thank you for calling 3Rivers General Contracting. How can we help?'], ['Caller','00:04','(caller hung up)']]});
+     this.setState({calls:[c].concat(st.calls)}); toast('Abandoned call logged — a call-back task was created', 'dg'); return go('call', cid); }
+   if(kind === 'notq'){ const c = Object.assign(base, {name:'', dur:'0:52', cls:'Non-emergency', out:'Not qualified — outside the service area', to:'—', res:'—', leadId:'', handled:true,
+       transcript:[['AI','00:00','Thank you for calling 3Rivers General Contracting. How can we help?'], ['Caller','00:05','I need a kitchen remodelled in Cleveland.'], ['AI','00:12','I am sorry, Cleveland is outside the area we cover.']]});
+     this.setState({calls:[c].concat(st.calls)}); toast('Call logged — not qualified, no lead created'); return go('call', cid); }
+   const emg = kind === 'emgNo' || kind === 'emgYes', booked = kind === 'visit', est = EST[st.calls.length % EST.length];
+   const lead = this.b2Lead({client:name, phone:p.phone, email:p.email, addr:p.addr, city:p.city, state:p.state, zip:p.zip, carrier:p.carrier, emg, src:'AI call', arm:'Restoration', job:PROJTYPES[28],
+     desc:emg ? 'Water coming through the ceiling. Caller could not find the shut-off.' : 'Leak a few days ago; damage to a ceiling and one wall. Dry now.', avail:emg ? 'Immediate — the client is home' : 'Tomorrow morning',
+     q:{scope:emg ? 'Emergency mitigation' : 'Ceiling and wall repair after a leak', sa:'Qualified', budget:'Insurance claim', ba:'Qualified', time:emg ? 'Now' : 'This month', ta:'Qualified', out:'Qualified'},
+     assigned:booked ? est : null, visit:booked ? {at:(() => { const d = new Date(); d.setDate(d.getDate() + 1); d.setHours(10, 0, 0, 0); return d.getTime(); })(), est, by:'AI', st:'Booked'} : null,
+     lastAt:kind === 'emgYes' ? now : null,
+     comms:[{at:now, ch:'Call', who:'SYSTEM', head:'Inbound call · AI Receptionist', body:emg ? 'Classified EMERGENCY. Transfer to the on-call primary: ' + (kind === 'emgYes' ? 'answered.' : 'not answered. Backup and Operations Manager notified.') : 'Non-emergency. ' + (booked ? 'Visit booked during the call.' : 'An estimator will call back.')}]}, 'AI Receptionist', 'AI');
+   if(emg) lead.activity.push(B1.act(now, 'AI Receptionist', 'AI', 'Transfer attempted', '→ Brian McClelland (on-call primary) · ' + (kind === 'emgYes' ? 'answered' : 'not answered · backup and Operations Manager notified')));
+   const c = Object.assign(base, {dur:emg ? '2:58' : '4:12', cls:emg ? 'EMERGENCY' : 'Non-emergency', out:emg ? 'Lead created · transfer ' + (kind === 'emgYes' ? 'answered' : 'not answered') : booked ? 'Lead created · visit booked' : 'Lead created',
+     to:emg ? 'Brian McClelland' : '—', res:emg ? (kind === 'emgYes' ? 'Answered' : 'Not answered') : '—', leadId:lead.id, handled:kind !== 'emgNo', transcript:B2.tr(name + ', ' + p.phone, p.addr + ', ' + p.city, p.carrier, emg, booked)});
+   this.setState({leads:[lead].concat(st.leads), calls:[c].concat(st.calls)});
+   toast(kind === 'emgNo' ? 'EMERGENCY call — transfer not answered · ' + lead.id + ' created' : 'Call answered by the AI · ' + lead.id + ' created', kind === 'emgNo' ? 'dg' : 'ok'); go('call', cid);
+ },
+ b2SimCall(){ const opt = (k, t, d) => h('div', {key:k, onClick:() => this.b2Call(k), style:{border:'1px solid ' + C.bd, borderRadius:'9px', padding:'11px 14px', cursor:'pointer'},
+     onMouseEnter:e => e.currentTarget.style.borderColor = C.pri, onMouseLeave:e => e.currentTarget.style.borderColor = C.bd}, h('b', {style:{fontSize:'13px'}}, t), h('div', {style:{fontSize:'12px', color:C.mut, marginTop:'2px'}}, d));
+   modal('Simulate an inbound call', Stack(HTM({fontSize:'12.5px', color:C.mut}, 'No phone rings. This stands in for the business line, so the flow after a call can be followed on every screen.'),
+     opt('emgNo', 'Emergency — the on-call person does not answer', 'Lead created in Emergency dispatch, transfer fails, a call-back is needed. Appears under Needs a human.'),
+     opt('emgYes', 'Emergency — transferred and answered', 'Lead created in Emergency dispatch, the caller is put through.'),
+     opt('visit', 'Non-emergency — the AI books the visit during the call', 'Lead created, assigned and moved to Visit scheduled. The visit appears in Appointments.'),
+     opt('plain', 'Non-emergency — no visit booked', 'Lead created in New, waiting for an estimator.'),
+     opt('notq', 'Not qualified — outside the service area', 'The call is logged. No lead is created.'),
+     opt('abandoned', 'Abandoned — the caller hangs up', 'The call is logged and a call-back task is created.')), [Btn('Cancel', {onClick:() => closeM()})]); },
+ b2CallBack(cid){ const c = this.state.calls.find(x => x.id === cid); if(!c) return;
+   this.setState(s => ({calls:s.calls.map(x => x.id === cid ? Object.assign({}, x, {handled:true}) : x)}));
+   if(c.leadId) this.b1Patch([c.leadId], l => ({lastAt:Date.now(), comms:l.comms.concat([{at:Date.now(), ch:'Call', who:'HUMAN — Joshua Tohey', head:'Outbound call', body:'Called the client back after the failed transfer.'}])}), () => ['Call logged', 'Outbound · call back after the failed transfer']);
+   toast('Call back logged' + (c.leadId ? ' on ' + c.leadId : '')); },
+ b2Mail(kind){
+   closeM(); const st = this.state, now = Date.now(), mid = 'M-' + (301 + st.inbox.filter(m => m.sim).length), form = kind === 'form';
+   if(kind === 'bad'){ const m = {id:mid, at:now, sim:true, from:'tdonnelly@example.com', subj:'question', src:'Email', status:'Needs a person', leadId:'', missing:['phone', 'address', 'what the work is'],
+       body:'hi is this the right place to ask about the thing my neighbour had done last spring?? need to know roughly how much. thx T', ex:{name:'T. Donnelly', email:'tdonnelly@example.com', phone:'', addr:'', city:'', state:'PA', arm:'Restoration', job:PROJTYPES[28]}};
+     this.setState({inbox:[m].concat(st.inbox), mrev:mid}); return toast('Email received — the AI could not read it into a lead', 'dg'); }
+   const co = kind === 'bid', p = co ? B2.company() : B2.person(), name = co ? p.company : p.first + ' ' + p.last, partial = kind === 'partial';
+   const lead = this.b2Lead({client:name, ctype:co ? 'Organization' : 'Individual', company:co ? p.company : '', person:co ? p.person : '', phone:p.phone, email:p.email, addr:p.addr, city:p.city, state:p.state, zip:p.zip,
+     src:co ? 'Bid invitation' : form ? 'Web form' : 'Email', arm:co ? 'Commercial GC' : 'Restoration', job:co ? PROJTYPES[15] : PROJTYPES[28], carrier:co ? '' : p.carrier, bidref:co ? 'BID-2026-' + (400 + st.inbox.length) : '',
+     desc:co ? 'Invitation to bid: office fit-out, drawings attached.' : 'Water stain spreading on a ceiling after a leak upstairs.', emg:false,
+     q:{scope:co ? 'Office fit-out per drawings' : 'Ceiling repair after a leak', sa:'Qualified', budget:partial ? '' : 'Insurance claim', ba:partial ? 'Unclear' : 'Qualified', time:partial ? '' : 'Within a month', ta:partial ? 'Unclear' : 'Qualified', out:partial ? 'Needs more info' : 'Qualified'},
+     comms:partial ? [{at:now, ch:'Email', who:'SYSTEM', head:'Email sent · Missing information request', body:'Asked the client for: budget expectation, timeline. The reply joins this lead.'}] : []}, 'Inbox Capture', 'AI');
+   const m = {id:mid, at:now, sim:true, from:form ? 'noreply@3riverscm.com' : p.email, subj:co ? 'Invitation to bid — ' + p.addr : form ? 'Website enquiry — water damage' : 'Leak damage at ' + p.addr, src:co ? 'Email' : form ? 'Web form' : 'Email',
+     status:'Parsed', leadId:lead.id, missing:partial ? ['budget', 'timeline'] : [], body:(co ? 'Please find attached the invitation to bid for our office fit-out at ' : 'We had a leak and there is damage at ') + p.addr + ', ' + p.city + '.\n\n' + name + ' · ' + p.phone,
+     ex:{name, email:p.email, phone:p.phone, addr:p.addr, city:p.city, state:p.state, arm:lead.arm, job:lead.job}};
+   this.setState({leads:[lead].concat(st.leads), inbox:[m].concat(st.inbox), mrev:mid});
+   toast((form ? 'Web form' : 'Email') + ' read by the AI · ' + lead.id + ' created' + (partial ? ' · missing information requested' : ''));
+ },
+ b2SimMail(){ const opt = (k, t, d) => h('div', {key:k, onClick:() => this.b2Mail(k), style:{border:'1px solid ' + C.bd, borderRadius:'9px', padding:'11px 14px', cursor:'pointer'},
+     onMouseEnter:e => e.currentTarget.style.borderColor = C.pri, onMouseLeave:e => e.currentTarget.style.borderColor = C.bd}, h('b', {style:{fontSize:'13px'}}, t), h('div', {style:{fontSize:'12px', color:C.mut, marginTop:'2px'}}, d));
+   modal('Simulate an incoming message', Stack(HTM({fontSize:'12.5px', color:C.mut}, 'No mailbox is connected. This stands in for the monitored inboxes and the website form.'),
+     opt('email', 'An email with everything needed', 'The AI reads it and creates the lead on its own.'),
+     opt('partial', 'An email missing the budget and the timeline', 'The lead is created and the missing information is requested automatically.'),
+     opt('form', 'A website form submission', 'Lands in the same queue and creates the lead.'),
+     opt('bid', 'A bid invitation from a company', 'Creates a Commercial GC lead with its bid reference.'),
+     opt('bad', 'An email the AI cannot read', 'No lead. It waits here for a person, and appears under Needs a human.')), [Btn('Cancel', {onClick:() => closeM()})]); },
+ b2MailDo(mid, what, arg){
+   const st = this.state, m = st.inbox.find(x => x.id === mid); if(!m) return;
+   const ex = Object.assign({}, m.ex, (st.mex || {})[mid]), upd = patch => this.setState(s => ({inbox:s.inbox.map(x => x.id === mid ? Object.assign({}, x, patch) : x)}));
+   if(what === 'ignore'){ upd({status:'Ignored'}); return toast('Message ignored — it stays in the log'); }
+   if(what === 'attach'){ if(!arg) return; upd({status:'Attached', leadId:arg});
+     this.b1Patch([arg], l => ({comms:l.comms.concat([{at:Date.now(), ch:'Email', who:'SYSTEM', head:'Email received · attached by a person', body:m.body}])}), () => ['Email attached', m.from]); return toast('Attached to ' + arg); }
+   if(what === 'request'){ upd({requested:true}); return toast('Request for the missing information sent (simulated) — the reply joins this message'); }
+   if(!ex.name || !(ex.phone || ex.email)) return toast('A name and a phone or email are needed to create the lead', 'dg');
+   const lead = this.b2Lead({client:ex.name, phone:ex.phone, email:ex.email, addr:ex.addr, city:ex.city, state:ex.state || 'PA', arm:ex.arm, job:ex.job, src:m.src, desc:m.body.slice(0, 160), emg:false}, 'Joshua Tohey', 'Human');
+   this.setState(s => ({leads:[lead].concat(s.leads), inbox:s.inbox.map(x => x.id === mid ? Object.assign({}, x, {status:'Parsed', leadId:lead.id, ex}) : x)})); toast('Lead created from the message — ' + lead.id);
+ },
+ b2Visit(id, what){
+   if(what === 'cancel') { this.b1Patch([id], l => Object.assign({visit:null}, l.stage === 'Visit scheduled' ? {stage:'Assigned', stageAt:Date.now()} : {}), () => ['Visit cancelled', 'Client and estimator notified']); return toast('Visit cancelled — ' + id + ' is back in Assigned'); }
+   if(what === 'done') { this.b1Patch([id], l => ({visit:Object.assign({}, l.visit, {st:'Completed'}), stage:'Estimating', stageAt:Date.now(), lastAt:Date.now()}), () => ['Visit completed', 'Lead moved to Estimating']); return toast('Visit completed — ' + id + ' moved to Estimating'); }
+   if(what === 'noshow') { this.b1Patch([id], l => ({visit:Object.assign({}, l.visit, {st:'No-show'})}), () => ['No-show', 'A task was created for the estimator']); return toast('Marked as a no-show — a task was created', 'dg'); }
+ },
+ b2BookDlg(preId){
+   const leads = this.state.leads.filter(l => B1.isOpen(l) && (preId ? l.id === preId : !l.visit)).slice(0, 60); if(!leads.length) return toast('No open lead without a visit');
+   const base = new Date(); base.setMinutes(0, 0, 0); const slots = [20, 26, 44, 50, 74, 98].map(x => { const d = new Date(base.getTime() + x * B1.HOUR); if(d.getHours() < 8) d.setHours(9); if(d.getHours() > 16) d.setHours(14); return d.getTime(); });
+   const v = {id:leads[0].id, est:leads[0].assigned || EST[0], at:slots[0]};
+   modal(preId ? 'Move the visit — ' + preId : 'Book a site visit', Stack(
+     Lbl('Lead'), h('select', {defaultValue:v.id, disabled:!!preId, onChange:e => { v.id = e.target.value; }, style:inputStyle()}, ...leads.map(l => h('option', {key:l.id, value:l.id}, l.id + ' — ' + l.client + ' · ' + l.stage))),
+     Lbl('Estimator'), h('select', {defaultValue:v.est, onChange:e => v.est = e.target.value, style:inputStyle()}, ...EST.map(x => h('option', {key:x}, x))),
+     Lbl('Slot — in the platform these come from the estimator’s Google Calendar and the booking rules'),
+     h('select', {defaultValue:String(v.at), onChange:e => v.at = Number(e.target.value), style:inputStyle()}, ...slots.map(s => h('option', {key:s, value:String(s)}, B1.fmt(s)))),
+     HTM({fontSize:'12px', color:C.mut}, 'Booking notifies the client and the estimator (simulated) and moves the lead to Visit scheduled.')),
+     [Btn('Cancel', {onClick:() => closeM()}), Btn(preId ? 'Move visit' : 'Book visit', {kind:'pri', onClick:() => { closeM(); this.b1Book(v.id, v.at, v.est); }})]);
+ }
+});
 
-SCREENS.equeue = (p, st) => {
- const table = Tbl(['Lead','Client','Arm','Job type','Estimator','Visit',{t:'Days since',n:true},'Estimate','Scope','Budget',{t:'Photos',n:true},'Proposal',{t:'Value',n:true}],
-   QUEUE.map(q=>({c:['<b style="color:#087BB2">'+q.id+'</b>', q.client, armTag(q.arm), q.job, q.est, q.visit,
-     {t: q.days>5 ? '<b style="color:#C8442E">'+q.days+' ⚠</b>' : q.days, n:true},
-     q.e==='MISSING' ? Tag('MISSING','dg') : q.e, q.s, q.b, {t:q.p,n:true}, q.pr, {t:q.v,n:true}],
-     onClick:()=>go('estimate'), style: q.days>5 ? {background:'#FFFCF5'} : null})), {min:'1420px'});
- const kanban = Kanban(EQLANES, L => QUEUE.filter(q=>eqLane(q)===L).map(q=>KCard({key:q.id, onClick:()=>go('estimate'),
-   title:q.client, meta:q.id+' · '+q.arm+' · '+q.job+' · '+q.est,
-   foot:h('div',{style:{marginTop:'6px', display:'flex', gap:'6px', alignItems:'center', flexWrap:'wrap'}},
-     q.v!=='—' ? h('b',{style:{fontSize:'12px'}}, '$'+q.v) : null,
-     q.days>5 ? Tag(q.days+' d since visit','dg') : Tag('visit '+q.visit))})));
- return Page({key:'equeue', title:'Estimating queue', sub:'Every lead with a completed site visit — this is what the weekly operations meeting reviews',
-  actions:[Btn('Export CSV',{onClick:()=>toast('CSV exported')})],
+/* ================= CALLS ================= */
+SCREENS.calls = (p, st) => {
+ const f = st.cfil || {q:'', out:'All', cls:'All'}, set = k => v => APP.setState(s => ({cfil:Object.assign({}, s.cfil || {q:'', out:'All', cls:'All'}, {[k]:v})})), q = f.q.trim().toLowerCase();
+ const kind = c => c.out.indexOf('ABANDONED') === 0 ? 'Abandoned' : c.out.indexOf('Not qualified') === 0 ? 'Not qualified' : 'Lead created';
+ const list = st.calls.filter(c => (f.out === 'All' || kind(c) === f.out) && (f.cls === 'All' || c.cls === f.cls) && (!q || (c.from + ' ' + c.name + ' ' + c.leadId).toLowerCase().indexOf(q) >= 0));
+ const open = st.calls.filter(c => !c.handled).length;
+ return Page({key:'calls', title:'Calls', sub:'Every inbound call handled by the AI receptionist — whether or not it became a lead',
+  actions:[Btn('Simulate an inbound call', {kind:'pri', onClick:() => APP.b2SimCall()})],
   children:[
-   Bar(Fld('',{ph:'Search lead, client…', w:'220px'}), Sel('Estimator: All',['Estimator: All'].concat(EST),{w:'180px'}),
-     Sel('Arm: All',['Arm: All','Commercial GC','Restoration'],{w:'150px'}),
-     Sel('Status: All',['Status: All'].concat(EQLANES),{w:'200px'}),
-     Sel('Saved views',['Saved views','My jobs','Awaiting estimate','Ageing > 5 days','Proposal awaiting reply'],{w:'190px'}), Sp(),
-     Grp(Btn('Table',{kind: st.eqView==='table'?'pri':'ghost', onClick:()=>APP.setState({eqView:'table'})}),
-       Btn('Kanban',{kind: st.eqView==='kanban'?'pri':'ghost', onClick:()=>APP.setState({eqView:'kanban'})}))),
-   st.eqView==='table' ? table : kanban]});
+   Tiles([[String(st.calls.length), 'Calls logged'], [String(st.calls.filter(c => c.leadId).length), 'Became a lead', '', C.ok], [String(st.calls.filter(c => c.cls === 'EMERGENCY').length), 'Emergencies', '', C.dg], [String(open), 'Need a call back', '', open ? C.dg : C.pri]]),
+   Bar(FldC(f.q, set('q'), {ph:'Caller number, name, lead…', w:'240px'}),
+     SelC(f.out === 'All' ? 'Outcome: All' : f.out, ['Outcome: All','Lead created','Not qualified','Abandoned'], v => set('out')(v === 'Outcome: All' ? 'All' : v), {w:'180px'}),
+     SelC(f.cls === 'All' ? 'Classification: All' : f.cls, ['Classification: All','EMERGENCY','Non-emergency'], v => set('cls')(v === 'Classification: All' ? 'All' : v), {w:'200px'}), Sp(),
+     HTM({fontSize:'12.5px', color:C.mut}, '<b>' + list.length + '</b> of ' + st.calls.length + ' calls')),
+   Tbl(['Time','Caller','Duration','Classification','Outcome','Transferred to','Result','Lead',''],
+     list.map(c => ({c:[B1.fmt(c.at), h('div', null, h('b', null, c.name || 'Unknown caller'), h('div', {style:{fontSize:'11.5px', color:C.faint}}, c.from)), c.dur, c.cls === 'EMERGENCY' ? Tag('EMERGENCY', 'dg') : c.cls, c.out, c.to,
+       c.res === 'Not answered' ? Tag(c.handled ? 'Not answered · called back' : 'Not answered', c.handled ? 'wn' : 'dg') : c.res, c.leadId ? leadLink({id:c.leadId}) : '—', Btn('▶ Open', {sm:true, onClick:() => go('call', c.id)})],
+       onClick:() => go('call', c.id), style:c.cls === 'EMERGENCY' ? {background:'#FDF6F4'} : c.sim ? {background:'#F1FAF4'} : null, hover:c.cls === 'EMERGENCY' ? '#FBEDE9' : null})), {min:'1180px'})]});
+};
+SCREENS.call = (cid, st) => {
+ const c = st.calls.find(x => x.id === cid) || st.calls[0], l = st.leads.find(x => x.id === c.leadId), ab = c.out.indexOf('ABANDONED') === 0;
+ const line = (r, i) => h('div', {key:i, style:{marginBottom:'12px'}}, h('div', {style:{fontSize:'11px', color:C.faint, marginBottom:'2px'}}, r[0] + ' · ' + r[1]), h('div', {style:{fontSize:'12.5px', lineHeight:1.6}}, r[2]));
+ return Page({key:'call' + c.id, crumb:['Calls', () => go('calls'), B1.fmt(c.at)], title:'Call · ' + (c.name || c.from) + ' · ' + c.dur, sub:B1.fmt(c.at) + ' · ' + c.from + ' · classified <b>' + c.cls + '</b> · ' + c.out,
+  actions:[l ? Btn('Open the lead →', {kind:'pri', onClick:() => go('lead', l.id)}) : null].filter(Boolean),
+  children:[
+   Card(null, h('div', {style:{display:'flex', alignItems:'center', gap:'14px'}},
+     h('div', {onClick:() => toast('Playing the recording… (simulated)'), style:{width:'38px', height:'38px', borderRadius:'50%', background:C.pri, color:'#fff', display:'flex', alignItems:'center', justifyContent:'center', cursor:'pointer', flex:'none'}}, '▶'),
+     h('div', {style:{flex:1, height:'6px', borderRadius:'99px', background:'#EDF3F7', position:'relative'}}, h('div', {style:{position:'absolute', inset:'0 62% 0 0', background:C.cy, borderRadius:'99px'}})),
+     h('span', {style:{fontSize:'12px', color:C.mut}}, '00:00 / ' + c.dur))),
+   Row(Card('Transcript', h('div', {style:{maxHeight:'340px', overflow:'auto'}}, ...c.transcript.map(line))),
+     l ? Card('Extracted data — what the AI took from the call', Stack(
+       Tbl(['Field','Value'], [['Name', '<b>' + l.client + '</b>'], ['Phone', l.phone], ['Address', [l.addr, l.city, l.state + ' ' + l.zip].join(', ')], ['Business arm', l.arm], ['Emergency', l.emg ? '<b style="color:#C8442E">Yes</b>' : 'No'],
+         ['Job type', l.job], ['Insurance carrier', l.carrier || '—'], ['Description', l.desc || '—'], ['Qualification', l.q.out], ['Availability for a visit', l.avail || '—']], {flush:true}),
+       HTM({fontSize:'11.5px', color:C.faint, padding:'0 2px'}, 'Every field stays editable on the lead. A correction made there is kept as feedback for the receptionist.'),
+       h('div', null, Btn('Correct on the lead →', {onClick:() => go('lead', l.id)}))), {actions:[Tag('AI', 'ai')]})
+     : Card('No lead from this call', HTM({fontSize:'12.5px', color:C.mut, lineHeight:1.7}, ab ? 'The caller hung up before giving any detail. <b>A call-back task was created</b> so the number is not lost.' : 'The call did not qualify, so no lead was created. The call stays in the log with its reason.'))),
+   c.cls === 'EMERGENCY' ? Card('Transfer', Stack(
+     h('div', {style:{fontSize:'12.5px'}}, 'Attempted → ', h('b', null, c.to), ' (on-call primary) · ', h('b', {style:{color:c.res === 'Answered' ? C.ok : C.dg}}, c.res)),
+     c.res === 'Not answered' ? HTM({fontSize:'12.5px', color:C.mut}, 'Backup and Operations Manager were notified. ' + (c.handled ? '<b>The client has been called back.</b>' : '<b>Nobody has called the client back yet.</b>')) : null,
+     h('div', {style:{display:'flex', gap:'8px', flexWrap:'wrap'}}, Btn('📞 Call back now', {kind:'pri', disabled:c.handled, onClick:() => APP.b2CallBack(c.id)}), Btn('Review on-call schedule', {onClick:() => go('s_oncall')}))), {hard:true})
+   : ab ? Card('Call-back task', Stack(HTM({fontSize:'12.5px'}, c.handled ? 'Done — the number was called back.' : 'Open — call <b>' + c.from + '</b> back.'), h('div', null, Btn('Mark as called back', {kind:'pri', disabled:c.handled, onClick:() => APP.b2CallBack(c.id)}))), {hard:true}) : null]});
 };
 
-SCREENS.estimate = (p, st) => {
- const T = ['Review extraction','Source reports','Versions'];
- let pane = null;
- if(st.tab===0) pane = Stack(
-   Card('Two reports per estimate — both are in', xReports(), {hard:true}),
-   Bar(Sel('Show: all lines',['Show: all lines','Low confidence first','Unconfirmed only'],{w:'200px'}), Sp(),
-     h('span',{style:{fontSize:'12.5px'}},'Showing ', h('b',null,'22 of 42'),' line items'),
-     Btn('+ Add line',{sm:true}), Btn('Confirm all high-confidence',{sm:true, onClick:()=>toast('21 lines confirmed')})),
-   h('div',{style:{display:'grid', gridTemplateColumns:'minmax(320px,.85fr) minmax(520px,1.15fr)', gap:'14px', alignItems:'start'}},
-    Card('Final draft — page 3 of 11', Ph('CHEN_R_FIRE_08-2026.pdf\nAllstate · Claim AL-772104\n88 Hillcrest Dr, Mt Lebanon PA 15228\n\nKITCHEN — Height 8\'\n1. Tear out wet drywall, cut & bag   320.00 SF   0.68   217.60\n2. Drywall 1/2" hung, taped, floated  320.00 SF  2.42  774.40\n3. Seal then paint walls and ceiling  480.00 SF  1.12  537.60\n4. R&R Cabinetry - lower units  18.00 LF  268.00  4,824.00\n…\n20. R&R Load bearing header - engineered\n     1.00 EA  3,2??.00  3,2??.00   ← OCR could not resolve these digits',
-      {left:true, mono:true, h:'400px'})),
-    Card('Extracted line items', Tbl(['⚠','Area / room','Description','Category (AI)',{t:'Qty',n:true},'UoM',{t:'Unit $',n:true},{t:'Total $',n:true},'Conf.',''],
-      LINES.map((l,i)=>({c:[ l[9]<1 ? Tag('!','dg') : '', l[0], l[1], h('span',{style:{fontSize:'11.5px', fontWeight:600, whiteSpace:'nowrap'}}, XCATN[i]), {t:l[2],n:true}, l[3], {t:l[4],n:true}, {t:l[5],n:true},
-        Math.round(l[9]*100)+'%', h('div',{style:{display:'flex',gap:'4px'}}, Btn('Edit',{sm:true}), Btn('🗑',{sm:true}))],
-        style: l[9]<1 ? {background:'#FFFCF5'} : null})), {flush:true, min:'980px'}), {flush:true})),
-   Card('Reconciliation — checked three ways', xRecon(), {hard:true}),
-   Bar(Btn('Save draft'), Btn('Mark reviewed → continue to mapping',{kind:'pri', disabled:true, title:'Blocked: reconciliation delta $181.60'}), Sp(),
-     Btn('Upload a revised estimate (creates v3)',{onClick:()=>APP.pickFile('estimate')})));
- if(st.tab===1) pane = Stack(
+/* ================= INBOX CAPTURE ================= */
+const _inboxOld = SCREENS.inbox;
+SCREENS.inbox = (p, st) => {
+ if(st.tab !== 0) return _inboxOld(p, st);
+ const T = ['Queue','Monitored inboxes','Web forms','Parsing rules'];
+ const m = st.inbox.find(x => x.id === st.mrev) || st.inbox.find(x => x.status === 'Needs a person') || st.inbox[0];
+ const ex = Object.assign({}, m.ex, (st.mex || {})[m.id]), set = k => v => APP.setState(s => ({mex:Object.assign({}, s.mex, {[m.id]:Object.assign({}, (s.mex || {})[m.id], {[k]:v})})}));
+ const need = st.inbox.filter(x => x.status === 'Needs a person').length, pend = m.status === 'Needs a person';
+ const stTag = x => x.status === 'Needs a person' ? Tag('Could not read → needs a person', 'dg') : x.status === 'Ignored' ? Tag('Ignored') : x.status === 'Attached' ? Tag('Attached to a lead', 'ai')
+   : x.missing.length ? Tag('Read · missing ' + x.missing.join(', '), 'wn') : Tag('Read · complete', 'ok');
+ return Page({key:'inbox', title:'Inbox Capture', sub:'Monitored Gmail inboxes and website form submissions, parsed into structured leads',
+  actions:[Btn('Simulate an incoming message', {kind:'pri', onClick:() => APP.b2SimMail()})],
+  children:[Tabs(T, st.tab),
+   Tiles([[String(st.inbox.length), 'Messages'], [String(st.inbox.filter(x => x.leadId).length), 'Became or joined a lead', '', C.ok], [String(need), 'Need a person', '', need ? C.dg : C.pri]]),
+   Tbl(['Received','From','Subject','Source','Reading','Lead',''],
+     st.inbox.map(x => ({c:[B1.fmt(x.at), x.from, x.subj, x.src, stTag(x), x.leadId ? leadLink({id:x.leadId}) : '—', Btn(x.id === m.id ? 'Reviewing' : 'Review', {sm:true, kind:x.id === m.id ? 'pri' : 'ghost', onClick:() => APP.setState({mrev:x.id})})],
+       onClick:() => APP.setState({mrev:x.id}), style:x.id === m.id ? {background:'#EDF5FA'} : x.status === 'Needs a person' ? {background:'#FDF6F4'} : null})), {min:'1080px'}),
+   Card('Review — ' + m.subj, Stack(
+     Row(Card('Original message', Ph('From: ' + m.from + ' · ' + B1.fmt(m.at) + ' · ' + m.subj + '\n\n' + m.body, {left:true, mono:true, h:'230px'})),
+       Card('Read into → lead fields', Stack(Lbl('Name'), FldC(ex.name, set('name')), Lbl('Email'), FldC(ex.email, set('email')), Lbl('Phone' + (ex.phone ? '' : ' — missing')), FldC(ex.phone, set('phone'), {ph:'not found', bad:pend && !ex.phone}),
+         Lbl('Address' + (ex.addr ? '' : ' — missing')), FldC(ex.addr, set('addr'), {ph:'not found'}), Lbl('City'), FldC(ex.city, set('city')),
+         Lbl('Business arm'), SelC(ex.arm, ['Commercial GC','Restoration'], set('arm')), Lbl('Job type'), SelC(ex.job, PROJTYPES, set('job'))))),
+     m.missing.length ? Card('Missing information', Stack(h('div', {style:{fontSize:'12.5px'}}, 'Missing: ', h('b', null, m.missing.join(' · '))),
+       h('div', {style:{display:'flex', gap:'8px', alignItems:'center', flexWrap:'wrap'}}, m.requested || (m.leadId && !pend) ? Tag('Request sent — the reply joins this lead', 'ok') : Btn('Send the request', {kind:'pri', onClick:() => APP.b2MailDo(m.id, 'request')})))) : null,
+     pend ? Bar(HTM({fontSize:'12.5px', color:C.mut}, 'The AI could not turn this into a lead. A person decides.'), Sp(), Btn('Ignore', {onClick:() => APP.b2MailDo(m.id, 'ignore')}),
+       SelC('Attach to an existing lead…', ['Attach to an existing lead…'].concat(st.leads.filter(B1.isOpen).slice(0, 40).map(l => l.id + ' — ' + l.client)), v => APP.b2MailDo(m.id, 'attach', v.split(' — ')[0].indexOf('L-') === 0 ? v.split(' — ')[0] : ''), {w:'300px'}),
+       Btn('Create lead', {kind:'pri', onClick:() => APP.b2MailDo(m.id, 'create')}))
+     : Bar(HTM({fontSize:'12.5px', color:C.mut}, m.status === 'Ignored' ? 'Ignored by a person. It stays in the log.' : 'Handled — ' + (m.status === 'Attached' ? 'attached to ' : 'lead ') + m.leadId + '.'), Sp(), m.leadId ? Btn('Open the lead →', {kind:'pri', onClick:() => go('lead', m.leadId)}) : null)))]});
+};
+
+/* ================= APPOINTMENTS ================= */
+const _apptOld = SCREENS.appointments;
+SCREENS.appointments = (p, st) => {
+ if(st.tab > 1) return _apptOld(p, st);
+ const T = ['Calendar','List','Booking rules','Connected calendars'], f = st.afil || {est:'All', arm:'All'}, set = k => v => APP.setState(s => ({afil:Object.assign({}, s.afil || {est:'All', arm:'All'}, {[k]:v})}));
+ const vis = st.leads.filter(l => l.visit && !l.archived && (f.est === 'All' || l.visit.est === f.est) && (f.arm === 'All' || l.arm === f.arm)).sort((a, b) => a.visit.at - b.visit.at);
+ const stOf = l => l.visit.st || (l.visit.at < Date.now() - 2 * B1.HOUR ? 'Past — confirm' : 'Booked');
+ const bar = Bar(SelC(f.est === 'All' ? 'All estimators' : f.est, ['All estimators'].concat(EST), v => set('est')(v === 'All estimators' ? 'All' : v), {w:'190px'}),
+   SelC(f.arm === 'All' ? 'All arms' : f.arm, ['All arms','Commercial GC','Restoration'], v => set('arm')(v === 'All arms' ? 'All' : v), {w:'160px'}), Sp(),
+   HTM({fontSize:'12.5px', color:C.mut}, '<b>' + vis.length + '</b> visits'), Btn('+ Book visit', {kind:'pri', onClick:() => APP.b2BookDlg()}));
+ let pane;
+ if(st.tab === 0){
+   const d0 = new Date(); d0.setHours(0, 0, 0, 0); const days = []; for(let i = 0; days.length < 5; i++){ const d = new Date(d0.getTime() + i * B1.DAY); if(d.getDay() !== 0 && d.getDay() !== 6) days.push(d); }
+   const hrs = [8, 9, 10, 11, 12, 13, 14, 15, 16], inSlot = (d, hr) => vis.filter(l => { const v = new Date(l.visit.at); return v.toDateString() === d.toDateString() && Math.min(16, Math.max(8, v.getHours())) === hr; });
+   const slot = l => h('div', {key:l.id, onClick:() => go('lead', l.id), style:{background:l.emg ? C.dgL : C.priL, borderLeft:'3px solid ' + (l.emg ? C.dg : C.pri), borderRadius:'6px', padding:'7px 9px', cursor:'pointer', marginBottom:'4px'}},
+     h('b', {style:{fontSize:'12px'}}, l.client), h('div', {style:{fontSize:'11px', color:C.mut, marginTop:'2px'}}, (l.visit.est || '').split(' ')[0] + ' · ' + B1.fmtTime(l.visit.at) + ' · ' + l.addr));
+   pane = Stack(bar, Tbl([''].concat(days.map(d => d.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'}))),
+     hrs.map(hr => [(hr > 12 ? hr - 12 : hr) + ':00 ' + (hr >= 12 ? 'PM' : 'AM')].concat(days.map(d => { const x = inSlot(d, hr); return x.length ? h('div', null, ...x.map(slot)) : ''; }))), {min:'1100px'}),
+     HTM({fontSize:'11.5px', color:C.faint}, 'The next five working days. A visit booked from a lead, from here, or by the AI during a call lands in the same calendar.'));
+ } else pane = Stack(bar, Tbl(['When','Estimator','Client','Address','Arm','Lead','Status','Booked by',''],
+   vis.map(l => { const s = stOf(l), live = s === 'Booked' || s === 'Past — confirm';
+     return {c:[B1.fmt(l.visit.at), l.visit.est || '—', '<b>' + l.client + '</b>', l.addr + ', ' + l.city, armTag(l.arm), leadLink(l), Tag(s, s === 'Completed' ? 'ok' : s === 'No-show' ? 'dg' : s === 'Booked' ? 'ai' : 'wn'), l.visit.by === 'AI' ? Tag('AI', 'ai') : 'Person',
+       h('div', {onClick:e => e.stopPropagation(), style:{display:'flex', gap:'6px', flexWrap:'wrap'}}, live ? Btn('Completed', {sm:true, onClick:() => APP.b2Visit(l.id, 'done')}) : null, live ? Btn('No-show', {sm:true, onClick:() => APP.b2Visit(l.id, 'noshow')}) : null,
+         live ? Btn('Move', {sm:true, onClick:() => APP.b2BookDlg(l.id)}) : null, live ? Btn('Cancel', {sm:true, onClick:() => APP.b2Visit(l.id, 'cancel')}) : null)], onClick:() => go('lead', l.id)}; }), {min:'1280px'}));
+ return Page({key:'appts', title:'Appointments', sub:'Estimator site visits — synced two-way with Google Calendar (Gmail, not Outlook)', children:[Tabs(T, st.tab), pane]});
+};
+
+/* ================= BLOCK 3 — a working Phase 2 =================
+   Every lead that reaches Estimating has an estimating job. The eleven steps keep their state in memory:
+   the estimate is read (simulated), corrected and reconciled; the lines are mapped, packaged and budgeted;
+   the proposal is assembled, sent, signed and paid — and the lead ends up Won on the Hotlist.
+   Nothing leaves the browser: the upload, the client opening the proposal, the signature and the payment are simulated. */
+const B3 = (() => {
+ const DAY = 86400000, HOUR = 3600000;
+ const r2 = n => Math.round(n * 100) / 100;
+ const M = n => '$' + Number(n || 0).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+ const num = s => parseFloat(String(s == null ? '' : s).replace(/[$,%\s]/g, '')) || 0;
+ const sum = a => a.reduce((x, y) => x + y, 0);
+ const hash = s => { let x = 7; for(let i = 0; i < s.length; i++) x = (x * 31 + s.charCodeAt(i)) % 100003; return x; };
+ const dec = s => String(s).replace(/&amp;/g, '&');
+ const ME = 'Joshua Tohey';
+
+ /* ---- the estimate that the simulated upload "reads": the 22 lines already in the model plus 20 more, 42 in all.
+         Category and room totals equal the two recaps at the back of the final draft. ---- */
+ const CATCODE = {DMO:'01.1', DRY:'05.1', PNT:'06.1', CAB:'08.1', CNT:'08.1', APP:'08.1', LIT:'09.1', ELE:'09.1', CLN:'02.2', FCC:'07.1', FCW:'07.1',
+   WTR:'02.3', CON:'02.1', FNC:'08.2', HVC:'12.1', FRM:'04.1'};
+ const TRADEOF = {'01':'Demolition', '02':'Mitigation', '03':'Mitigation', '04':'Carpentry', '05':'Drywall', '06':'Painting', '07':'Flooring', '08':'Carpentry',
+   '09':'Electrical', '10':'Plumbing', '11':'General Contractor', '12.1':'HVAC', '12.2':'Roofing', '12.3':'Masonry', '12.4':'Concrete'};
+ const tradeOf = c => !c ? '' : (TRADEOF[c] || TRADEOF[c.slice(0, 2)] || 'General Contractor');
+ const ctypeOf = c => { const x = COSTCODES.find(k => k[0] === c); return x ? x[3] : 'Sub'; };
+ const CODEOPTS = COSTCODES.map(c => c[0] + ' ' + dec(c[1]));
+ const codeLbl = c => CODEOPTS.find(o => o.slice(0, 4) === c) || '';
+ const EXTRA = [
+  ['Hallway','Seal then paint the walls (2 coats)',1000,'SF',1.10,'PNT'], ['Hallway','Drywall patch / repair - 1/2"',360,'SF',2.50,'DRY'],
+  ['Hallway','R&R Outlet or switch',7,'EA',43.00,'ELE'], ['Hallway','R&R Smoke detector - hardwired',2,'EA',120.00,'ELE'],
+  ['Hallway','Tear out baseboard and trim',200,'LF',2.00,'DMO'],
+  ['Kitchen','R&R Ground fault interrupter outlet',5,'EA',95.00,'ELE'], ['Kitchen','R&R Range hood wiring and exhaust connection',1,'EA',784.00,'ELE'],
+  ['Kitchen','Clean and deodorize the structure - smoke',400,'SF',1.50,'WTR'], ['Kitchen','Clean cabinetry - inside and out',1,'EA',223.40,'CLN'],
+  ['Kitchen','Tear out cabinetry and countertop',32,'LF',12.50,'DMO'],
+  ['Living / Dining','Seal then paint the walls (2 coats)',1000,'SF',1.20,'PNT'], ['Living / Dining','Drywall - ceiling - 5/8" hung, taped, floated',400,'SF',2.75,'DRY'],
+  ['Living / Dining','R&R Ceiling fan and light',2,'EA',300.00,'ELE'], ['Living / Dining','Clean windows, sills and frames',12,'EA',37.30,'CLN'],
+  ['1st floor','R&R Recessed light fixture',6,'EA',100.00,'ELE'], ['1st floor','Paint door slab and trim (2 coats)',7,'EA',100.00,'PNT'],
+  ['1st floor','Apply odor counteractant sealer',1400,'SF',0.50,'WTR'], ['1st floor','Negative air fan / air scrubber - additional',10,'DA',70.00,'WTR'],
+  ['1st floor','Tear out carpet and pad',400,'SF',0.50,'DMO'], ['1st floor','Clean HVAC registers and returns',12,'EA',22.70,'CLN']];
+ const BAD = 19, BAD_REAL = 3381.60, BAD_READ = 3200.00;       /* line 20: the digits the extraction could not resolve */
+ const TPL = LINES.map((l, i) => ({room:l[0], desc:l[1], qty:l[2], uom:l[3], unit:i === BAD ? BAD_REAL : num(l[4]), cat:XCAT[i], code:l[6].slice(0, 4), ctype:l[8]}))
+   .concat(EXTRA.map(e => ({room:e[0], desc:e[1], qty:e[2], uom:e[3], unit:e[4], cat:e[5], code:CATCODE[e[5]], ctype:ctypeOf(CATCODE[e[5]])})));
+ const ROOMS = ['Kitchen','Living / Dining','1st floor','Hallway','Structural','Site'];
+ const PKDEF = [['Mitigation & odour control','Mitigation','Self-perform',['02.1','02.2','02.3','03.1']], ['Demolition & debris','Demolition','Subcontracted',['01.1','11.1']],
+   ['Structural repair','Carpentry','Subcontracted',['04.1']], ['Electrical','Electrical','Subcontracted',['09.1']], ['HVAC','HVAC','Subcontracted',['12.1']],
+   ['Drywall','Drywall','Subcontracted',['05.1']], ['Millwork & finish carpentry','Carpentry','Subcontracted',['08.1','08.2']], ['Painting','Painting','Subcontracted',['06.1']],
+   ['Flooring','Flooring','Subcontracted',['07.1']], ['Plumbing','Plumbing','Subcontracted',['10.1']], ['Other trades','General Contractor','Subcontracted',['12.2','12.3','12.4']]];
+ const LANES = ['Visit scheduled','Awaiting estimate','In review','Structuring','Proposal draft','Sent — awaiting client','Won','Lost'];
+ const COMPS = [['intro','Introductory statement',false], ['contract','Contract',true], ['scope','Scope of work',true], ['sched','Payment schedule',true],
+   ['license','GC license',false], ['coi','Proof of insurance',false], ['photo','Photo report',false], ['refs','References / past work',false]];
+ const SCOPEMODES = ['AI narrative only','Structured line item table only','Original Xactimate PDF only','AI narrative + structured table','AI narrative + structured table + original Xactimate PDF'];
+ const LOSS = ['Price','Timeline','Went with a competitor','Insurance denied the claim','Client postponed','No response'];
+ const CHEN_NARR = 'SCOPE OF WORK — 88 Hillcrest Dr, Mt Lebanon, PA 15228\nFire and smoke restoration · Claim AL-772104 (Allstate)\n\n1. MITIGATION AND ODOUR CONTROL\nSet and monitor HEPA air scrubbers throughout the affected first floor for a five-day period. Perform thermal fogging across approximately 1,850 square feet to neutralise smoke odour. Heavy-clean all affected surfaces in the living and dining rooms.\n\n2. DEMOLITION AND DEBRIS REMOVAL\nTear out, cut and bag approximately 320 square feet of fire-damaged drywall in the kitchen. Remove and dispose of damaged cabinetry, countertop, flooring and trim. Two 30-yard dumpster loads included.\n\n3. STRUCTURAL REPAIR\nRemove and replace the engineered load-bearing header above the kitchen opening. Final quantity to be confirmed on site prior to fabrication.\n\n4. MECHANICAL, ELECTRICAL AND ROUGH-IN\nRewire the kitchen branch circuit and replace three light fixtures. Clean the full duct system to remove smoke residue.\n\n5. FINISHES\nHang, tape and float new drywall in the kitchen. Seal and paint all affected walls and ceilings. Install new cabinetry, solid-surface countertop, engineered hardwood flooring, carpet, baseboard and interior doors.\n\n6. CLOSEOUT\nConstruction clean of approximately 1,850 square feet, punch list walk with the homeowner, and final sign-off.';
+
+ /* ---------- a job, and what can be read off it ---------- */
+ const condOf = lead => /Recon|Fire/i.test(lead.job) ? 'Fire damage' : /Water|Mitig|Plumb|Waterproof/i.test(lead.job) ? 'Water damage' : /Roof|Structur/i.test(lead.job) ? 'Structural' : 'Undamaged';
+ const mkPhotos = lead => { const n = lead.id === 'L-2026-0415' ? 63 : 16 + hash(lead.id) % 38, cond = condOf(lead), out = [];
+   PHOTOS.slice(0, 12).forEach(p => out.push({n:p[0], dir:p[1], cat:p[2], room:p[3], cond:p[4] === '—' ? '—' : (p[4] === 'Smoke' && cond === 'Fire damage' ? 'Smoke' : cond), dsrc:p[5], conf:1, by:'AI'}));
+   const R = ['Kitchen','Living room','Dining room','Hallway','Basement'], W = ['wall surfaces','ceiling','floor','close-up','contents'], K = ['Affected area','Detail','Affected area','Detail','Overview'];
+   for(let j = 0; out.length < n - 1; j++) out.push({n:R[j % 5] + ' — ' + W[(j + Math.floor(j / 5)) % 5], dir:'—', cat:K[j % 5], room:R[j % 5], cond, dsrc:'—', conf:1, by:'AI'});
+   out.push({n:'Unlabelled capture', dir:'—', cat:'—', room:'—', cond:'—', dsrc:'—', conf:0.41, by:'AI'});
+   return out; };
+ const fresh = lead => ({id:lead.id, k:lead.id === 'L-2026-0415' ? 1 : Math.max(0.12, (lead.value || 24000 + hash(lead.id) % 52000) / 62300),
+   est:null, hist:[], mapDone:false, pk:[], scopeDone:false, bud:null, narr:'', narrOk:false, photos:mkPhotos(lead), reports:[],
+   prop:{on:{intro:true, contract:true, scope:true, sched:true, license:true, coi:true, photo:true, refs:false}, mode:SCOPEMODES[4], saved:false},
+   sched:null, schedWhy:'', schedOk:false, send:null, vers:[], acc:{}, handed:false, depInv:false});
+ const get = (st, id) => (st.p2 && st.p2[id]) || fresh(st.leads.find(l => l.id === id) || st.leads[0]);
+ const lt = l => r2(l.qty * num(l.unit));
+ const totals = job => { const e = job.est; if(!e) return null; const ext = r2(sum(e.lines.map(lt))), r = e.recap;
+   return {sub:r.sub, oh:r.oh, pr:r.pr, tax:r.tax, grand:r.grand, ext, got:r2(ext + r.oh + r.pr + r.tax), delta:r2(r.grand - (ext + r.oh + r.pr + r.tax))}; };
+ const by = (lines, key) => { const m = {}; lines.forEach(l => { m[l[key]] = r2((m[l[key]] || 0) + lt(l)); }); return m; };
+ const checks = job => { const e = job.est, c = by(e.lines, 'cat'), r = by(e.lines, 'room');
+   return {cat:Object.keys(e.recap.cat).map(k => [XCATNAME[k] || k, e.recap.cat[k], c[k] || 0]).sort((a, b) => b[1] - a[1]),
+           room:ROOMS.filter(k => e.recap.room[k] != null).map(k => [k, e.recap.room[k], r[k] || 0])}; };
+ const cur = job => job.vers.length ? job.vers[job.vers.length - 1] : null;
+ const review = job => job.photos.filter(p => p.conf < 1).length;
+ const tplOf = grand => grand > 30000 ? 'Resi Fixed Rate — Greater Than $30K — PA HIC · v2.8' : 'Resi Fixed Rate — Less Than $30K — PA HIC';
+ const sched0 = () => [{name:'Binder', trig:'On signature — non-refundable', type:'Fixed', amt:500, lock:true, inv:'On acceptance', cov:'—'},
+   {name:'Draw 1', trig:'Deposit — due within 5 calendar days of signing', type:'%', pct:'40', inv:'Auto draft invoice on acceptance', cov:'—'},
+   {name:'Draw 2', trig:'Completion of drywall', type:'%', pct:'20', inv:'On milestone marked complete', cov:'40.7 %'},
+   {name:'Draw 3', trig:'Completion of painting', type:'%', pct:'20', inv:'On milestone marked complete', cov:'39.0 %'},
+   {name:'Final', trig:'Punch list and final walkthrough — whatever is left', type:'Remainder', inv:'On completion', cov:'20.2 %'}];
+ const schedOf = job => job.sched || sched0();
+ const schedCalc = job => { const t = totals(job), g = t ? t.grand : 0, rows = schedOf(job); let used = 0;
+   const out = rows.map(m => { if(m.type === 'Remainder') return Object.assign({}, m); const a = m.type === 'Fixed' ? num(m.amt) : r2(g * num(m.pct) / 100); used = r2(used + a); return Object.assign({}, m, {a}); });
+   out.forEach(m => { if(m.type === 'Remainder'){ m.a = r2(g - used); m.p = g ? r2(m.a / g * 100) : 0; } });
+   const fin = out.find(m => m.type === 'Remainder');
+   return {rows:out, total:g, finPct:fin ? Math.round(fin.p * 10) / 10 : 0, neg:fin ? fin.a < 0 : false, count:out.length, needWhy:fin ? fin.p > 7 : false}; };
+ const steps = job => { const e = job.est, unm = e ? e.lines.filter(l => !l.code).length : 0, rv = review(job), v = cur(job), a = job.acc;
+   return [['estimate','Estimate intake', !e ? 'not uploaded' : e.reviewed ? 'reviewed · v' + e.v : 'in review · v' + e.v, !!(e && e.reviewed)],
+    ['mapping','Line item mapping', !e ? '—' : job.mapDone ? 'mapped' : unm + ' unmapped', !!job.mapDone],
+    ['scope','Scope structuring', job.scopeDone ? job.pk.length + ' packages' : job.pk.length ? 'in progress' : '—', !!job.scopeDone],
+    ['budget','Budget & cost', !job.bud ? '—' : job.bud.locked ? 'baseline locked' : job.bud.saved ? 'saved' : 'draft', !!(job.bud && job.bud.saved)],
+    ['narrative','Scope narrative', job.narrOk ? 'ready' : job.narr ? 'draft' : '—', !!job.narrOk],
+    ['photos','Photos', job.photos.length + (rv ? ' · ' + rv + ' to review' : ' labelled'), !rv],
+    ['photoreport','Photo report', job.reports.length ? job.reports[0].pages + ' pages' : '—', job.reports.length > 0],
+    ['proposal','Proposal builder', job.prop.saved ? 'package ready' : '—', !!job.prop.saved],
+    ['schedule','Payment schedule', job.schedOk ? 'confirmed' : '—', !!job.schedOk],
+    ['versions','Send & versions', v ? v.status + ' · v' + v.v : '—', !!v && ['Sent','Viewed','Signed'].indexOf(v.status) >= 0],
+    ['acceptance','Acceptance', a.declined ? 'Declined' : a.signedAt ? (a.paidAt ? 'Signed · binder paid' : 'Signed · binder due') : '—', !!(a.signedAt && a.paidAt)]]; };
+ const nextStep = job => { const s = steps(job).find(x => !x[3]); return s ? s[0] : 'acceptance'; };
+ const lane = (lead, job) => { const v = cur(job);
+   if(lead.stage === 'Won') return 'Won'; if(lead.stage === 'Lost') return 'Lost';
+   if(v && ['Sent','Viewed','Signed'].indexOf(v.status) >= 0) return 'Sent — awaiting client';
+   if(lead.stage === 'Visit scheduled') return 'Visit scheduled';
+   if(!job.est) return 'Awaiting estimate'; if(!job.est.reviewed) return 'In review';
+   return job.prop.saved || job.schedOk ? 'Proposal draft' : 'Structuring'; };
+ const visitAt = lead => lead.visit && lead.visit.st === 'Completed' ? lead.visit.at : lead.stage === 'Visit scheduled' && lead.visit ? lead.visit.at : (lead.estAt || lead.stageAt);
+ const inQueue = (lead, st) => !lead.archived && (lead.stage === 'Visit scheduled' || lead.stage === 'Estimating' || lead.stage === B1.SENT(lead.arm) || ((lead.stage === 'Won' || lead.stage === 'Lost') && st.p2[lead.id]));
+ const divOf = lead => lead.arm === 'Commercial GC' ? 'Commercial' : /Mitigation|Water Damage/i.test(lead.job) ? 'Mitigation' : lead.carrier ? 'Insurance rebuild' : 'Retail';
+
+ /* ---------- what each step does to a job (the same functions seed the sample jobs) ---------- */
+ const T = {
+  upload(job, lead, at, who, name){ const first = !job.est;
+    const lines = TPL.map((t, i) => { const old = job.est && job.est.lines.find(l => l.i === i), known = !first || i % 4 !== 3;
+      return {i, room:t.room, desc:t.desc, qty:job.k === 1 ? t.qty : Math.max(1, Math.round(t.qty * job.k)), uom:t.uom, unit:i === BAD ? BAD_READ : t.unit, cat:t.cat, conf:i === BAD ? 0.62 : 0.94 + (i * 3 % 6) / 100,
+        ok:false, code:old && old.code ? old.code : known && i !== BAD ? t.code : '', ctype:old && old.ctype ? old.ctype : known && i !== BAD ? t.ctype : '', trade:old ? old.trade : '',
+        src:old && old.code ? 'dict' : known && i !== BAD ? 'dict' : '', pk:old ? old.pk : ''}; });
+    if(!first) lines[2].qty = Math.round(lines[2].qty * 1.25);                 /* a revised estimate: the paint quantity went up */
+    const real = lines.map(l => r2(l.qty * (l.i === BAD ? BAD_REAL : l.unit))), sub = r2(sum(real)), oh = r2(sub * .1), tax = r2(sub * 3920 / 48650), cat = {}, room = {};
+    lines.forEach((l, n) => { cat[l.cat] = r2((cat[l.cat] || 0) + real[n]); room[l.room] = r2((room[l.room] || 0) + real[n]); });
+    const base = name || (lead.client.split(' ').slice(-1)[0].replace(/[^A-Za-z]/g, '').toUpperCase() + '_' + lead.id.slice(-4));
+    const est = {v:(job.est ? job.est.v : 0) + 1, at, who, file:base, reviewed:false, lines, recap:{sub, oh, pr:oh, tax, grand:r2(sub + oh + oh + tax), cat, room}};
+    return Object.assign({}, job, {est, hist:job.est ? [{v:job.est.v, at:job.est.at, who:job.est.who, total:job.est.recap.grand, n:job.est.lines.length}].concat(job.hist) : job.hist,
+      mapDone:first ? false : job.mapDone}); },
+  line(job, i, patch){ return Object.assign({}, job, {est:Object.assign({}, job.est, {lines:job.est.lines.map(l => l.i === i ? Object.assign({}, l, patch) : l)})}); },
+  lines(job, fn){ return Object.assign({}, job, {est:Object.assign({}, job.est, {lines:job.est.lines.map(l => Object.assign({}, l, fn(l) || {}))})}); },
+  fix(job){ return T.line(job, BAD, {unit:BAD_REAL, conf:1, ok:true, edited:true}); },
+  confirmAll(job){ return T.lines(job, l => l.conf >= 0.9 ? {ok:true} : null); },
+  reviewed(job){ return Object.assign({}, job, {est:Object.assign({}, job.est, {reviewed:true})}); },
+  automap(job){ return T.lines(job, l => l.code || l.i === BAD ? null : {code:TPL[l.i].code, ctype:TPL[l.i].ctype, src:'ai'}); },
+  mapAll(job){ return Object.assign({}, T.lines(job, l => l.code ? null : {code:TPL[l.i].code, ctype:TPL[l.i].ctype, src:'person'}), {mapDone:true}); },
+  group(job){ const pk = []; const j = T.lines(job, l => { const d = PKDEF.find(p => p[3].indexOf(l.code) >= 0) || PKDEF[PKDEF.length - 1];
+      let p = pk.find(x => x.n === d[0]); if(!p){ p = {n:d[0], t:d[1], ex:d[2], ord:PKDEF.indexOf(d)}; pk.push(p); } return {pk:d[0]}; });
+    pk.sort((a, b) => a.ord - b.ord); const names = {}; let day = 0;
+    pk.forEach((p, n) => { p.c = 'SP-' + String(n + 1).padStart(2, '0'); names[p.n] = p.c; p.start = 'Day ' + (day + 1); day += p.ex === 'Self-perform' ? 5 : 3; p.fin = 'Day ' + day; });
+    return Object.assign({}, T.lines(j, l => ({pk:names[l.pk]})), {pk}); },
+  scopeDone(job){ return Object.assign({}, job, {scopeDone:true}); },
+  budget(job){ const m = {}; job.est.lines.forEach(l => { const key = l.pk + '|' + l.code + '|' + l.ctype; (m[key] = m[key] || {pk:l.pk, code:l.code, ctype:l.ctype, val:0}).val += lt(l); });
+    const rows = Object.keys(m).sort().map(k => { const r = m[k]; r.val = r2(r.val);
+      if(r.ctype === 'Labour'){ r.hrs = Math.max(1, Math.round(r.val * .62 / 38)); r.rate = 38; r.cost = String(r2(r.hrs * 38)); r.who = 'Technician'; } else r.cost = String(r2(r.val * .62));
+      return r; });
+    const pm = Math.max(8, Math.round(40 * job.k)); rows.push({pk:'—', code:'PM', ctype:'Labour', val:0, hrs:pm, rate:62, cost:String(pm * 62), who:'Project manager'});
+    return Object.assign({}, job, {bud:{rows, cont:'5', saved:false, locked:false, vers:[]}}); },
+  budSave(job, at, lock, why){ const b = job.bud, cost = budCost(job);
+    return Object.assign({}, job, {bud:Object.assign({}, b, {saved:true, locked:!!lock, vers:lock ? [{v:b.vers.length + 1, at, who:ME, cost, why:why || (b.vers.length ? 'Revision' : 'Baseline')}].concat(b.vers) : b.vers})}); },
+  narr(job, lead){ const head = 'SCOPE OF WORK — ' + lead.addr + ', ' + lead.city + ', ' + lead.state + ' ' + lead.zip + '\n' + lead.job + (lead.claim ? ' · Claim ' + lead.claim + (lead.carrier ? ' (' + lead.carrier + ')' : '') : '');
+    const body = job.pk.map((p, n) => (n + 1) + '. ' + p.n.toUpperCase() + '\n' + job.est.lines.filter(l => l.pk === p.c).map(l => l.desc.replace(/^R&R /, 'Remove and replace ').replace(/ - per LF$/, '') + ' (' + l.qty.toLocaleString('en-US') + ' ' + l.uom + ')').join('. ') + '.').join('\n\n');
+    return Object.assign({}, job, {narr:lead.id === 'L-2026-0415' ? CHEN_NARR : head + '\n\n' + body + '\n\n' + (job.pk.length + 1) + '. CLOSEOUT\nPunch list walk with the client and final sign-off.'}); },
+  narrOk(job){ return Object.assign({}, job, {narrOk:true}); },
+  photosOk(job){ return Object.assign({}, job, {photos:job.photos.map(p => p.conf < 1 ? Object.assign({}, p, {n:'Hallway — smoke detector', cat:'Detail', room:'Hallway', cond:'Smoke', conf:1, by:'Person'}) : p)}); },
+  report(job, at, layout){ const per = parseInt(layout || '2', 10) || 2, n = job.photos.length;
+    return Object.assign({}, job, {reports:[{at, who:ME, n, pages:1 + Math.ceil(n / per), layout:(layout || '2 per page')}].concat(job.reports)}); },
+  propSave(job){ return Object.assign({}, job, {prop:Object.assign({}, job.prop, {saved:true})}); },
+  schedOk(job){ const c = schedCalc(job); return Object.assign({}, job, {sched:schedOf(job), schedOk:true, schedWhy:job.schedWhy || (c.needWhy ? 'Contract template leaves the remainder for the end' : '')}); },
+  send(job, at){ const g = totals(job).grand;
+    return Object.assign({}, job, {vers:job.vers.map(v => ['Sent','Viewed','Draft'].indexOf(v.status) >= 0 ? Object.assign({}, v, {status:'Superseded'}) : v)
+      .concat([{v:job.vers.length + 1, amt:g, tpl:tplOf(g), sentAt:at, status:'Sent', pages:8 + (job.reports[0] ? job.reports[0].pages : 0) + 4}])}); },
+  ver(job, patch){ return Object.assign({}, job, {vers:job.vers.map((v, n) => n === job.vers.length - 1 ? Object.assign({}, v, patch) : v)}); },
+  sign(job, lead, at){ return Object.assign({}, T.ver(job, {status:'Signed', signedAt:at, viewedAt:cur(job).viewedAt || at}), {acc:Object.assign({}, job.acc, {signedAt:at, by:lead.person || lead.client, ip:'71.62.' + (hash(lead.id) % 200) + '.' + (hash(lead.client) % 250)})}); },
+  pay(job, at, method){ return Object.assign({}, job, {acc:Object.assign({}, job.acc, {paidAt:at, method, ref:(method === 'Check' ? 'CHK-' : method === 'ACH' ? 'ACH-' : 'CC-') + (10000 + hash(job.id + method) % 89999)})}); },
+  decline(job, at, why){ return Object.assign({}, T.ver(job, {status:'Declined'}), {acc:Object.assign({}, job.acc, {declined:at, why})}); }
+ };
+ const budCost = job => r2(sum(job.bud.rows.map(r => num(r.cost))));
+ const canSend = job => steps(job).slice(0, 9).filter(s => !s[3]).map(s => s[1]);
+
+ /* ---------- sample jobs: every lead already past the visit has its estimating work at a believable point ---------- */
+ const build = (lead, lvl) => { const t0 = lead.stageAt; let j = fresh(lead);
+   if(lvl >= 1) j = T.upload(j, lead, t0 + 2 * HOUR, lead.assigned || ME);
+   if(lvl >= 2) j = T.mapAll(T.automap(T.reviewed(T.confirmAll(T.fix(j)))));
+   if(lvl >= 3) j = T.budget(T.scopeDone(T.group(j)));
+   if(lvl >= 4) j = T.narrOk(T.narr(T.budSave(j, t0 + 5 * HOUR, true), lead));
+   if(lvl >= 5) j = T.schedOk(T.propSave(T.report(T.photosOk(j), t0 + 6 * HOUR)));
+   if(lvl >= 6) j = T.send(j, t0);
+   if(lvl === 7 || lvl === 8) j = T.ver(j, {status:'Viewed', viewedAt:t0 + 3 * HOUR});
+   if(lvl === 8) j = T.pay(T.sign(j, lead, t0), t0 + HOUR, hash(lead.id) % 3 ? 'Credit card' : 'ACH');
+   if(lvl === 9) j = T.decline(j, t0, lead.lostReason || 'No response');
+   return j; };
+ const seed = leads => { const p2 = {};
+   leads.forEach(l => { const s = l.stage, x = hash(l.id); let lvl = 0;
+     if(l.id === 'L-2026-0415') lvl = 7; else if(s === 'Estimating') lvl = x % 6; else if(s === B1.SENT(l.arm)) lvl = 6 + x % 2; else if(s === 'Won') lvl = 8; else if(s === 'Lost' && l.assigned && x % 2) lvl = 9;
+     if(!lvl) return; const j = build(l, lvl);
+     if(l.id === 'L-2026-0415'){ const now = Date.now(); j.hist = [{v:1, at:now - 5 * DAY, who:'Kyle Brennan', total:58120, n:39}]; j.est.v = 2; j.est.at = now - 3 * DAY; j.est.file = 'CHEN_R_FIRE_08-2026';
+       j.bud.vers = [{v:3, at:now - 3 * DAY + 2 * HOUR, who:'Kyle Brennan', cost:budCost(j), why:'Baseline'}, {v:2, at:now - 4 * DAY, who:'Kyle Brennan', cost:30410, why:'Structural header added'}, {v:1, at:now - 5 * DAY, who:'Kyle Brennan', cost:29880, why:'Initial from estimate v1'}];
+       j.reports = [{at:now - 3 * DAY + 3 * HOUR, who:'Kyle Brennan', n:63, pages:12, layout:'6 per page'}, {at:now - 5 * DAY, who:'Kyle Brennan', n:41, pages:8, layout:'6 per page'}];
+       j.vers = [{v:1, amt:58120, tpl:tplOf(58120), sentAt:now - 5 * DAY, status:'Superseded', viewedAt:now - 5 * DAY + 2 * HOUR, pages:20},
+                 {v:2, amt:62300, tpl:tplOf(62300), sentAt:now - 3 * DAY + 4 * HOUR, status:'Viewed', viewedAt:now - 3 * DAY + 5.4 * HOUR, pages:24}]; }
+     if(lvl >= 2) l.value = Math.round(j.est.recap.grand);
+     p2[l.id] = j; });
+   return p2; };
+ return {DAY, M, r2, num, sum, hash, dec, ME, TPL, BAD, BAD_REAL, ROOMS, LANES, COMPS, SCOPEMODES, LOSS, CODEOPTS, codeLbl, tradeOf, ctypeOf, fresh, get, lt, totals, checks, cur, review, tplOf,
+   schedOf, schedCalc, steps, nextStep, lane, visitAt, inQueue, divOf, T, budCost, canSend, seed, sched0};
+})();
+
+const setP2 = patch => APP.setState(s => ({p2ui:Object.assign({}, s.p2ui, patch)}));
+const ChkC = (t, on, set, dis) => h('label', {style:{display:'inline-flex', alignItems:'center', gap:'7px', fontSize:'12.5px', marginRight:'16px', cursor:dis ? 'default' : 'pointer'}},
+  h('input', {type:'checkbox', checked:!!on, disabled:!!dis, onChange:e => set(e.target.checked), style:{accentColor:C.pri, width:'14px', height:'14px'}}), t);
+const PhPre = (txt, o) => Ph(String(txt).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/\n/g, '<br>'), Object.assign({}, o, {html:true}));
+const simNote =t => HTM({fontSize:'11.5px', color:C.faint, lineHeight:1.6}, '<b>Simulated in this model.</b> ' + t);
+
+/* ---------- what the app can do to an estimating job ---------- */
+Object.assign(Component.prototype, {
+ b3Set(id, fn, then){ this.setState(s => { const lead = s.leads.find(l => l.id === id), j = B3.get(s, id); return {p2:Object.assign({}, s.p2, {[id]:fn(j, lead)})}; }, then || undefined); },
+ b3Open(id, step){ const j = B3.get(this.state, id); this.setState({jid:id}); this.go(step || B3.nextStep(j)); },
+ b3Log(id, action, detail, patch){ this.b1Patch([id], () => patch || {}, () => [action, detail]); },
+ pickFile(after){ if(after === 'photos') return this.b3Photos(this.state.jid); this._after = after; this.fileEl && this.fileEl.click(); },
+ onFile(e){ const f = e.target.files && e.target.files[0]; e.target.value = ''; if(f) this.b3Upload(this.state.jid, f.name.replace(/\.pdf$/i, '')); },
+ b3Upload(id, name){
+   const before = B3.get(this.state, id), lead = this.state.leads.find(l => l.id === id), who = B3.ME;
+   this.b3Set(id, (j, l) => B3.T.upload(j, l, Date.now(), who, name));
+   this.b3Log(id, before.est ? 'Revised estimate uploaded' : 'Estimate uploaded', 'Final draft + components report · read by the system');
+   const after = B3.T.upload(before, lead, Date.now(), who, name), t = B3.totals(after), dict = after.est.lines.filter(l => l.code).length, low = after.est.lines.filter(l => l.conf < 0.9);
+   this.runFlow('Reading the two reports — ' + after.est.file,
+     [['Uploading the final draft and the components report', 350], ['Reading the header — number, date, claim, insured, property', 350], ['Extracting the line items, room by room', 500],
+      ['Reading the recap by category and the recap by room', 400], ['Reading labour hours by trade from the components report', 350], ['Matching descriptions against the mapping dictionary', 350], ['Reconciling three ways', 350]],
+     Stack(h('div', {style:{fontSize:'13px', fontWeight:600}}, 'Extraction finished — version ' + after.est.v),
+       Tbl(['Result','Value'], [['Line items found', String(after.est.lines.length)], ['Already mapped from the dictionary', dict + ' of ' + after.est.lines.length],
+         ['Low confidence — needs a person', '<b>' + low.length + '</b>' + (low[0] ? ' (line ' + (low[0].i + 1) + ', ' + low[0].desc + ')' : '')],
+         ['Extracted lines, plus overhead, profit and tax', B3.M(t.got)], ['Grand total on the final draft', B3.M(t.grand)],
+         ['Reconciliation', t.delta ? '<b style="color:#C8442E">Δ ' + B3.M(t.delta) + ' — does not reconcile</b>' : '<b>Reconciles</b>']]),
+       simNote('No file is read. The same sample estimate is loaded, scaled to this lead, with one line the extraction could not resolve.')),
+     [Btn('Open the review screen', {kind:'pri', onClick:() => { closeM(); setTab(0); go('estimate'); }})]);
+ },
+ b3EditLine(id, i){ const j = B3.get(this.state, id), l = j.est.lines.find(x => x.i === i), v = {qty:String(l.qty), unit:String(l.unit), desc:l.desc};
+   const inp = (k, w) => h('input', {defaultValue:v[k], onChange:e => v[k] = e.target.value, style:inputStyle(w), 'data-k':k});
+   modal('Edit line ' + (i + 1), Stack(Lbl('Description'), inp('desc'),
+     h('div', {style:{display:'flex', gap:'12px'}}, h('div', {style:{flex:1}}, Lbl('Quantity (' + l.uom + ')'), inp('qty')), h('div', {style:{flex:1}}, Lbl('Unit price $'), inp('unit'))),
+     l.conf < 0.9 ? HTM({fontSize:'12px', color:C.dg}, 'The extraction could not resolve the digits of the unit price. Read it off the final draft on the left and type it here.') : null),
+     [Btn('Cancel', {onClick:() => closeM()}), Btn('Save line', {kind:'pri', onClick:() => { closeM();
+       this.b3Set(id, job => B3.T.line(job, i, {desc:v.desc, qty:B3.num(v.qty), unit:B3.num(v.unit), conf:1, ok:true, edited:true}));
+       this.b3Log(id, 'Estimate line corrected', 'Line ' + (i + 1) + ' · ' + l.qty + ' × ' + B3.M(l.unit) + ' → ' + B3.num(v.qty) + ' × ' + B3.M(B3.num(v.unit))); toast('Line ' + (i + 1) + ' corrected'); }})]); },
+ b3Reviewed(id){ const t = B3.totals(B3.get(this.state, id));
+   this.b3Set(id, j => B3.T.reviewed(j)); this.b3Log(id, 'Estimate reviewed', 'Reconciled three ways · ' + B3.M(t.grand), {value:Math.round(t.grand)});
+   toast('Estimate reviewed — the lead value is now ' + B3.M(t.grand)); go('mapping'); },
+ b3Budget(id){ this.b3Set(id, j => B3.T.budget(j)); toast('Budget built from the scope packages'); },
+ b3BudSave(id, lock){ this.b3Set(id, j => B3.T.budSave(j, Date.now(), lock, j.bud.why)); this.b3Log(id, lock ? 'Budget baseline locked' : 'Budget saved', B3.M(B3.budCost(B3.get(this.state, id)))); toast(lock ? 'Baseline locked' : 'Budget saved'); },
+ b3BudRevise(id){ const v = {why:''};
+   modal('Revise the baseline', Stack(HTM({fontSize:'12.5px'}, 'A revision unlocks the figures and keeps the previous version. It needs a reason, and it is recorded with who made it.'),
+     Lbl('Reason'), h('input', {autoFocus:true, onChange:e => v.why = e.target.value, placeholder:'e.g. Subcontractor quote came in higher', style:inputStyle()})),
+     [Btn('Cancel', {onClick:() => closeM()}), Btn('Start the revision', {kind:'pri', onClick:() => { if(!v.why.trim()) return toast('A reason is required', 'dg'); closeM();
+       this.b3Set(id, j => Object.assign({}, j, {bud:Object.assign({}, j.bud, {locked:false, saved:false, why:v.why.trim()})})); toast('Baseline unlocked for revision'); }})]); },
+ b3Narr(id){ const j = B3.get(this.state, id);
+   this.runFlow('Generating the scope narrative', [['Reading ' + j.est.lines.length + ' estimate line items', 350], ['Reading the inspection session', 350], ['Reading ' + j.photos.length + ' photo labels', 300], ['Drafting the narrative', 500]],
+     Ph('Draft ready — ' + (j.pk.length + 1) + ' sections. It is a starting point: edit it before it goes into the proposal.'), [Btn('Done', {kind:'pri', onClick:() => closeM()})]);
+   this.b3Set(id, (job, lead) => B3.T.narr(job, lead)); },
+ b3Photos(id){ this.b3Set(id, j => Object.assign({}, j, {photos:j.photos.concat([
+     {n:'Kitchen — after demolition', dir:'—', cat:'Affected area', room:'Kitchen', cond:j.photos[4] ? j.photos[4].cond : 'Fire damage', dsrc:'—', conf:1, by:'AI'},
+     {n:'Basement — overview', dir:'—', cat:'Overview', room:'Basement', cond:'Undamaged', dsrc:'—', conf:1, by:'AI'},
+     {n:'Unlabelled capture', dir:'—', cat:'—', room:'—', cond:'—', dsrc:'—', conf:0.38, by:'AI'}])}));
+   toast('3 photos added and labelled by the AI — 1 needs a person'); },
+ b3Report(id, layout){ const j = B3.get(this.state, id);
+   if(B3.review(j)) return toast(B3.review(j) + ' photo(s) still need a label before a report can be generated', 'dg');
+   this.b3Set(id, job => B3.T.report(job, Date.now(), layout)); this.b3Log(id, 'Photo report generated', j.photos.length + ' photos · ' + layout); toast('Photo report generated and saved to ' + id); },
+ b3Send(id){ const j = B3.get(this.state, id), miss = B3.canSend(j), lead = this.state.leads.find(l => l.id === id);
+   if(miss.length) return toast('Not ready to send — pending: ' + miss.join(', '), 'dg');
+   const t = B3.totals(j), n = j.vers.length + 1, now = Date.now(), cadName = (j.send && j.send.cad) || 'Proposal Follow-Up — friendly';
+   this.b3Set(id, job => B3.T.send(job, now));
+   this.b1Patch([id], l => ({stage:B1.SENT(l.arm), stageAt:l.stage === B1.SENT(l.arm) ? l.stageAt : now, lastAt:now, value:Math.round(t.grand),
+       cad:cadName === 'None' ? l.cad : B1.mkCad(cadName, 1, 'Running', now + 2 * B1.DAY),
+       comms:l.comms.concat([{at:now, ch:'Email', who:'HUMAN — ' + B3.ME, head:'Proposal sent · version ' + n + ' · ' + B3.M(t.grand), body:'One package to review and sign, with the payment link for the $500 binder. (Simulated — nothing was sent.)'}])}),
+     l => ['Proposal sent', 'Version ' + n + ' · ' + B3.M(t.grand) + (l.stage !== B1.SENT(l.arm) ? ' · stage → ' + B1.SENT(l.arm) : '')]);
+   toast('Proposal v' + n + ' sent to ' + lead.client + ' — ' + B1.SENT(lead.arm)); },
+ b3Viewed(id){ this.b3Set(id, j => B3.T.ver(j, {status:'Viewed', viewedAt:Date.now()})); this.b3Log(id, 'Proposal viewed by the client', 'Opened from the link in the email'); toast('The client opened the proposal'); },
+ b3Sign(id){ const now = Date.now(); this.b3Set(id, (j, l) => B3.T.sign(j, l, now));
+   this.b1Patch([id], l => ({lastAt:now, cad:l.cad && l.cad.state !== 'Stopped' ? Object.assign({}, l.cad, {state:'Stopped', nextAt:null, why:'signed'}) : l.cad,
+     comms:l.comms.concat([{at:now, ch:'Email', who:'SYSTEM', head:'Proposal signed by the client', body:'The team is notified: “client accepted, payment initiated”. The signed proposal is the contract.'}])}), () => ['Proposal signed', 'Digital signature · follow-up stopped']);
+   toast('Signed — the team is notified'); },
+ b3Pay(id, method){ const now = Date.now(); this.b3Set(id, j => B3.T.pay(j, now, method));
+   this.b1Patch([id], () => ({stage:'Won', stageAt:now, lastAt:now}), () => ['Binder paid', '$500.00 · ' + method + ' · stage → Won']);
+   toast('Binder received by ' + method + ' — ' + id + ' is Won'); },
+ b3Decline(id, why){ if(!why || why === '— select —') return toast('A loss reason is required', 'dg'); const now = Date.now();
+   this.b3Set(id, j => B3.T.decline(j, now, why));
+   this.b1Patch([id], l => ({stage:'Lost', stageAt:now, lostReason:why, cad:l.cad && l.cad.state !== 'Stopped' ? Object.assign({}, l.cad, {state:'Stopped', nextAt:null, why:'declined'}) : l.cad}), () => ['Proposal declined', 'Stage → Lost · ' + why]);
+   toast(id + ' moved to Lost — ' + why, 'dg'); },
+ b3Handoff(id){ const j = B3.get(this.state, id), lead = this.state.leads.find(l => l.id === id), t = B3.totals(j);
+   if(!TOCONVERT.some(c => c.lead === id)) TOCONVERT.unshift({lead:id, client:lead.client, job:lead.job, div:B3.divOf(lead), v:t.grand.toLocaleString('en-US', {minimumFractionDigits:2}), paid:'Binder paid ' + B1.fmtDay(j.acc.paidAt), est:lead.assigned || '—', tpa:'', claim:lead.claim || ''});
+   this.b3Set(id, job => Object.assign({}, job, {handed:true})); this.b3Log(id, 'Sent to the Operations Manager', 'Ready to convert into a job'); toast('Sent to the Operations Manager — waiting in Jobs & schedule'); }
+});
+
+/* ---------- the frame every step shares ---------- */
+const b3Ctx = st => { const lead = st.leads.find(l => l.id === st.jid) || st.leads.find(l => l.id === 'L-2026-0415') || st.leads[0]; return {lead, job:B3.get(st, lead.id), id:lead.id}; };
+const b3Header = (curStep, lead, job) => { const S = B3.steps(job), done = S.filter(s => s[3]).length, pct = Math.round(done / S.length * 100), nx = S.findIndex(s => !s[3]), t = B3.totals(job), chen = lead.id === 'L-2026-0415';
+ return h('div', {style:{background:'#fff', border:'1px solid ' + C.bd, borderRadius:'12px', overflow:'hidden'}},
+  h('div', {style:{display:'flex', gap:'12px', alignItems:'center', flexWrap:'wrap', padding:'13px 16px', borderBottom:'1px solid ' + C.line}},
+   h('b', {style:{fontFamily:BAR, fontSize:'16px'}}, lead.client), armTag(lead.arm), Tag(lead.job), lead.emg ? Tag('EMERGENCY', 'dg') : null,
+   h('span', {style:{fontSize:'12px', color:C.mut}}, lead.id + ' · ' + lead.addr + ', ' + lead.city + ', ' + lead.state + (lead.claim ? ' · claim ' + lead.claim : '')),
+   h('span', {style:{flex:1}}), h('b', {style:{fontFamily:BAR, fontSize:'17px'}}, t ? B3.M(t.grand) : 'No estimate yet'),
+   Btn('Open lead record', {sm:true, onClick:() => go('lead', lead.id)})),
+  h('div', {style:{display:'flex', gap:'18px', alignItems:'center', flexWrap:'wrap', padding:'9px 16px', borderBottom:'1px solid ' + C.line, fontSize:'11.5px'}},
+   ...[['Division', B3.divOf(lead)], ['Carrier', lead.carrier || '—'], ['Claim', lead.claim || '—'], ['Adjuster', chen ? JOB.adjuster : '—'], ['Estimator', lead.assigned || '—'],
+       ['Project manager', 'Assigned at conversion'], ['Target gross margin', '45%']]
+     .map(f => h('span', {key:f[0]}, h('span', {style:{color:C.faint}}, f[0] + ' '), h('b', null, f[1])))),
+  h('div', {style:{display:'flex', gap:'14px', alignItems:'center', flexWrap:'wrap', padding:'10px 16px', background:'#F8FBFD', borderBottom:'1px solid ' + C.line, fontSize:'12px'}},
+   h('span', {style:{color:C.faint}}, 'Status'), h('b', null, B3.lane(lead, job)), h('span', {style:{color:C.faint}}, 'Lead stage'), Tag(lead.stage, lead.stage === 'Won' ? 'ok' : lead.stage === 'Lost' ? 'dg' : null), h('span', {style:{flex:1}}),
+   h('span', {style:{color:C.faint}}, 'Progress'),
+   h('div', {style:{width:'180px', height:'7px', borderRadius:'99px', background:'#E3ECF2', overflow:'hidden'}},
+    h('div', {style:{width:pct + '%', height:'100%', background:'linear-gradient(90deg,' + C.pri + ',' + C.cy + ')', transition:'width .6s ease'}})),
+   h('b', null, done + ' of ' + S.length + ' steps'),
+   h('span', {style:{color:C.mut}}, 'Next: ' + (nx >= 0 ? (nx + 1) + ' · ' + S[nx][1] : 'ready to become a job'))),
+  h('div', {style:{display:'flex', flexWrap:'wrap'}},
+   ...S.map((s, i) => h('div', {key:s[0], onClick:() => go(s[0]),
+     style:{flex:'1 0 128px', padding:'9px 11px', cursor:'pointer', borderRight:'1px solid ' + C.line, borderTop:'1px solid ' + C.line,
+      background:curStep === s[0] ? C.pri : '#fff', color:curStep === s[0] ? '#fff' : C.ink, transition:'all .16s'}},
+    h('div', {style:{fontSize:'11.5px', fontWeight:600}}, (i + 1) + ' · ' + s[1]),
+    h('div', {style:{fontSize:'10.5px', opacity:.75, marginTop:'2px'}}, (s[3] ? '✓ ' : '') + s[2])))));
+};
+const b3Page = (st, step, title, fn) => { const x = b3Ctx(st), o = fn(x.lead, x.job, x.id);
+ return Page({key:step + x.id, crumb:['Estimating queue', () => go('equeue'), x.lead.id + ' · ' + x.lead.client], title, sub:o.sub, children:[b3Header(step, x.lead, x.job)].concat(o.children || [])}); };
+const b3Gate = (msg, label, step) => Card('Not yet', h('div', {style:{display:'flex', gap:'12px', alignItems:'center', flexWrap:'wrap'}}, h('span', {style:{fontSize:'13px', flex:1}}, msg), Btn(label, {kind:'pri', onClick:() => go(step)})));
+
+/* ================= ESTIMATING QUEUE ================= */
+SCREENS.equeue = (p, st) => {
+ const ui = st.p2ui, now = Date.now(), ACTIVE = ['Awaiting estimate','In review','Structuring','Proposal draft'];
+ const all = st.leads.filter(l => B3.inQueue(l, st)).map(l => { const j = B3.get(st, l.id), S = B3.steps(j), t = B3.totals(j), ln = B3.lane(l, j), v = B3.cur(j);
+   const days = l.stage === 'Visit scheduled' ? null : Math.max(0, Math.floor((now - B3.visitAt(l)) / B3.DAY));
+   return {l, j, S, ln, days, old:days != null && days > 5 && ACTIVE.indexOf(ln) >= 0, total:t ? t.grand : l.value, prop:v ? v.status + ' · v' + v.v : j.prop.saved ? 'Draft' : '—'}; });
+ const q = (ui.q || '').toLowerCase();
+ const rows = all.filter(r => (!q || (r.l.id + ' ' + r.l.client).toLowerCase().indexOf(q) >= 0) && (!ui.est || ui.est === 'Estimator: All' || r.l.assigned === ui.est)
+   && (!ui.arm || ui.arm === 'Arm: All' || r.l.arm === ui.arm) && (!ui.lane || ui.lane === 'Status: All' || (ui.lane === 'Ageing > 5 days' ? r.old : r.ln === ui.lane)))
+   .sort((a, b) => B3.LANES.indexOf(a.ln) - B3.LANES.indexOf(b.ln) || (b.days || 0) - (a.days || 0));
+ const open = r => APP.b3Open(r.l.id);
+ const table = rows.length ? Tbl(['Lead','Client','Arm','Job type','Estimator','Status','Visit',{t:'Days since',n:true},'Estimate','Scope','Budget',{t:'Photos',n:true},'Proposal',{t:'Value',n:true}],
+   rows.map(r => ({c:[leadLink(r.l), r.l.client, armTag(r.l.arm), r.l.job, r.l.assigned || '—', Tag(r.ln, r.ln === 'Won' ? 'ok' : r.ln === 'Lost' ? 'dg' : r.ln === 'Awaiting estimate' ? 'wn' : null),
+     B1.fmtDay(B3.visitAt(r.l)), {t:r.days == null ? '—' : r.old ? '<b style="color:#C8442E">' + r.days + ' ⚠</b>' : r.days, n:true},
+     r.S[0][2], r.S[2][2], r.S[3][2], {t:r.j.photos.length, n:true}, r.prop, {t:r.total ? B3.M(r.total) : '—', n:true}],
+     onClick:() => open(r), style:r.old ? {background:'#FFFCF5'} : null})), {min:'1480px'})
+   : Card('', HTM({fontSize:'13px', color:C.mut}, 'No jobs match these filters.'));
+ const kanban = Kanban(B3.LANES, L => rows.filter(r => r.ln === L).map(r => KCard({key:r.l.id, onClick:() => open(r),
+   title:r.l.client, meta:r.l.id + ' · ' + r.l.arm + ' · ' + r.l.job + ' · ' + (r.l.assigned || 'unassigned'),
+   foot:h('div', {style:{marginTop:'6px', display:'flex', gap:'6px', alignItems:'center', flexWrap:'wrap'}},
+     r.total ? h('b', {style:{fontSize:'12px'}}, B3.M(r.total)) : null,
+     r.old ? Tag(r.days + ' d since visit', 'dg') : Tag('visit ' + B1.fmtDay(B3.visitAt(r.l))))})));
+ const cnt = L => all.filter(r => r.ln === L).length;
+ return Page({key:'equeue', title:'Estimating queue', sub:'Every lead with a site visit — this is what the weekly operations meeting reviews. A job moves along this queue by the work done on it, never by hand.',
+  actions:[Btn('Export CSV', {onClick:() => toast('CSV exported — ' + rows.length + ' jobs, current filters')})],
+  children:[
+   Tiles([[cnt('Awaiting estimate'), 'Awaiting estimate', null, C.wn], [cnt('In review'), 'Estimate in review'], [cnt('Structuring') + cnt('Proposal draft'), 'Being structured and priced'],
+     [cnt('Sent — awaiting client'), 'Sent — awaiting the client'], [all.filter(r => r.old).length, 'More than 5 days since the visit', null, C.dg]]),
+   Bar(FldC(ui.q || '', v => setP2({q:v}), {ph:'Search lead, client…', w:'220px'}), SelC(ui.est || 'Estimator: All', ['Estimator: All'].concat(EST), v => setP2({est:v}), {w:'180px'}),
+     SelC(ui.arm || 'Arm: All', ['Arm: All','Commercial GC','Restoration'], v => setP2({arm:v}), {w:'150px'}),
+     SelC(ui.lane || 'Status: All', ['Status: All'].concat(B3.LANES).concat(['Ageing > 5 days']), v => setP2({lane:v}), {w:'220px'}),
+     h('span', {style:{fontSize:'12.5px', color:C.mut}}, h('b', null, rows.length), ' of ' + all.length + ' jobs'), Sp(),
+     Grp(Btn('Table', {kind:st.eqView === 'table' ? 'pri' : 'ghost', onClick:() => APP.setState({eqView:'table'})}),
+       Btn('Kanban', {kind:st.eqView === 'kanban' ? 'pri' : 'ghost', onClick:() => APP.setState({eqView:'kanban'})}))),
+   st.eqView === 'table' ? table : kanban]});
+};
+
+/* ================= 1 · ESTIMATE INTAKE ================= */
+SCREENS.estimate = (p, st) => b3Page(st, 'estimate', '1 · Estimate intake', (lead, job, id) => {
+ const e = job.est, ui = st.p2ui;
+ if(!e && lead.stage === 'Visit scheduled') return {sub:'The estimate is written after the site visit', children:[Card('Not yet', h('div', {style:{display:'flex', gap:'12px', alignItems:'center', flexWrap:'wrap'}},
+   h('span', {style:{fontSize:'13px', flex:1}}, 'The site visit is booked for ' + B1.fmt(lead.visit && lead.visit.at) + ' and has not been marked completed. Completing it moves the lead to Estimating and opens this step.'), Btn('Open appointments', {kind:'pri', onClick:() => go('appointments')})))]};
+ if(!e) return {sub:'No estimate yet — the two reports come out of Xactimate as PDFs', children:[
    Row(xDrop('Final draft', 'The report that goes to the carrier and the client. The lines, room by room, and the recap by category and by room at the back.'),
        xDrop('Components report', 'The internal report. Every material with its code, the equipment, and the labour hours by trade.')),
-   HTM({fontSize:'11.5px', color:C.faint, margin:'-6px 0 0'}, 'Both come out of Xactimate as PDFs — there is nothing to connect to and nothing to import. They can also be forwarded together to jbish@3riverscm.com.'),
+   Card('Simulate the upload', Stack(h('div', null, Btn('Simulate the upload of both reports', {kind:'pri', onClick:() => APP.b3Upload(id)})),
+     simNote('Dropping a real PDF above does the same thing: no file is read. A sample estimate is loaded, scaled to this lead, with one line the extraction could not resolve — so the review and the three-way check can be tried.')), {hard:true})]};
+ const t = B3.totals(job), ck = B3.checks(job), T = ['Review extraction','Source reports','Versions'], pend = e.lines.filter(l => !l.ok).length, bad = e.lines.find(l => l.conf < 0.9);
+ const show = ui.show || 'Show: all lines';
+ let lines = e.lines.slice(); if(show === 'Low confidence first') lines.sort((a, b) => a.conf - b.conf); if(show === 'Unconfirmed only') lines = lines.filter(l => !l.ok);
+ const block = t.delta ? 'Blocked: the three checks do not reconcile — Δ ' + B3.M(t.delta) : pend ? 'Blocked: ' + pend + ' line(s) not confirmed yet' : '';
+ const mism = r => Math.abs(r[2] - r[1]) >= 0.005;
+ let pane = null;
+ if(st.tab === 0) pane = Stack(
+   Card('Two reports per estimate — both are in', h('div', {style:{display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(320px,1fr))', gap:'12px'}},
+     ...[['Final draft', e.file + ' — final draft.pdf', 'The lines, room by room — and the recap by category and by room at the back'], ['Components report', e.file + ' — components.pdf', 'Every material with its code, the equipment, and the labour hours by trade']]
+       .map(r => h('div', {key:r[0], style:{display:'flex', gap:'12px', alignItems:'flex-start', border:'1px solid ' + C.bd, borderRadius:'10px', padding:'10px 14px', background:'#fff'}},
+         h('div', {style:{fontSize:'18px', color:C.ok, lineHeight:1.2}}, '✓'), h('div', null, h('div', {style:{fontSize:'13px', fontWeight:700}}, r[0]), h('div', {style:{fontSize:'12px', color:C.mut}}, r[1]), h('div', {style:{fontSize:'11.5px', color:C.faint, marginTop:'2px'}}, r[2]))))), {hard:true}),
+   Bar(SelC(show, ['Show: all lines','Low confidence first','Unconfirmed only'], v => setP2({show:v}), {w:'200px'}), Sp(),
+     h('span', {style:{fontSize:'12.5px'}}, h('b', null, e.lines.length - pend), ' of ' + e.lines.length + ' lines confirmed'),
+     Btn('Confirm all high-confidence', {sm:true, disabled:e.reviewed || !e.lines.some(l => !l.ok && l.conf >= 0.9), onClick:() => { APP.b3Set(id, j => B3.T.confirmAll(j)); toast(e.lines.filter(l => !l.ok && l.conf >= 0.9).length + ' lines confirmed'); }})),
+   h('div', {style:{display:'grid', gridTemplateColumns:'minmax(300px,.7fr) minmax(620px,1.3fr)', gap:'14px', alignItems:'start'}},
+    Card('Final draft — as printed', PhPre(e.file + '.pdf\n' + (lead.carrier ? lead.carrier + ' · Claim ' + (lead.claim || '—') + '\n' : '') + lead.addr + ', ' + lead.city + ' ' + lead.state + ' ' + lead.zip + '\n\nKITCHEN — Height 8\'\n' +
+      e.lines.slice(0, 4).map(l => (l.i + 1) + '. ' + l.desc.slice(0, 34) + '   ' + l.qty + ' ' + l.uom + '   ' + B3.num(l.unit).toFixed(2) + '   ' + B3.lt(l).toFixed(2)).join('\n') +
+      '\n…\n20. R&R Load bearing header - engineered\n     ' + e.lines[B3.BAD].qty + ' EA   3,3?1.60' + (bad ? '   ← the extraction could not resolve these digits' : '   ← corrected by a person') +
+      '\n…\nRECAP BY CATEGORY · RECAP BY ROOM\nLine item total  ' + B3.M(t.sub) + '\nOverhead  ' + B3.M(t.oh) + ' · Profit  ' + B3.M(t.pr) + ' · Sales tax  ' + B3.M(t.tax) + '\nGRAND TOTAL  ' + B3.M(t.grand), {left:true, mono:true, h:'420px'})),
+    Card('Extracted line items', h('div', {style:{maxHeight:'452px', overflow:'auto'}}, Tbl(['#','Area / room','Description','Category (AI)',{t:'Qty',n:true},{t:'Unit $',n:true},{t:'Total $',n:true},'Conf.','',''],
+      lines.map(l => ({key:l.i, c:[String(l.i + 1), l.room, l.desc, h('span', {style:{fontSize:'11px', fontWeight:600, whiteSpace:'nowrap'}}, XCATNAME[l.cat]), {t:l.qty.toLocaleString('en-US') + ' ' + l.uom, n:true}, {t:B3.num(l.unit).toFixed(2), n:true}, {t:xMoney(B3.lt(l)), n:true},
+        l.conf < 0.9 ? Tag(Math.round(l.conf * 100) + '% !', 'dg') : Math.round(l.conf * 100) + '%', l.ok ? Tag(l.edited ? 'corrected' : 'confirmed', 'ok') : Tag('to confirm', 'wn'),
+        e.reviewed ? '' : Btn('Edit', {sm:true, onClick:() => APP.b3EditLine(id, l.i)})], style:l.conf < 0.9 ? {background:'#FFFCF5'} : null})), {flush:true, min:'900px'})), {flush:true})),
+   Card('Reconciliation — checked three ways', h('div', {style:{display:'grid', gridTemplateColumns:'minmax(240px,.7fr) minmax(380px,1.3fr) minmax(320px,1fr)', gap:'22px', alignItems:'start'}},
+     h('div', {style:{fontSize:'13px', lineHeight:1.7}}, xLbl('1 · GRAND TOTAL'),
+       h('div', null, 'Extracted lines, plus overhead, profit and tax'), h('b', {style:{fontSize:'15px'}}, B3.M(t.got)),
+       h('div', {style:{marginTop:'8px'}}, 'Grand total on the final draft'), h('b', {style:{fontSize:'15px'}}, B3.M(t.grand)),
+       h('div', {style:{marginTop:'8px'}}, t.delta ? h('b', {style:{color:C.dg, fontSize:'15px'}}, 'Δ ' + B3.M(t.delta)) : h('b', {style:{color:C.ok, fontSize:'15px'}}, '✓ Reconciles')),
+       xNote(t.delta ? 'The grand total says something is off. It cannot say where — the two recaps at the back of the final draft can.' : 'The grand total, every category and every room agree with the final draft.')),
+     h('div', null, xLbl('2 · BY TRADE — AGAINST THE RECAP BY CATEGORY'), xCheckTbl('Category', ck.cat),
+       xNote(ck.cat.filter(r => !mism(r)).length + ' of ' + ck.cat.length + ' categories match. Like the recap Xactimate prints, these figures are before overhead, profit and tax.')),
+     h('div', null, xLbl('3 · BY ROOM — AGAINST THE RECAP BY ROOM'), xCheckTbl('Room', ck.room),
+       xNote(t.delta ? h('span', null, h('b', null, 'Both recaps point at the same line: '), (ck.cat.find(mism) || [''])[0].toLowerCase() + ', in ' + (ck.room.find(mism) || [''])[0] + '. Correct it and all three checks clear.') : 'Every room matches.'))), {hard:true}),
+   Bar(e.reviewed ? Tag('Reviewed — the lines are locked', 'ok') : h('span', {style:{fontSize:'12px', color:block ? C.dg : C.ok, fontWeight:600}}, block || 'Ready: reconciled and every line confirmed'), Sp(),
+     Btn('Upload a revised estimate (creates v' + (e.v + 1) + ')', {onClick:() => APP.b3Upload(id)}),
+     e.reviewed ? Btn('Continue to mapping →', {kind:'pri', onClick:() => go('mapping')})
+       : Btn('Mark reviewed → continue to mapping', {kind:'pri', disabled:!!block, title:block, onClick:() => APP.b3Reviewed(id)})));
+ if(st.tab === 1) pane = Stack(
+   Row(xDrop('Final draft', 'The report that goes to the carrier and the client. The lines, room by room, and the recap by category and by room at the back.'),
+       xDrop('Components report', 'The internal report. Every material with its code, the equipment, and the labour hours by trade.')),
+   HTM({fontSize:'11.5px', color:C.faint, margin:'-6px 0 0'}, 'Both come out of Xactimate as PDFs — there is nothing to connect to and nothing to import. They can also be forwarded together to the estimates mailbox.'),
    Card('Extracted header', Stack(
-     Tbl(['Estimate #','Date','Claim / job reference','Insured / client','Property address'],
-       [[Fld('CHEN-R-08-2026'), Fld('Aug 7, 2026'), Fld('AL-772104'), Fld('Robert Chen'), Fld('88 Hillcrest Dr, Mt Lebanon, PA 15228')]]),
-     Tbl([{t:'Subtotal',n:true},{t:'Overhead',n:true},{t:'Profit',n:true},{t:'Sales tax',n:true},{t:'GRAND TOTAL',n:true}],
-       [[{t:'48,650.00',n:true},{t:'4,865.00',n:true},{t:'4,865.00',n:true},{t:'3,920.00',n:true},{t:'<b>62,300.00</b>',n:true}]]))),
-   Card('Source files', Ph('CHEN_R_FIRE_08-2026 — final draft.pdf · 11 pages · 2.4 MB · uploaded Aug 7, 14:22 by Kyle Brennan<br>CHEN_R_FIRE_08-2026 — components.pdf · 6 pages · 0.9 MB · uploaded Aug 7, 14:23 by Kyle Brennan', {html:true})));
- if(st.tab===2) pane = Tbl(['Version','Source','Uploaded','By',{t:'Grand total',n:true},'Status','Δ vs previous',''],[
-   ['<b>v2</b> (current)','Final draft + components','Aug 7, 14:22','Kyle Brennan',{t:'$62,300.00',n:true}, Tag('In review','wn'),'+$4,180.00 · 3 lines added',
-     h('div',{style:{display:'flex',gap:'6px'}}, Btn('View',{sm:true}), Btn('Compare',{sm:true}))],
-   ['v1','Final draft + components','Aug 5, 09:10','Kyle Brennan',{t:'$58,120.00',n:true},'Superseded','—', Btn('View',{sm:true})]]);
- return jobPage({key:'estimate', step:'estimate', title:'1 · Estimate intake', sub:'Final draft + components report · version 2',
-   children:[Tabs(T, st.tab), pane]});
-};
+     Tbl(['Estimate #','Date','Claim / job reference','Insured / client','Property address'], [[e.file, B1.fmt(e.at), lead.claim || lead.bidref || '—', lead.client, lead.addr + ', ' + lead.city + ', ' + lead.state + ' ' + lead.zip]]),
+     Tbl([{t:'Line item total',n:true},{t:'Overhead',n:true},{t:'Profit',n:true},{t:'Sales tax',n:true},{t:'GRAND TOTAL',n:true}],
+       [[{t:xMoney(t.sub),n:true},{t:xMoney(t.oh),n:true},{t:xMoney(t.pr),n:true},{t:xMoney(t.tax),n:true},{t:'<b>' + xMoney(t.grand) + '</b>',n:true}]]))),
+   Card('Source files', Ph(e.file + ' — final draft.pdf · uploaded ' + B1.fmt(e.at) + ' by ' + e.who + '<br>' + e.file + ' — components.pdf · uploaded ' + B1.fmt(e.at) + ' by ' + e.who, {html:true})));
+ if(st.tab === 2) pane = Tbl(['Version','Source','Uploaded','By',{t:'Lines',n:true},{t:'Grand total',n:true},'Status'],
+   [['<b>v' + e.v + '</b> (current)', 'Final draft + components', B1.fmt(e.at), e.who, {t:e.lines.length, n:true}, {t:B3.M(t.grand), n:true}, Tag(e.reviewed ? 'Reviewed' : 'In review', e.reviewed ? 'ok' : 'wn')]]
+     .concat(job.hist.map(x => ['v' + x.v, 'Final draft + components', B1.fmt(x.at), x.who, {t:x.n, n:true}, {t:B3.M(x.total), n:true}, 'Superseded'])));
+ return {sub:'Final draft + components report · version ' + e.v + ' · ' + (e.reviewed ? 'reviewed' : 'in review'), children:[Tabs(T, st.tab), pane]};
+});
 
-SCREENS.mapping = () => jobPage({key:'mapping', step:'mapping', title:'2 · Line item mapping',
- sub:"Xactimate speaks its own language. This is where it becomes 3Rivers' language — cost codes, trades and cost types.",
- children:[
-  Bar(Sel('Show: unmapped first',['Show: unmapped first','Show: all','Show: AI-mapped only'],{w:'210px'}),
-    Btn('Auto-map all with AI',{onClick:()=>toast('21 of 22 lines auto-mapped')}), Btn('Bulk assign…',{onClick:()=>APP.mBulk()}), Sp(),
-    h('span',{style:{fontSize:'12.5px'}}, h('b',{style:{color:C.dg}},'Unmapped: 1 of 22')),
-    Btn('Mapping dictionary',{onClick:()=>go('s_cost')})),
-  Tbl(['☐','Description (from Xactimate)','Category',{t:'Qty',n:true},'Cost code','Trade','Cost type','Source'],
-    LINES.map((l,i)=>({c:['☐', l[1], h('span',{style:{fontSize:'11.5px', fontWeight:600, whiteSpace:'nowrap'}}, XCATN[i]), {t:l[2]+' '+l[3],n:true},
-      Sel(l[6],['— unmapped —'].concat(COSTCODES.map(c=>c[0]+' '+c[1])),{w:'190px'}),
-      Sel(l[7],['— unmapped —'].concat(TRADES),{w:'140px'}),
-      Sel(l[8],['— select —','Labour','Material','Equipment','Sub'],{w:'120px'}),
-      i===19 ? Tag('unmapped','dg') : (i<8 ? Tag('AI · remembered','ai') : Tag('AI','ai'))],
-      style: i===19 ? {background:'#FFFCF5'} : null})), {min:'1420px'}),
-  Bar(Sp(), Btn('Continue to scope structuring',{kind:'pri', disabled:true, title:'Blocked: 1 line still unmapped'})),
-  
-  Card('Mapping dictionary — learned from confirmed mappings', Tbl(['Xactimate description','→ Cost code','→ Trade','→ Cost type',{t:'Times confirmed',n:true},''],[
-    ['Drywall - 1/2" - hung, taped, floated, ready for paint','05.1 Drywall','Drywall','Sub',{t:'14',n:true}, Btn('Edit',{sm:true})],
-    ['Seal then paint the walls and ceiling (2 coats)','06.1 Painting','Painting','Sub',{t:'11',n:true}, Btn('Edit',{sm:true})],
-    ['R&R Cabinetry - lower (base) units','08.1 Millwork','Carpentry','Sub',{t:'6',n:true}, Btn('Edit',{sm:true})],
-    ['Thermal fogging','02.3 Odour control','Mitigation','Labour',{t:'9',n:true}, Btn('Edit',{sm:true})],
-    ['HEPA air scrubber (per 24 hour period)','03.1 Drying &amp; air equipment','Mitigation','Equipment',{t:'12',n:true}, Btn('Edit',{sm:true})]], {flush:true}), {flush:true})]});
+/* ================= 2 · MAPPING ================= */
+SCREENS.mapping = (p, st) => b3Page(st, 'mapping', '2 · Line item mapping', (lead, job, id) => {
+ const sub = "Xactimate speaks its own language. This is where it becomes 3Rivers' language — cost codes, trades and cost types.";
+ if(!job.est || !job.est.reviewed) return {sub, children:[b3Gate('The estimate has to be reviewed and reconciled before its lines are mapped.', 'Go to estimate intake', 'estimate')]};
+ const ui = st.p2ui, L = job.est.lines, unm = L.filter(l => !l.code).length, show = ui.mshow || 'Show: unmapped first';
+ let rows = L.slice(); if(show === 'Show: unmapped first') rows.sort((a, b) => (a.code ? 1 : 0) - (b.code ? 1 : 0)); if(show === 'Show: AI-mapped only') rows = rows.filter(l => l.src === 'ai' || l.src === 'dict');
+ const setL = (i, patch) => APP.b3Set(id, j => Object.assign({}, B3.T.line(j, i, patch), {mapDone:false}));
+ return {sub, children:[
+  Bar(SelC(show, ['Show: unmapped first','Show: all','Show: AI-mapped only'], v => setP2({mshow:v}), {w:'210px'}),
+    Btn('Auto-map all with AI', {disabled:!L.some(l => !l.code && l.i !== B3.BAD), onClick:() => { const n = L.filter(l => !l.code && l.i !== B3.BAD).length; APP.b3Set(id, j => B3.T.automap(j)); toast(n + ' lines mapped by the AI — ' + (unm - n) + ' left for a person'); }}), Sp(),
+    h('span', {style:{fontSize:'12.5px'}}, h('b', {style:{color:unm ? C.dg : C.ok}}, unm ? 'Unmapped: ' + unm + ' of ' + L.length : '✓ All ' + L.length + ' lines mapped')),
+    Btn('Mapping dictionary', {onClick:() => go('s_cost')})),
+  h('div', {style:{maxHeight:'560px', overflow:'auto', borderRadius:'12px', border:'1px solid ' + C.bd}}, Tbl(['#','Description (from Xactimate)','Category',{t:'Qty',n:true},'Cost code','Trade','Cost type','Source'],
+    rows.map(l => ({key:l.i, c:[String(l.i + 1), l.desc, h('span', {style:{fontSize:'11px', fontWeight:600, whiteSpace:'nowrap'}}, XCATNAME[l.cat]), {t:l.qty.toLocaleString('en-US') + ' ' + l.uom, n:true},
+      SelC(l.code ? B3.codeLbl(l.code) : '— unmapped —', ['— unmapped —'].concat(B3.CODEOPTS), v => { const c = v.charAt(0) === '—' ? '' : v.slice(0, 4); setL(l.i, {code:c, ctype:c ? (l.ctype || B3.ctypeOf(c)) : '', trade:'', src:c ? 'person' : ''}); }, {w:'230px', bad:!l.code}),
+      SelC(l.trade || B3.tradeOf(l.code) || '— unmapped —', ['— unmapped —'].concat(TRADES), v => setL(l.i, {trade:v}), {w:'160px'}),
+      SelC(l.ctype || '— select —', ['— select —','Labour','Material','Equipment','Sub'], v => setL(l.i, {ctype:v.charAt(0) === '—' ? '' : v}), {w:'120px'}),
+      !l.code ? Tag('unmapped', 'dg') : l.src === 'dict' ? Tag('AI · remembered', 'ai') : l.src === 'ai' ? Tag('AI', 'ai') : Tag('Person', 'ok')],
+      style:!l.code ? {background:'#FFFCF5'} : null})), {flush:true, min:'1380px'})),
+  Bar(h('span', {style:{fontSize:'12px', color:C.mut}}, 'A mapping a person confirms is remembered: the next estimate with the same description arrives already mapped.'), Sp(),
+    job.mapDone ? Btn('Continue to scope structuring →', {kind:'pri', onClick:() => go('scope')})
+      : Btn('Confirm the mapping → scope structuring', {kind:'pri', disabled:unm > 0, title:unm ? 'Blocked: ' + unm + ' line(s) still unmapped' : '', onClick:() => { APP.b3Set(id, j => Object.assign({}, j, {mapDone:true})); APP.b3Log(id, 'Lines mapped', L.length + ' lines to cost codes'); toast('Mapping confirmed'); go('scope'); }})),
+  Card('Mapping dictionary — learned from confirmed mappings', Tbl(['Xactimate description','→ Cost code','→ Trade','→ Cost type',{t:'Times confirmed',n:true}],
+    L.filter(l => l.code).slice(0, 6).map((l, n) => [l.desc, B3.codeLbl(l.code), l.trade || B3.tradeOf(l.code), l.ctype, {t:String(14 - n * 2 + (job.mapDone ? 1 : 0)), n:true}]), {flush:true}), {flush:true})]};
+});
 
-SCREENS.scope = () => jobPage({key:'scope', step:'scope', title:'3 · Scope structuring',
- sub:'Line items grouped into scope packages — the unit Phase 3 issues an RFP or a work order against',
- children:[
-  Bar(Btn('Group by trade',{kind:'pri'}), Btn('Group by area / room'), Sp(),
-    h('span',{style:{fontSize:'12.5px'}},'9 packages · $33,914.00 allocated · ', h('b',null,'$0.00 unassigned')),
-    Btn('+ New scope package',{onClick:()=>APP.mScopePkg()}))
-  ].concat(SCOPEPKGS.map(pk => Card(pk.c+' · '+pk.n, Stack(
-    h('div',{style:{display:'flex', gap:'10px', flexWrap:'wrap', alignItems:'center'}},
-      h('div',{style:{flex:'1 1 220px'}}, Lbl('Execution'), Sel(pk.ex,['Self-perform','Subcontracted'])),
-      h('div',{style:{flex:'1 1 220px'}}, Lbl('Trade'), Sel(pk.t, TRADES)),
-      h('div',{style:{flex:'1 1 120px'}}, Lbl('Target start'), Fld(pk.start)),
-      h('div',{style:{flex:'1 1 120px'}}, Lbl('Finish'), Fld(pk.fin))),
-    Tbl(['Line item',{t:'Qty',n:true},'Cost code',{t:'Value',n:true},''],
-      pk.items.map(ix=>[LINES[ix][1], {t:LINES[ix][2]+' '+LINES[ix][3],n:true}, LINES[ix][6], {t:'$'+LINES[ix][5],n:true},
-        Btn('Move ▾',{sm:true, onClick:()=>APP.mMove()})]))),
-    {actions:[Tag(pk.t), Tag(pk.ex.toUpperCase(), pk.ex==='Self-perform'?'ok':null),
-      h('b',{key:'v', style:{fontFamily:BAR, fontSize:'14px'}}, '$'+pk.v), Btn('Edit',{sm:true, onClick:()=>APP.mScopePkg()})]})))
-  .concat([
-  Card('Unassigned line items', Ph('All 22 line items are assigned. Any unassigned line blocks the budget from being finalised.'))])});
+/* ================= 3 · SCOPE ================= */
+SCREENS.scope = (p, st) => b3Page(st, 'scope', '3 · Scope structuring', (lead, job, id) => {
+ const sub = 'Line items grouped into scope packages — the unit Phase 3 issues an RFP or a work order against';
+ if(!job.mapDone) return {sub, children:[b3Gate('Every line needs a cost code before the scope can be packaged.', 'Go to line item mapping', 'mapping')]};
+ const L = job.est.lines, ui = st.p2ui, un = L.filter(l => !l.pk), val = ls => B3.r2(B3.sum(ls.map(B3.lt)));
+ if(!job.pk.length) return {sub, children:[Card('Build the packages', Stack(HTM({fontSize:'13px'}, 'The ' + L.length + ' mapped lines are grouped by trade into scope packages. Each package can then be moved, renamed or split.'),
+   h('div', null, Btn('Group the lines by trade', {kind:'pri', onClick:() => { APP.b3Set(id, j => B3.T.group(j)); toast('Scope packages built from the mapping'); }}))), {hard:true})]};
+ const pkOpts = job.pk.map(p => p.c + ' · ' + p.n).concat(['Unassigned']);
+ const mv = l => SelC(l.pk ? pkOpts.find(o => o.slice(0, 5) === l.pk) : 'Unassigned', pkOpts, v => APP.b3Set(id, j => Object.assign({}, B3.T.line(j, l.i, {pk:v === 'Unassigned' ? '' : v.slice(0, 5)}), {scopeDone:false})), {w:'230px'});
+ const setPk = (c, patch) => APP.b3Set(id, j => Object.assign({}, j, {pk:j.pk.map(x => x.c === c ? Object.assign({}, x, patch) : x)}));
+ const byRoom = ui.grp === 'room';
+ const newPk = () => { const v = {n:'', t:TRADES[0]};
+   modal('New scope package', Stack(Lbl('Name'), h('input', {autoFocus:true, onChange:e => v.n = e.target.value, style:inputStyle()}), Lbl('Trade'), h('select', {onChange:e => v.t = e.target.value, style:inputStyle()}, ...TRADES.map(x => h('option', {key:x}, x)))),
+     [Btn('Cancel', {onClick:() => closeM()}), Btn('Create', {kind:'pri', onClick:() => { if(!v.n.trim()) return; closeM();
+       APP.b3Set(id, j => Object.assign({}, j, {pk:j.pk.concat([{c:'SP-' + String(j.pk.length + 1).padStart(2, '0'), n:v.n.trim(), t:v.t, ex:'Subcontracted', start:'', fin:''}])})); toast('Package created — move lines into it'); }})]); };
+ const cards = byRoom
+  ? B3.ROOMS.filter(r => L.some(l => l.room === r)).map(r => { const ls = L.filter(l => l.room === r);
+      return Card(r, Tbl(['Line item',{t:'Qty',n:true},'Cost code',{t:'Value',n:true},'Package'], ls.map(l => ({key:l.i, c:[l.desc, {t:l.qty.toLocaleString('en-US') + ' ' + l.uom, n:true}, B3.codeLbl(l.code), {t:B3.M(B3.lt(l)), n:true}, mv(l)]})), {flush:true}),
+        {flush:true, actions:[h('b', {key:'v', style:{fontFamily:BAR, fontSize:'14px'}}, B3.M(val(ls)))]}); })
+  : job.pk.map(pk => { const ls = L.filter(l => l.pk === pk.c);
+      return Card(pk.c + ' · ' + pk.n, Stack(
+        h('div', {style:{display:'flex', gap:'10px', flexWrap:'wrap', alignItems:'center'}},
+          h('div', {style:{flex:'1 1 220px'}}, Lbl('Execution'), SelC(pk.ex, ['Self-perform','Subcontracted'], v => setPk(pk.c, {ex:v}))),
+          h('div', {style:{flex:'1 1 220px'}}, Lbl('Trade'), SelC(pk.t, TRADES, v => setPk(pk.c, {t:v}))),
+          h('div', {style:{flex:'1 1 120px'}}, Lbl('Target start'), FldC(pk.start, v => setPk(pk.c, {start:v}))),
+          h('div', {style:{flex:'1 1 120px'}}, Lbl('Finish'), FldC(pk.fin, v => setPk(pk.c, {fin:v})))),
+        ls.length ? Tbl(['Line item',{t:'Qty',n:true},'Cost code',{t:'Value',n:true},'Move to'], ls.map(l => ({key:l.i, c:[l.desc, {t:l.qty.toLocaleString('en-US') + ' ' + l.uom, n:true}, B3.codeLbl(l.code), {t:B3.M(B3.lt(l)), n:true}, mv(l)]})))
+          : HTM({fontSize:'12.5px', color:C.mut}, 'No lines in this package yet.')),
+        {actions:[Tag(pk.t), Tag(pk.ex.toUpperCase(), pk.ex === 'Self-perform' ? 'ok' : null), h('b', {key:'v', style:{fontFamily:BAR, fontSize:'14px'}}, B3.M(val(ls)))]}); });
+ return {sub, children:[
+  Bar(Btn('Group by trade', {kind:byRoom ? 'ghost' : 'pri', onClick:() => setP2({grp:'trade'})}), Btn('Group by area / room', {kind:byRoom ? 'pri' : 'ghost', onClick:() => setP2({grp:'room'})}), Sp(),
+    h('span', {style:{fontSize:'12.5px'}}, job.pk.length + ' packages · ' + B3.M(val(L.filter(l => l.pk))) + ' allocated · ', h('b', {style:{color:un.length ? C.dg : C.ink}}, B3.M(val(un)) + ' unassigned')),
+    Btn('+ New scope package', {onClick:newPk}))]
+  .concat(cards).concat([
+  Card('Unassigned line items', un.length ? Tbl(['Line item',{t:'Value',n:true},'Move to'], un.map(l => ({key:l.i, c:[l.desc, {t:B3.M(B3.lt(l)), n:true}, mv(l)]})), {flush:true})
+    : Ph('All ' + L.length + ' line items are assigned. Any unassigned line blocks the budget from being built.'), {flush:un.length > 0}),
+  Bar(Sp(), job.scopeDone ? Btn('Continue to budget →', {kind:'pri', onClick:() => go('budget')})
+    : Btn('Confirm the scope → budget', {kind:'pri', disabled:un.length > 0, title:un.length ? 'Blocked: ' + un.length + ' line(s) unassigned' : '', onClick:() => { APP.b3Set(id, j => B3.T.scopeDone(j)); APP.b3Log(id, 'Scope structured', job.pk.length + ' packages'); toast('Scope confirmed'); go('budget'); }}))])};
+});
 
-SCREENS.budget = () => jobPage({key:'budget', step:'budget', title:'4 · Budget & cost modeling',
- sub:'Version 3 · baseline locked Aug 7, 16:40 by Kyle Brennan — the estimate is what the client pays, this is what we expect it to cost',
- children:[
-  Tiles([['$62,300','Revenue — estimate total'],['$32,692','Budgeted cost'],['$29,608','Gross margin'],['47.5%','Margin %'],['98 h','Budgeted labour'],['$1,635','Contingency (5%)']]),
-  Bar(Sel('Group by cost code',['Group by cost code','Group by scope package','Group by cost type'],{w:'230px'}), Sp(),
-    Btn('Export CSV / XLSX',{onClick:()=>toast('Budget exported')}), Btn('Save draft'), Btn('Revise baseline…',{kind:'pri', onClick:()=>toast('Baseline revision v4 started')})),
+/* ================= 4 · BUDGET ================= */
+SCREENS.budget = (p, st) => b3Page(st, 'budget', '4 · Budget & cost modeling', (lead, job, id) => {
+ const sub0 = 'The estimate is what the client pays — this is what we expect it to cost';
+ if(!job.scopeDone) return {sub:sub0, children:[b3Gate('The budget is built from the scope packages, so the scope has to be confirmed first.', 'Go to scope structuring', 'scope')]};
+ if(!job.bud) return {sub:sub0, children:[Card('Build the budget', Stack(HTM({fontSize:'13px'}, 'One row per scope package and cost code. Subcontracted work starts as a placeholder until a bid comes in; self-performed work starts from the labour hours in the components report.'),
+   h('div', null, Btn('Build the budget from the scope packages', {kind:'pri', onClick:() => APP.b3Budget(id)}))), {hard:true})]};
+ const b = job.bud, t = B3.totals(job), cost = B3.budCost(job), margin = B3.r2(t.grand - cost), mp = t.grand ? margin / t.grand * 100 : 0, hrs = B3.sum(b.rows.map(r => r.hrs || 0)), cont = B3.r2(cost * B3.num(b.cont) / 100);
+ const setRow = (n, patch) => APP.b3Set(id, j => Object.assign({}, j, {bud:Object.assign({}, j.bud, {saved:false, rows:j.bud.rows.map((r, k) => k === n ? Object.assign({}, r, patch) : r)})}));
+ const lbl = r => r.code === 'PM' ? 'PM / supervision' : B3.codeLbl(r.code), grp = r => r.code === 'PM' ? '11' : r.code.slice(0, 2);
+ const xh = c => { const v = XHRS[c]; return v ? (Math.round(parseFloat(v) * job.k * 2) / 2).toFixed(1) : '—'; };
+ const last = b.vers[0];
+ return {sub:(b.locked ? 'Version ' + last.v + ' · baseline locked ' + B1.fmt(last.at) + ' by ' + last.who : b.saved ? 'Saved — not locked yet' : 'Draft — unsaved changes') + ' — ' + sub0.charAt(0).toLowerCase() + sub0.slice(1), children:[
+  Tiles([[B3.M(t.grand).replace(/\.\d\d$/, ''), 'Revenue — estimate total'], [B3.M(cost).replace(/\.\d\d$/, ''), 'Budgeted cost'], [B3.M(margin).replace(/\.\d\d$/, ''), 'Gross margin'],
+    [mp.toFixed(1) + '%', 'Margin % · target 45%', null, mp < 45 ? C.dg : C.ok], [hrs + ' h', 'Budgeted labour'], [B3.M(cont).replace(/\.\d\d$/, ''), 'Contingency (' + B3.num(b.cont) + '%)']]),
+  Bar(b.locked ? Tag('🔒 Baseline locked — figures cannot change without a revision', 'ok') : mp < 45 ? Tag('⚠ Margin is under the 45% target', 'dg') : Tag('Margin meets the target', 'ok'), Sp(),
+    Btn('Export CSV / XLSX', {onClick:() => toast('Budget exported')}),
+    b.locked ? Btn('Revise baseline…', {kind:'pri', onClick:() => APP.b3BudRevise(id)}) : Btn('Save budget', {kind:b.saved ? 'ghost' : 'pri', disabled:b.saved, onClick:() => APP.b3BudSave(id, false)}),
+    b.locked ? null : Btn('Lock baseline', {disabled:!b.saved, title:b.saved ? '' : 'Save the budget first', onClick:() => APP.b3BudSave(id, true)}),
+    b.saved ? Btn('Continue to narrative →', {kind:b.locked ? 'ghost' : 'pri', onClick:() => go('narrative')}) : null),
   Card('Budget by reporting group — the three figures the weekly progress review works from',
-    Tbl(['Group',{t:'Hours in the estimate',n:true},{t:'Est. labour hours',n:true},{t:'Est. labour $',n:true},{t:'Est. material $',n:true},{t:'Budgeted cost',n:true},{t:'Cost to date',n:true},{t:'Variance',n:true},'State'],
-      CCGROUPS.filter(g=>BUDGET.some(b=>b[0].slice(0,2)===g[0])).map(g=>{
-        const rows = BUDGET.filter(b=>b[0].slice(0,2)===g[0]);
-        const hrs  = rows.reduce((a,b)=>a + (parseFloat(b[5])||0), 0);
-        const lab  = rows.filter(b=>b[2]==='Labour').reduce((a,b)=>a + (parseFloat(String(b[7]).replace(/,/g,''))||0), 0);
-        const mat  = rows.filter(b=>b[2]!=='Labour').reduce((a,b)=>a + (parseFloat(String(b[7]).replace(/,/g,''))||0), 0);
-        const M = n => '$'+n.toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2});
-        return [h('b',null, g[0]+' '+g[1]), {t:XHRS[g[0]]||'—',n:true}, {t:hrs||'—',n:true}, {t:lab?M(lab):'—',n:true}, {t:mat?M(mat):'—',n:true},
-                {t:M(lab+mat),n:true}, {t:'—',n:true}, {t:'—',n:true}, Tag('Not started','dg')];
-      }), {min:'1180px', flush:true}), {flush:true}),
-  HTM({fontSize:'11.5px', color:C.faint, margin:'-4px 0 10px', lineHeight:1.6},
-    'Every group carries estimated labour hours, estimated labour cost and estimated material cost. ' +
-    'Those three are what actual cost is later compared against, and what turns a group amber or red ' +
-    'once it runs more than 10% over. <b>Hours in the estimate</b> come from the components report, by trade: ' +
-    'where 3Rivers does the work itself the budget starts from that figure and the estimator adjusts it; where a ' +
-    'subcontractor does it, the hours stay as a reference and the cost comes from the subcontract.'),
-  Card('Where the hours come from — labour components of the estimate', Tbl(['Code','Trade',{t:'Hours',n:true},'Lands in group'],
-    XLAB.map(r=>['<b>'+r[0]+'</b>', r[1], {t:r[2],n:true}, r[3]]),
-    {flush:true, foot:['<b>Subtotal</b>','',{t:'<b>253.5</b>'},'']}), {flush:true}),
-  Tbl(['Cost code','Scope pkg','Cost type',{t:'Qty',n:true},{t:'Unit rate',n:true},{t:'Est. hours',n:true},'Labour category',{t:'Budget cost',n:true},{t:'Actual',n:true},{t:'Variance',n:true}],
-    BUDGET.map(b=>[b[0],b[1],b[2],{t:b[3],n:true},{t:b[4],n:true},{t:b[5],n:true},b[6],
-      {t:'$'+b[7]+(b[8]?' <span style="color:#7C93A5;font-size:11px">placeholder</span>':''),n:true},{t:'—',n:true},{t:'—',n:true}]),
-    {min:'1180px', foot:['<b>TOTAL</b>','','','','',{t:'<b>98</b>'},'',{t:'<b>$32,692.00</b>'},{t:'—'},{t:'—'}]}),
-  Card('Baseline lock', HTM({fontSize:'12.5px', lineHeight:1.75},
-    'The baseline locks automatically once the job reaches <b>10% of production</b>. From that point the ' +
-    'project manager cannot change it — a revision needs the Director. Every revision keeps its own ' +
-    'version, its reason and who approved it, so margin movement can always be traced to a decision.')),
-  
-  Row(Card('Markup, overhead & profit', Tbl(['Rule','Default','This job'],[
-      ['Markup on materials','12%', Fld('12%',{w:'90px'})],['Markup on subcontracted','18%', Fld('18%',{w:'90px'})],
-      ['Markup on labour','—', Fld('—',{w:'90px'})],['Overhead','10%', Fld('10%',{w:'90px'})],['Profit','10%', Fld('10%',{w:'90px'})]], {flush:true}), {flush:true}),
-    Card('Contingency', Stack(Lbl('Type'), Sel('Percentage',['Percentage','Fixed amount']), Lbl('Value'), Fld('5'),
-      h('div',{style:{fontSize:'13px'}},'→ ', h('b',null,'$1,634.60')),
-      Lbl('Notes'), Ta('Structural header quantity unconfirmed on the source estimate — carrying contingency until the sub walks it.'))),
-    Card('Baseline & versions', Tbl(['Version','Locked','By',{t:'Budget cost',n:true},'Reason'],[
-      ['<b>v3</b>','Aug 7, 16:40','Kyle Brennan',{t:'$32,692.00',n:true},'Baseline'],
-      ['v2','Aug 6, 11:05','Kyle Brennan',{t:'$30,410.00',n:true},'Structural header added'],
-      ['v1','Aug 5, 15:20','Kyle Brennan',{t:'$29,880.00',n:true},'Initial from estimate v1']], {flush:true}), {flush:true}))]});
+    Tbl(['Group',{t:'Hours in the estimate',n:true},{t:'Est. labour hours',n:true},{t:'Est. labour $',n:true},{t:'Est. material / sub $',n:true},{t:'Budgeted cost',n:true},{t:'Cost to date',n:true},{t:'Variance',n:true},'State'],
+      CCGROUPS.filter(g => b.rows.some(r => grp(r) === g[0])).map(g => { const rs = b.rows.filter(r => grp(r) === g[0]), lab = B3.sum(rs.filter(r => r.ctype === 'Labour').map(r => B3.num(r.cost))), mat = B3.sum(rs.filter(r => r.ctype !== 'Labour').map(r => B3.num(r.cost))), hh = B3.sum(rs.map(r => r.hrs || 0));
+        return [h('b', null, g[0] + ' ' + g[1]), {t:xh(g[0]), n:true}, {t:hh || '—', n:true}, {t:lab ? B3.M(lab) : '—', n:true}, {t:mat ? B3.M(mat) : '—', n:true}, {t:B3.M(lab + mat), n:true}, {t:'—', n:true}, {t:'—', n:true}, Tag('Not started')]; }),
+      {min:'1180px', flush:true}), {flush:true}),
+  HTM({fontSize:'11.5px', color:C.faint, margin:'-4px 0 0', lineHeight:1.6}, 'Every group carries estimated labour hours, estimated labour cost and estimated material cost. Those three are what actual cost is later compared against, and what turns a group amber or red once it runs more than 10% over. <b>Hours in the estimate</b> come from the components report, by trade.'),
+  Card('Budget rows — one per scope package and cost code', Tbl(['Cost code','Scope pkg','Cost type',{t:'In the estimate',n:true},{t:'Est. hours',n:true},'Labour category',{t:'Budget cost $',n:true},{t:'Margin',n:true},''],
+    b.rows.map((r, n) => ({key:n, c:[lbl(r), r.pk, r.ctype, {t:r.val ? B3.M(r.val) : '—', n:true}, {t:r.hrs || '—', n:true}, r.who || '—',
+      b.locked ? {t:B3.M(B3.num(r.cost)), n:true} : FldC(r.cost, v => setRow(n, {cost:v}), {w:'110px'}),
+      {t:r.val ? Math.round((1 - B3.num(r.cost) / r.val) * 100) + '%' : '—', n:true}, r.ctype === 'Sub' ? h('span', {style:{color:C.faint, fontSize:'11px'}}, 'placeholder until a bid is awarded') : '']})),
+    {min:'1180px', flush:true, foot:['<b>TOTAL</b>', '', '', {t:'<b>' + B3.M(t.sub) + '</b>'}, {t:'<b>' + hrs + '</b>'}, '', {t:'<b>' + B3.M(cost) + '</b>'}, {t:'<b>' + mp.toFixed(1) + '%</b>'}, '']}), {flush:true}),
+  Row(Card('Where the hours come from — labour components of the estimate', Tbl(['Code','Trade',{t:'Hours',n:true},'Lands in group'],
+      XLAB.map(r => ['<b>' + r[0] + '</b>', r[1], {t:(Math.round(parseFloat(r[2]) * job.k * 2) / 2).toFixed(1), n:true}, r[3]]), {flush:true}), {flush:true}),
+    Stack(Card('Contingency', Stack(Lbl('Percentage of budgeted cost'), b.locked ? h('b', null, B3.num(b.cont) + '%') : FldC(b.cont, v => APP.b3Set(id, j => Object.assign({}, j, {bud:Object.assign({}, j.bud, {cont:v, saved:false})})), {w:'90px'}),
+        h('div', {style:{fontSize:'13px'}}, '→ ', h('b', null, B3.M(cont))))),
+      Card('Baseline & versions', b.vers.length ? Tbl(['Version','Locked','By',{t:'Budget cost',n:true},'Reason'], b.vers.map((v, n) => [n ? 'v' + v.v : '<b>v' + v.v + '</b>', B1.fmt(v.at), v.who, {t:B3.M(v.cost), n:true}, v.why]), {flush:true})
+        : HTM({padding:'14px 16px', fontSize:'12.5px', color:C.mut}, 'No baseline locked yet.'), {flush:true}))),
+  Card('Baseline lock', HTM({fontSize:'12.5px', lineHeight:1.75}, 'The baseline can be locked here, and locks automatically once the job reaches <b>10% of production</b>. From that point the project manager cannot change it — a revision needs the Director. Every revision keeps its own version, its reason and who approved it, so margin movement can always be traced to a decision.'))]};
+});
 
-SCREENS.narrative = () => jobPage({key:'narrative', step:'narrative', title:'5 · Scope narrative — AI-assisted drafting',
- sub:'The client-facing scope of work, generated from everything the system already knows',
- children:[
-  Card('Generate from', h('div',{style:{display:'flex', gap:'10px', flexWrap:'wrap', alignItems:'center'}},
-    Chk('Estimate line items (22)'), Chk('Inspection voice session (14 min)'), Chk('Photo labels (63)'), Chk('Phase 1 intake notes'),
-    Btn('Generate draft',{kind:'pri', onClick:()=>APP.runFlow('Generating the scope narrative',
-      [['Reading 22 estimate line items',700],['Reading the voice transcript (14:22)',900],['Reading 63 photo labels',800],['Drafting the narrative',1000]],
-      Ph('Draft regenerated — 6 sections, 412 words.'), [Btn('Done',{kind:'pri', onClick:()=>closeM()})])}))),
-  Card('Draft — editable, this is a starting point not an output', Ta(
-'SCOPE OF WORK — 88 Hillcrest Dr, Mt Lebanon, PA 15228\nFire and smoke restoration · Claim AL-772104 (Allstate)\n\n1. MITIGATION AND ODOUR CONTROL\nSet and monitor HEPA air scrubbers throughout the affected first floor for a five-day period. Perform thermal fogging across approximately 1,850 square feet to neutralise smoke odour. Heavy-clean all affected surfaces in the living and dining rooms.\n\n2. DEMOLITION AND DEBRIS REMOVAL\nTear out, cut and bag approximately 320 square feet of fire-damaged drywall in the kitchen. Remove and dispose of damaged cabinetry, countertop, flooring and trim. Two 30-yard dumpster loads included.\n\n3. STRUCTURAL REPAIR\nRemove and replace the engineered load-bearing header above the kitchen opening. Final quantity to be confirmed on site prior to fabrication.\n\n4. MECHANICAL, ELECTRICAL AND ROUGH-IN\nRewire the kitchen branch circuit and replace three light fixtures. Clean the full duct system to remove smoke residue.\n\n5. FINISHES\nHang, tape and float new drywall in the kitchen. Seal and paint all affected walls and ceilings. Install new cabinetry, solid-surface countertop, engineered hardwood flooring, carpet, baseboard and interior doors.\n\n6. CLOSEOUT\nConstruction clean of approximately 1,850 square feet, punch list walk with the homeowner, and final sign-off.', {min:300}), {actions:[Tag('AI','ai')]}),
-  Bar(Fld('',{ph:'Regenerate with instructions — "more detail on the mitigation work", "plain language for a homeowner"'}),
-    Btn('Regenerate',{onClick:()=>toast('Narrative regenerated')}), Sp(), Btn('Save'),
-    Btn('Use in proposal →',{kind:'pri', onClick:()=>go('proposal')}))]});
+/* ================= 5 · NARRATIVE ================= */
+SCREENS.narrative = (p, st) => b3Page(st, 'narrative', '5 · Scope narrative — AI-assisted drafting', (lead, job, id) => {
+ const sub = 'The client-facing scope of work, generated from everything the system already knows';
+ if(!job.scopeDone) return {sub, children:[b3Gate('The narrative is written from the scope packages, so the scope has to be confirmed first.', 'Go to scope structuring', 'scope')]};
+ const ui = st.p2ui;
+ return {sub, children:[
+  Card('Generate from', h('div', {style:{display:'flex', gap:'10px', flexWrap:'wrap', alignItems:'center'}},
+    Chk('Estimate line items (' + job.est.lines.length + ')'), Chk('Inspection voice session'), Chk('Photo labels (' + job.photos.length + ')'), Chk('Phase 1 intake notes'),
+    Btn(job.narr ? 'Generate again' : 'Generate draft', {kind:job.narr ? 'ghost' : 'pri', onClick:() => APP.b3Narr(id)}))),
+  job.narr ? Card('Draft — editable, this is a starting point not an output', TaC(job.narr, v => APP.b3Set(id, j => Object.assign({}, j, {narr:v, narrOk:false})), {min:320}), {actions:[Tag('AI', 'ai'), job.narrOk ? Tag('In the proposal', 'ok') : null]})
+    : Card('Draft', Ph('No draft yet. Generate one, then edit it — nothing reaches the client until it is put in the proposal.')),
+  job.narr ? Bar(FldC(ui.instr || '', v => setP2({instr:v}), {ph:'Regenerate with instructions — "more detail on the mitigation work", "plain language for a homeowner"'}),
+    Btn('Regenerate', {onClick:() => { APP.b3Narr(id); setP2({instr:''}); }}), Sp(),
+    Btn(job.narrOk ? 'Continue to photos →' : 'Use in proposal →', {kind:'pri', onClick:() => { if(!job.narrOk){ APP.b3Set(id, j => B3.T.narrOk(j)); toast('Narrative saved for the proposal'); } go('photos'); }})) : null]};
+});
 
-SCREENS.photos = () => jobPage({key:'photos', step:'photos', title:'6 · Photos & AI labelling',
- sub:'63 photos · auto-labelled on upload · 1 needs review',
- children:[
-  Bar(Sel('Category: All',['Category: All','Pre-job','Overview','Elevation','Affected area','Detail','Post-job'],{w:'190px'}),
-    Sel('Room: All',['Room: All','Exterior','Kitchen','Living room','Dining room','Hallway'],{w:'160px'}),
-    Sel('Condition: All',['Condition: All','Fire damage','Smoke','Water damage','Mold','Structural','Undamaged'],{w:'180px'}),
-    Sel('All',['All','Needs review (1)','AI-labelled','Human-confirmed'],{w:'170px'}), Sp(),
-    Btn('Bulk re-label',{onClick:()=>APP.mBulkLabel()}), Btn('+ Upload',{onClick:()=>APP.pickFile('photos')}),
-    Btn('Generate photo report →',{kind:'pri', onClick:()=>go('photoreport')})),
-  h('div',{style:{display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(210px,1fr))', gap:'12px'}},
-    ...PHOTOS.map((ph,i)=>h('div',{key:i, style:{background:'#fff', border:'1px solid '+(ph[6]<1?'#F0D6D1':C.bd), borderRadius:'10px', overflow:'hidden',
-      animation:'rise .3s ease both', animationDelay:(i*25)+'ms'}},
-      h('div',{style:{height:'92px', background:'repeating-linear-gradient(135deg,#EEF3F7,#EEF3F7 8px,#E6EDF3 8px,#E6EDF3 16px)',
-        display:'flex', alignItems:'center', justifyContent:'center', color:C.faint, fontSize:'11.5px'}}, ph[6]<1?'⚠ needs review':'photo '+(i+1)),
-      h('div',{style:{padding:'10px 11px'}},
-        h('div',{style:{display:'flex', gap:'6px', alignItems:'center', marginBottom:'6px'}},
-          h('b',{style:{fontSize:'12px', flex:1}}, ph[0]), ph[6]<1 ? Tag('REVIEW','dg') : Tag('AI','ai')),
-        Lbl('Room / area'), Sel(ph[3],['— select —','Exterior','Kitchen','Living room','Dining room','Hallway','Basement']),
-        Lbl('Category'), Sel(ph[2],['— select —','Pre-job','Overview','Elevation','Affected area','Detail','Post-job']),
-        ph[2]==='Elevation' ? Lbl('Direction · '+ph[5]) : null,
-        ph[2]==='Elevation' ? Sel(ph[1],['North','South','East','West']) : null,
-        ph[4]!=='—' ? Lbl('Condition') : null,
-        ph[4]!=='—' ? Sel(ph[4],['Fire damage','Smoke','Water damage','Mold','Structural','Undamaged']) : null,
-        Lbl('Caption 🎙'), Fld('',{ph:'spoken or typed'})))))]});
+/* ================= 6 · PHOTOS ================= */
+SCREENS.photos = (p, st) => b3Page(st, 'photos', '6 · Photos & AI labelling', (lead, job, id) => {
+ const ui = st.p2ui, rv = B3.review(job), CATS = ['Pre-job','Overview','Elevation','Affected area','Detail','Post-job'], RMS = ['Exterior','Kitchen','Living room','Dining room','Hallway','Basement'], CND = ['Fire damage','Smoke','Water damage','Mold','Structural','Undamaged'];
+ const f = {c:ui.pc || 'Category: All', r:ui.pr || 'Room: All', d:ui.pd || 'Condition: All', s:ui.ps || 'All'};
+ const list = job.photos.map((ph, i) => ({ph, i})).filter(x => (f.c === 'Category: All' || x.ph.cat === f.c) && (f.r === 'Room: All' || x.ph.room === f.r) && (f.d === 'Condition: All' || x.ph.cond === f.d)
+   && (f.s === 'All' || (f.s.indexOf('Needs review') === 0 ? x.ph.conf < 1 : f.s === 'AI-labelled' ? x.ph.by === 'AI' && x.ph.conf >= 1 : x.ph.by === 'Person')));
+ const setPh = (i, patch) => APP.b3Set(id, j => Object.assign({}, j, {photos:j.photos.map((x, n) => { if(n !== i) return x; const y = Object.assign({}, x, patch, {by:'Person'}); if(y.room !== '—' && y.cat !== '—') y.conf = 1; if(y.n === 'Unlabelled capture' && y.conf === 1) y.n = y.room + ' — ' + y.cat.toLowerCase(); return y; })}));
+ return {sub:job.photos.length + ' photos · labelled by the AI on upload · ' + (rv ? rv + ' need' + (rv === 1 ? 's' : '') + ' a person' : 'all labelled'), children:[
+  Bar(SelC(f.c, ['Category: All'].concat(CATS), v => setP2({pc:v}), {w:'180px'}), SelC(f.r, ['Room: All'].concat(RMS), v => setP2({pr:v}), {w:'150px'}), SelC(f.d, ['Condition: All'].concat(CND), v => setP2({pd:v}), {w:'170px'}),
+    SelC(f.s, ['All','Needs review (' + rv + ')','AI-labelled','Human-confirmed'], v => setP2({ps:v}), {w:'170px'}),
+    h('span', {style:{fontSize:'12.5px', color:C.mut}}, h('b', null, list.length), ' of ' + job.photos.length), Sp(),
+    Btn('+ Simulate an upload', {onClick:() => APP.b3Photos(id)}), Btn('Generate photo report →', {kind:'pri', onClick:() => go('photoreport')})),
+  list.length ? h('div', {style:{display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(210px,1fr))', gap:'12px'}},
+    ...list.map(x => { const ph = x.ph, i = x.i, bad = ph.conf < 1; return h('div', {key:i, 'data-ph':bad ? 'review' : 'ok', style:{background:'#fff', border:'1px solid ' + (bad ? '#F0D6D1' : C.bd), borderRadius:'10px', overflow:'hidden'}},
+      h('div', {style:{height:'76px', background:'repeating-linear-gradient(135deg,#EEF3F7,#EEF3F7 8px,#E6EDF3 8px,#E6EDF3 16px)', display:'flex', alignItems:'center', justifyContent:'center', color:C.faint, fontSize:'11.5px'}}, bad ? '⚠ needs review' : 'photo ' + (i + 1)),
+      h('div', {style:{padding:'10px 11px'}},
+        h('div', {style:{display:'flex', gap:'6px', alignItems:'center', marginBottom:'2px'}}, h('b', {style:{fontSize:'12px', flex:1}}, ph.n), bad ? Tag('REVIEW', 'dg') : ph.by === 'Person' ? Tag('Person', 'ok') : Tag('AI', 'ai')),
+        Lbl('Room / area'), SelC(ph.room === '—' ? '— select —' : ph.room, ['— select —'].concat(RMS), v => setPh(i, {room:v.charAt(0) === '—' ? '—' : v})),
+        Lbl('Category'), SelC(ph.cat === '—' ? '— select —' : ph.cat, ['— select —'].concat(CATS), v => setPh(i, {cat:v.charAt(0) === '—' ? '—' : v})),
+        ph.cat === 'Elevation' ? Lbl('Direction · ' + ph.dsrc) : null, ph.cat === 'Elevation' ? SelC(ph.dir, ['North','South','East','West'], v => setPh(i, {dir:v})) : null,
+        ph.cond !== '—' ? Lbl('Condition') : null, ph.cond !== '—' ? SelC(ph.cond, CND, v => setPh(i, {cond:v})) : null)); }))
+   : Card('', HTM({fontSize:'13px', color:C.mut}, 'No photos match these filters.'))]};
+});
 
-SCREENS.photoreport = () => jobPage({key:'photoreport', step:'photoreport', title:'7 · Photo report',
- sub:'Insurance-ready PDF, generated from the labelled photo set',
- children:[
-  Row(Card('Content', Stack(Lbl('Cover page'),
-      h('div',null, Chk('Client name'), Chk('Property address'), Chk('Claim number'), Chk('Date'), Chk('3Rivers license')),
-      Lbl('Structure'), Sel('Group by area / room',['Group by area / room','Group by category','Chronological']),
-      Lbl('Per photo'), h('div',null, Chk('Label'), Chk('Caption'), Chk('Capture timestamp'), Chk('GPS coordinates', false)),
-      Lbl('Layout'), Sel('2 per page',['1 per page','2 per page','4 per page','6 per page']),
-      Lbl('Photos included'), h('div',{style:{display:'flex', gap:'8px', alignItems:'center'}},
-        Fld('63 of 63',{w:'130px'}), Btn('Select…',{sm:true, onClick:()=>APP.mSelectPhotos()}), Btn('Reorder',{sm:true})))),
-    Card('Preview', Ph('page 1 — Cover: Robert Chen · 88 Hillcrest Dr · Claim AL-772104 · Aug 7, 2026\n\npage 2 — Exterior elevations (4)\npage 3–5 — Kitchen (18)\npage 6–7 — Living room (12)\npage 8 — Dining room (9)\npage 9 — Hallway (7)\npage 10–12 — Details & overviews (13)\n\n12 pages · est. 4.1 MB', {left:true, mono:true, h:'260px'}))),
-  Bar(Sp(), Btn('Download PDF',{onClick:()=>toast('Photo report downloaded')}),
-    Btn('Save to lead & make available to the proposal',{kind:'pri', onClick:()=>toast('Report saved to L-2026-0415')})),
-  Card('Generated reports', Tbl(['Generated','By',{t:'Photos',n:true},{t:'Pages',n:true},'Used in',''],[
-    ['Aug 7, 17:02','Kyle Brennan',{t:'63',n:true},{t:'12',n:true},'Proposal v2', h('div',{style:{display:'flex',gap:'6px'}}, Btn('Download',{sm:true}), Btn('Regenerate',{sm:true}))],
-    ['Aug 5, 10:30','Kyle Brennan',{t:'41',n:true},{t:'8',n:true},'Proposal v1', Btn('Download',{sm:true})]], {flush:true}), {flush:true})]});
+/* ================= 7 · PHOTO REPORT ================= */
+SCREENS.photoreport = (p, st) => b3Page(st, 'photoreport', '7 · Photo report', (lead, job, id) => {
+ const ui = st.p2ui, layout = ui.layout || '2 per page', per = parseInt(layout, 10), n = job.photos.length, rv = B3.review(job), rooms = {};
+ job.photos.forEach(ph => { const k = ph.cat === 'Elevation' ? 'Exterior elevations' : ph.room === '—' ? 'Unlabelled' : ph.room; rooms[k] = (rooms[k] || 0) + 1; });
+ let pg = 2; const prev = Object.keys(rooms).map(k => { const c = Math.ceil(rooms[k] / per), s = 'page ' + pg + (c > 1 ? '–' + (pg + c - 1) : '') + ' — ' + k + ' (' + rooms[k] + ')'; pg += c; return s; });
+ return {sub:'Insurance-ready PDF, generated from the labelled photo set', children:[
+  rv ? Card('', h('div', {style:{display:'flex', gap:'12px', alignItems:'center'}}, h('span', {style:{fontSize:'13px', color:C.dg, fontWeight:600, flex:1}}, '⚠ ' + rv + ' photo(s) have no label yet. A report cannot be generated until every photo is labelled.'), Btn('Go to photos', {onClick:() => { setP2({ps:'Needs review (' + rv + ')'}); go('photos'); }}))) : null,
+  Row(Card('Content', Stack(Lbl('Cover page'), h('div', null, Chk('Client name'), Chk('Property address'), Chk('Claim number'), Chk('Date'), Chk('3Rivers license')),
+      Lbl('Structure'), Sel('Group by area / room', ['Group by area / room','Group by category','Chronological']),
+      Lbl('Per photo'), h('div', null, Chk('Label'), Chk('Caption'), Chk('Capture timestamp'), Chk('GPS coordinates', false)),
+      Lbl('Layout'), SelC(layout, ['1 per page','2 per page','4 per page','6 per page'], v => setP2({layout:v})),
+      Lbl('Photos included'), h('b', {style:{fontSize:'13px'}}, n + ' of ' + n))),
+    Card('Preview', PhPre('page 1 — Cover: ' + lead.client + ' · ' + lead.addr + (lead.claim ? ' · Claim ' + lead.claim : '') + '\n\n' + prev.join('\n') + '\n\n' + (pg - 1) + ' pages', {left:true, mono:true, h:'260px'}))),
+  Bar(Sp(), Btn('Generate the report and save it to the lead', {kind:'pri', disabled:rv > 0, title:rv ? 'Blocked: ' + rv + ' photo(s) need a label' : '', onClick:() => APP.b3Report(id, layout)}),
+    job.reports.length ? Btn('Continue to proposal →', {onClick:() => go('proposal')}) : null),
+  Card('Generated reports', job.reports.length ? Tbl(['Generated','By',{t:'Photos',n:true},{t:'Pages',n:true},'Layout','Used in'],
+    job.reports.map((r, k) => [B1.fmt(r.at), r.who, {t:r.n, n:true}, {t:r.pages, n:true}, r.layout, k === 0 ? Tag('Current — goes in the proposal', 'ok') : 'Superseded']), {flush:true})
+    : HTM({padding:'14px 16px', fontSize:'12.5px', color:C.mut}, 'No report generated yet.'), {flush:true})]};
+});
 
-SCREENS.proposal = () => jobPage({key:'proposal', step:'proposal', title:'8 · Proposal builder',
- sub:'Version 2 · draft — a proposal is a <b>package</b>, not a document. It is sent as one item to review and sign.',
- children:[
-  Card('Total proposal amount', h('div',{style:{display:'flex', gap:'14px', alignItems:'center', flexWrap:'wrap'}},
-    h('b',{style:{fontFamily:BAR, fontSize:'26px'}},'$62,300.00'),
-    h('span',{style:{fontSize:'12.5px', color:C.mut}},'→ contract template for jobs over $30,000 → '),
-    h('b',{style:{fontSize:'12.5px'}},'Resi Fixed Rate — Greater Than $30K — PA HIC · v2.8'),
-    Btn('Override template…',{sm:true, onClick:()=>APP.mOverrideTpl()})), {hard:true}),
-  Tbl(['☑','Component','Content','Order',''],[
-    ['☑','<b>Introductory statement</b>','Cover message stating what is enclosed','1 ↕', Btn('Edit',{sm:true, onClick:()=>APP.mIntro()})],
-    ['☑','<b>Contract</b>','Resi Fixed Rate — Greater Than $30K — PA HIC · v2.8 · includes all legal verbiage and payment terms','2 ↕', Btn('Preview',{sm:true})],
-    ['☑','<b>Scope of work</b>', Sel('AI narrative + structured table + original Xactimate PDF',['AI narrative only','Structured line item table only','Original Xactimate PDF only','AI narrative + structured table','AI narrative + structured table + original Xactimate PDF'],{w:'340px'}),'3 ↕', Btn('Edit',{sm:true, onClick:()=>go('narrative')})],
-    ['☑','<b>Payment schedule</b>','5 payments · binder $500 · draw 1 40% · draws 2 and 3 at 20% · final the remainder','4 ↕', Btn('Edit schedule',{sm:true, onClick:()=>go('schedule')})],
-    ['☑','<b>GC license</b>','PA HIC #PA-118442 · expires Mar 31, 2027 · valid','5 ↕', Btn('Replace',{sm:true, onClick:()=>go('s_docs')})],
-    ['☑','<b>Proof of insurance</b>','COI — Erie Insurance · <b style="color:#C8442E">⚠ expires in 21 days</b>','6 ↕', Btn('Replace',{sm:true, onClick:()=>go('s_docs')})],
-    ['☑','<b>Photo report</b>','12 pages · 63 photos · generated Aug 7, 17:02','7 ↕', Btn('Select',{sm:true, onClick:()=>go('photoreport')})],
-    ['☐','<b>References / past work</b>','Optional — not included on this proposal','8 ↕', Btn('Select',{sm:true})]], {min:'980px'}),
-  Card('Preview — exactly as the client will see it', Ph('3RIVERS GENERAL CONTRACTING — PROPOSAL\nPrepared for: Robert Chen · 88 Hillcrest Dr, Mt Lebanon, PA 15228\nDate: Aug 7, 2026 · Proposal L-2026-0415 v2 · Claim AL-772104\nTOTAL: $62,300.00\n\n[ intro ] → [ scope of work ] → [ payment schedule ] → [ agreement & legal terms ] → [ GC license ] → [ certificate of insurance ] → [ photo report ]\n\nAssembled package preview · 24 pages · signature block on page 9', {left:true, mono:true})),
-  Bar(Btn('Save draft'), Btn('Download PDF',{onClick:()=>toast('Package PDF downloaded')}), Sp(),
-    Btn('Review & send →',{kind:'pri', onClick:()=>go('versions')}))]});
+/* ================= 8 · PROPOSAL ================= */
+SCREENS.proposal = (p, st) => b3Page(st, 'proposal', '8 · Proposal builder', (lead, job, id) => {
+ const sub = 'A proposal is a <b>package</b>, not a document. It is sent as one item to review and sign.';
+ const t = B3.totals(job); if(!t || !job.est.reviewed) return {sub, children:[b3Gate('A proposal needs a reviewed estimate — the total and the scope come from it.', 'Go to estimate intake', 'estimate')]};
+ const P = job.prop, sc = B3.schedCalc(job), rep = job.reports[0], nV = job.vers.length + 1;
+ const setProp = patch => APP.b3Set(id, j => Object.assign({}, j, {prop:Object.assign({}, j.prop, patch, {saved:false})}));
+ const what = {intro:'Cover message stating what is enclosed', contract:B3.tplOf(t.grand) + ' · includes all legal verbiage and payment terms',
+   scope:SelC(P.mode, B3.SCOPEMODES, v => setProp({mode:v}), {w:'360px'}), sched:sc.count + ' payments · binder $500 · ' + sc.rows.filter(m => m.type === '%').map(m => m.name.toLowerCase() + ' ' + B3.num(m.pct) + '%').join(' · ') + ' · final the remainder',
+   license:'PA HIC #PA-118442 · expires Mar 31, 2027 · valid', coi:'COI — Erie Insurance · <b style="color:#C8442E">⚠ expires in 21 days</b>',
+   photo:rep ? rep.pages + ' pages · ' + rep.n + ' photos · generated ' + B1.fmt(rep.at) : '<b style="color:#C8442E">No photo report generated yet</b>', refs:'Optional — not included by default'};
+ const jump = {scope:'narrative', sched:'schedule', license:'s_docs', coi:'s_docs', photo:'photoreport'};
+ const warn = []; if(!job.narrOk && P.mode.indexOf('narrative') >= 0) warn.push('the scope narrative is not ready (step 5)'); if(P.on.photo && !rep) warn.push('the photo report is not generated (step 7)');
+ const on = B3.COMPS.filter(c => P.on[c[0]]);
+ return {sub:'Version ' + nV + ' · ' + (P.saved ? 'package ready' : 'draft') + ' — ' + sub.charAt(0).toLowerCase() + sub.slice(1), children:[
+  Card('Total proposal amount', h('div', {style:{display:'flex', gap:'14px', alignItems:'center', flexWrap:'wrap'}},
+    h('b', {style:{fontFamily:BAR, fontSize:'26px'}}, B3.M(t.grand)),
+    h('span', {style:{fontSize:'12.5px', color:C.mut}}, '→ contract template for jobs ' + (t.grand > 30000 ? 'over' : 'under') + ' $30,000 → '),
+    h('b', {style:{fontSize:'12.5px'}}, B3.tplOf(t.grand))), {hard:true}),
+  Tbl(['In','Component','Content','Order',''], B3.COMPS.map((c, n) => [ChkC('', P.on[c[0]], v => setProp({on:Object.assign({}, P.on, {[c[0]]:v})}), c[2]), '<b>' + c[1] + '</b>' + (c[2] ? ' <span style="color:#7C93A5;font-size:11px">always included</span>' : ''), what[c[0]], String(n + 1),
+    jump[c[0]] ? Btn('Open', {sm:true, onClick:() => go(jump[c[0]])}) : '']), {min:'980px'}),
+  Card('Preview — exactly as the client will see it', PhPre('3RIVERS GENERAL CONTRACTING — PROPOSAL\nPrepared for: ' + lead.client + ' · ' + lead.addr + ', ' + lead.city + ', ' + lead.state + ' ' + lead.zip + '\nProposal ' + lead.id + ' v' + nV + (lead.claim ? ' · Claim ' + lead.claim : '') + '\nTOTAL: ' + B3.M(t.grand) + '\n\n' +
+    on.map(c => '[ ' + c[1].toLowerCase() + ' ]').join(' → ') + '\n\nAssembled package · ' + on.length + ' components · signature block after the contract', {left:true, mono:true})),
+  Bar(warn.length ? h('span', {style:{fontSize:'12px', color:C.dg, fontWeight:600}}, '⚠ Before saving: ' + warn.join(' · ')) : P.saved ? Tag('Package ready', 'ok') : null, Sp(),
+    Btn('Download PDF', {onClick:() => toast('Package PDF downloaded')}),
+    Btn(P.saved ? 'Saved' : 'Save the package', {kind:P.saved ? 'ghost' : 'pri', disabled:P.saved || warn.length > 0, title:warn.join(' · '), onClick:() => { APP.b3Set(id, j => B3.T.propSave(j)); toast('Proposal package saved'); }}),
+    Btn('Payment schedule →', {kind:P.saved ? 'pri' : 'ghost', onClick:() => go('schedule')}))]};
+});
 
-SCREENS.schedule = () => jobPage({key:'schedule', step:'schedule', title:'9 · Payment schedule & milestones',
- sub:'Contract value <b>$62,300.00</b> · 5 payments · from the contract template for jobs over $30,000 · defines every invoice Phase 4 will create',
- children:[
-  Bar(Sel('Residential fixed rate — over $30K · binder + 40 / 20 / 20 + remainder',['Residential fixed rate — over $30K · binder + 40 / 20 / 20 + remainder','Residential fixed rate — under $30K','Standard schedule of values — 4 draws'],{w:'460px'}),
-    Sp(), Btn('+ Add milestone',{onClick:()=>APP.mMilestone()})),
-  Tbl(['#','Payment','Trigger / milestone','Type',{t:'Amount',n:true},{t:'%',n:true},{t:'Work it covers',n:true},'Invoice trigger','Status',''],
-    MILESTONES.map(m=>[m[0],'<b>'+m[1]+'</b>', m[8]?m[2]:Fld(m[2]), m[3], {t:'$'+m[4],n:true},
-      m[5]==='—' ? '—' : (m[3]==='Remainder' ? m[5]+' · the rest' : Fld(m[5],{w:'64px'})),
-      {t:m[9], n:true}, m[6], Tag(m[7]),
-      m[8] ? '🔒' : h('div',{style:{display:'flex',gap:'5px'}}, Btn('↑↓',{sm:true}), Btn('🗑',{sm:true}))]),
-    {min:'1280px', foot:['','<b>TOTAL</b>','','',{t:'<b>$62,300.00</b>'},{t:'<b>100%</b>'},{t:'<b>100%</b>'},'The binder and the three draws come off the contract — the final is what is left','','']}),
-  HTM({fontSize:'11.5px', color:C.faint, margin:'-4px 0 10px', lineHeight:1.6},
-    '<b>Work it covers</b> comes from the recap by category at the back of the estimate: the trades that finish by each ' +
-    'milestone, as a share of the work. The template fixes 40, 20 and 20 per cent and leaves the rest for the end; this ' +
-    'column is what a person checks each milestone against before the contract goes out.'),
-  Card('Validation', h('div',{style:{fontSize:'12.5px', lineHeight:2}},
-    h('div',null,'✓ Percentages total ', h('b',null,'100%'),' — saving is blocked otherwise'),
-    h('div',{style:{color:C.dg}},'⚠ Final payment ', h('b',null,'19.2%'),' is above the ', h('b',null,'7%'),' set in Markup defaults. The template leaves the remainder for the end, so every job built on it lands here — saving asks for a reason until the policy is settled'),
-    h('div',null,'✓ Payment count ', h('b',null,'5'),' ≤ default cap without change orders'),
-    h('div',null,'✓ Draw 1 clock ', h('b',null,'5 calendar days'),' from signing')), {hard:true})]});
+/* ================= 9 · PAYMENT SCHEDULE ================= */
+SCREENS.schedule = (p, st) => b3Page(st, 'schedule', '9 · Payment schedule & milestones', (lead, job, id) => {
+ const t = B3.totals(job); if(!t || !job.est.reviewed) return {sub:'Defines every invoice Phase 4 will create', children:[b3Gate('The schedule is a share of the estimate total, so the estimate has to be reviewed first.', 'Go to estimate intake', 'estimate')]};
+ const sc = B3.schedCalc(job), rows = B3.schedOf(job), small = t.grand <= 30000;
+ const setS = fn => APP.b3Set(id, j => Object.assign({}, j, {sched:fn(B3.schedOf(j).map(m => Object.assign({}, m))), schedOk:false}));
+ const add = () => { const v = {n:'Draw ' + (rows.filter(m => m.type === '%').length + 1), p:'10', tr:''};
+   modal('Add a milestone', Stack(Lbl('Name'), h('input', {autoFocus:true, defaultValue:'Draw ' + (rows.filter(m => m.type === '%').length + 1), onChange:e => v.n = e.target.value, style:inputStyle()}),
+     Lbl('Trigger / milestone'), h('input', {onChange:e => v.tr = e.target.value, placeholder:'e.g. Completion of flooring', style:inputStyle()}), Lbl('Percentage'), h('input', {defaultValue:'10', onChange:e => v.p = e.target.value, style:inputStyle('90px')})),
+     [Btn('Cancel', {onClick:() => closeM()}), Btn('Add', {kind:'pri', onClick:() => { closeM(); setS(r => { r.splice(r.length - 1, 0, {name:v.n || 'Draw ' + (r.filter(m => m.type === '%').length + 1), trig:v.tr || 'Milestone to be named', type:'%', pct:v.p, inv:'On milestone marked complete', cov:'—'}); return r; }); }})]); };
+ const errs = []; if(sc.neg) errs.push('The payments add up to more than the contract value'); if(sc.count > 5) errs.push('More than 5 payments — the default cap without change orders');
+ if(sc.needWhy && !job.schedWhy.trim()) errs.push('The final payment is above policy — a reason is required');
+ return {sub:'Contract value <b>' + B3.M(sc.total) + '</b> · ' + sc.count + ' payments · from the contract template for jobs ' + (small ? 'under' : 'over') + ' $30,000 · defines every invoice Phase 4 will create', children:[
+  small ? Card('', HTM({fontSize:'12.5px', color:C.wn}, '<b>The under-$30,000 template has not been received from the client yet.</b> This schedule starts from the over-$30,000 structure until it is.')) : null,
+  Bar(h('span', {style:{fontSize:'12.5px'}}, 'Template: ', h('b', null, 'Residential fixed rate · binder + 40 / 20 / 20 + remainder')), Sp(),
+    job.schedOk ? Tag('Confirmed', 'ok') : null, Btn('Reset to the template', {onClick:() => APP.b3Set(id, j => Object.assign({}, j, {sched:null, schedOk:false}))}), Btn('+ Add milestone', {onClick:add})),
+  Tbl(['#','Payment','Trigger / milestone','Type',{t:'Amount',n:true},{t:'%',n:true},{t:'Work it covers',n:true},'Invoice trigger',''],
+    sc.rows.map((m, n) => ({key:n, c:[String(n + 1), '<b>' + m.name + '</b>', m.lock || m.type === 'Remainder' ? m.trig : FldC(m.trig, v => setS(r => { r[n].trig = v; return r; })), m.type, {t:B3.M(m.a), n:true},
+      m.type === 'Fixed' ? '—' : m.type === 'Remainder' ? {t:sc.finPct + '% · the rest', n:true} : FldC(m.pct, v => setS(r => { r[n].pct = v; return r; }), {w:'64px'}),
+      {t:m.cov, n:true}, m.inv, m.lock ? '🔒' : m.type === 'Remainder' ? '' : Btn('🗑', {sm:true, onClick:() => setS(r => { r.splice(n, 1); return r; })})]})),
+    {min:'1280px', foot:['', '<b>TOTAL</b>', '', '', {t:'<b>' + B3.M(sc.total) + '</b>'}, {t:'<b>100%</b>'}, '', 'The binder and the draws come off the contract — the final is what is left', '']}),
+  HTM({fontSize:'11.5px', color:C.faint, margin:'-4px 0 0', lineHeight:1.6}, '<b>Work it covers</b> comes from the recap by category at the back of the estimate: the trades that finish by each milestone, as a share of the work. This column is what a person checks each milestone against before the contract goes out.'),
+  Card('Validation', h('div', {style:{fontSize:'12.5px', lineHeight:2}},
+    h('div', {style:sc.neg ? {color:C.dg} : null}, sc.neg ? '⚠ The payments add up to more than the contract value — lower a percentage' : '✓ The payments total 100% of the contract value'),
+    h('div', {style:sc.needWhy ? {color:C.dg} : null}, sc.needWhy ? '⚠ Final payment ' : '✓ Final payment ', h('b', null, sc.finPct + '%'), sc.needWhy ? ' is above the 7% set in Markup defaults. The template leaves the remainder for the end, so confirming asks for a reason until the policy is settled' : ' is within the 7% set in Markup defaults'),
+    sc.needWhy ? h('div', {style:{margin:'4px 0 8px', maxWidth:'560px'}}, FldC(job.schedWhy, v => APP.b3Set(id, j => Object.assign({}, j, {schedWhy:v, schedOk:false})), {ph:'Reason for a final payment above policy', bad:!job.schedWhy.trim()})) : null,
+    h('div', {style:sc.count > 5 ? {color:C.dg} : null}, (sc.count > 5 ? '⚠' : '✓') + ' Payment count ', h('b', null, sc.count), sc.count > 5 ? ' is above the default cap of 5 without change orders' : ' ≤ default cap without change orders'),
+    h('div', null, '✓ Draw 1 clock ', h('b', null, '5 calendar days'), ' from signing')), {hard:true}),
+  Bar(errs.length ? h('span', {style:{fontSize:'12px', color:C.dg, fontWeight:600}}, errs[0]) : null, Sp(),
+    job.schedOk ? Btn('Continue to send →', {kind:'pri', onClick:() => go('versions')})
+      : Btn('Confirm the schedule', {kind:'pri', disabled:errs.length > 0, title:errs[0] || '', onClick:() => { APP.b3Set(id, j => B3.T.schedOk(j)); APP.b3Log(id, 'Payment schedule confirmed', sc.count + ' payments · final ' + sc.finPct + '%'); toast('Payment schedule confirmed'); }}))]};
+});
 
-SCREENS.versions = () => jobPage({key:'versions', step:'versions', title:'10 · Send & versions',
- sub:'The signed proposal is the contract — there is no separate agreement created afterwards',
- children:[
-  Tbl(['Version',{t:'Amount',n:true},'Sent','Status','Viewed','Signed','Template used',''],[
-    ['<b>v2</b> (current)',{t:'$62,300.00',n:true},'Aug 7, 17:40', Tag('Sent','ai'),'Aug 7, 19:02','—','Resi Fixed Rate — Greater Than $30K — PA HIC · v2.8',
-      h('div',{style:{display:'flex',gap:'6px'}}, Btn('View',{sm:true}), Btn('Resend',{sm:true, onClick:()=>toast('Proposal resent')}), Btn('Revise → v3',{sm:true}))],
-    ['v1',{t:'$58,120.00',n:true},'Aug 5, 11:15','Superseded','Aug 5, 13:44','—','Resi Fixed Rate — Greater Than $30K — PA HIC · v2.8',
-      h('div',{style:{display:'flex',gap:'6px'}}, Btn('View',{sm:true}), Btn('Compare',{sm:true}))]], {min:'1080px'}),
-  Card('Send', Stack(Lbl('To'), Fld('rchen@example.com'), Lbl('CC'), Fld('',{ph:'adjuster, spouse, property manager…'}),
-    Lbl('Cover email'), Ta('Robert,\n\nAttached is our proposal for the fire restoration at 88 Hillcrest Drive, along with our scope of work, licensing, insurance certificate and photo documentation.\n\nThe total is $62,300.00. A $500 binder is due on acceptance, and you can pay it directly from the link in the proposal.\n\nHappy to walk through any of it.\n\nKyle Brennan\n3Rivers General Contracting',{min:170}),
-    Lbl('Options'),
-    h('div',{style:{display:'flex', flexDirection:'column', gap:'6px'}},
-      Chk('Include a payment link for the $500 binder'), Chk('Request a digital signature — the signed proposal is the contract'),
-      Chk('Expire this proposal after 30 days'), Chk('Store a PDF snapshot at the moment of sending')),
-    Lbl('Start cadence'), Sel('Proposal Follow-Up — friendly',['Proposal Follow-Up — friendly','Invoice Follow-Up — job in production','None']))),
-  Bar(Sp(), Btn('Cancel'), Btn('Preview package'), Btn('Send package',{kind:'pri', onClick:()=>APP.mSendProp()})),
-  Card('Status timeline — v2', Tbl(['Status','When','Detail'],[
-    ['Draft','Aug 7, 16:55','Assembled by Kyle Brennan'],['Sent','Aug 7, 17:40','One package · 24 pages · payment link included'],
-    ['Viewed','Aug 7, 19:02','Opened from 71.62.x.x · 6 min on page'],['Signed','—','—'],['Declined','—','—'],['Expired','—','Would expire Sep 6, 2026']], {flush:true}), {flush:true})]});
+/* ================= 10 · SEND & VERSIONS ================= */
+SCREENS.versions = (p, st) => b3Page(st, 'versions', '10 · Send & versions', (lead, job, id) => {
+ const sub = 'The signed proposal is the contract — there is no separate agreement created afterwards';
+ const t = B3.totals(job), v = B3.cur(job), miss = B3.canSend(job), S = job.send || {}, live = v && ['Sent','Viewed'].indexOf(v.status) >= 0, closed = v && ['Signed','Declined'].indexOf(v.status) >= 0;
+ const setSend = patch => APP.b3Set(id, j => Object.assign({}, j, {send:Object.assign({}, j.send || {}, patch)}));
+ const body = S.body != null ? S.body : lead.client.split(' ')[0] + ',\n\nAttached is our proposal for the work at ' + lead.addr + ', along with our scope of work, licensing, insurance certificate and photo documentation.\n\nThe total is ' + (t ? B3.M(t.grand) : '—') + '. A $500 binder is due on acceptance, and you can pay it directly from the link in the proposal.\n\nHappy to walk through any of it.\n\n' + (lead.assigned || B3.ME) + '\n3Rivers General Contracting';
+ return {sub, children:[
+  job.vers.length ? Tbl(['Version',{t:'Amount',n:true},'Sent','Status','Viewed','Signed','Template used'],
+    job.vers.slice().reverse().map((x, n) => [n ? 'v' + x.v : '<b>v' + x.v + '</b> (current)', {t:B3.M(x.amt), n:true}, B1.fmt(x.sentAt), Tag(x.status, x.status === 'Signed' ? 'ok' : x.status === 'Declined' ? 'dg' : x.status === 'Superseded' ? null : 'ai'),
+      x.viewedAt ? B1.fmt(x.viewedAt) : '—', x.signedAt ? B1.fmt(x.signedAt) : '—', x.tpl]), {min:'1080px'})
+   : Card('', HTM({fontSize:'13px', color:C.mut}, 'Nothing has been sent to the client yet.')),
+  live ? Card('What the client does next', Stack(h('div', {style:{display:'flex', gap:'8px', flexWrap:'wrap'}},
+      Btn('Simulate: the client opens the proposal', {disabled:v.status === 'Viewed', onClick:() => APP.b3Viewed(id)}), Btn('Go to acceptance →', {kind:'pri', onClick:() => go('acceptance')})),
+    simNote('In the real platform these happen on the client side. Here a button stands in for the client so the rest of the flow can be seen.')), {hard:true}) : null,
+  closed ? null : Card(v ? 'Send a new version (v' + (job.vers.length + 1) + ')' : 'Send', Stack(
+    miss.length ? HTM({fontSize:'12.5px', color:C.dg, fontWeight:600}, '⚠ Not ready to send. Pending: ' + miss.join(' · ')) : HTM({fontSize:'12.5px', color:C.ok, fontWeight:600}, '✓ Steps 1 to 9 are complete — the package can go out.'),
+    Lbl('To'), FldC(S.to != null ? S.to : lead.email, x => setSend({to:x})), Lbl('CC'), FldC(S.cc || '', x => setSend({cc:x}), {ph:'adjuster, spouse, property manager…'}),
+    Lbl('Cover email'), TaC(body, x => setSend({body:x}), {min:170}),
+    Lbl('Options'), h('div', {style:{display:'flex', flexDirection:'column', gap:'6px'}}, Chk('Include a payment link for the $500 binder'), Chk('Request a digital signature — the signed proposal is the contract'), Chk('Expire this proposal after 30 days'), Chk('Store a PDF snapshot at the moment of sending')),
+    Lbl('Start follow-up'), SelC(S.cad || 'Proposal Follow-Up — friendly', ['Proposal Follow-Up — friendly','None'], x => setSend({cad:x})))),
+  closed ? null : Bar(simNote('Nothing is emailed. Sending records the version, moves the lead to “' + B1.SENT(lead.arm) + '” and starts the follow-up.'), Sp(),
+    Btn(v ? 'Send version ' + (job.vers.length + 1) : 'Send package', {kind:'pri', disabled:miss.length > 0, title:miss.length ? 'Pending: ' + miss.join(', ') : '', onClick:() => APP.b3Send(id)})),
+  v ? Card('Status timeline — v' + v.v, Tbl(['Status','When','Detail'], [
+    ['Sent', B1.fmt(v.sentAt), 'One package · ' + v.pages + ' pages · payment link included'], ['Viewed', v.viewedAt ? B1.fmt(v.viewedAt) : '—', v.viewedAt ? 'Opened from the link in the email' : '—'],
+    ['Signed', v.signedAt ? B1.fmt(v.signedAt) : '—', v.signedAt ? 'Signed by ' + job.acc.by + ' · IP ' + job.acc.ip : '—'], ['Declined', job.acc.declined ? B1.fmt(job.acc.declined) : '—', job.acc.why || '—'],
+    ['Expires', B1.fmtDay(v.sentAt + 30 * B3.DAY), '30 days after sending']], {flush:true}), {flush:true}) : null]};
+});
 
-SCREENS.acceptance = () => jobPage({key:'acceptance', step:'acceptance', title:'11 · Acceptance, binder & deposit',
- sub:'What happens the moment the client signs',
- children:[
-  Card('1 · Client accepts', Stack(Lbl('Signature'), Fld('',{ph:'— not signed yet —'}),
-    h('div',{style:{display:'flex', gap:'12px', flexWrap:'wrap'}},
-      h('div',{style:{flex:'1 1 220px'}}, Lbl('Signed by'), Fld('')),
-      h('div',{style:{flex:'1 1 220px'}}, Lbl('Signed at'), Fld(''))),
-    h('div',{style:{fontSize:'12px', color:C.mut}},'IP address and timestamp recorded on signing. On acceptance the team is notified: "client accepted, payment initiated".'))),
+/* ================= 11 · ACCEPTANCE ================= */
+SCREENS.acceptance = (p, st) => b3Page(st, 'acceptance', '11 · Acceptance, binder & deposit', (lead, job, id) => {
+ const sub = 'What happens the moment the client signs';
+ const v = B3.cur(job), a = job.acc, ui = st.p2ui;
+ if(!v || v.status === 'Superseded') return {sub, children:[b3Gate('There is nothing for the client to accept until a proposal has been sent.', 'Go to send & versions', 'versions')]};
+ const sc = B3.schedCalc(job), dep = sc.rows.find(m => m.type === '%') || {a:0}, signed = !!a.signedAt, paid = !!a.paidAt, dead = !!a.declined;
+ return {sub, children:[
+  Card('1 · Client accepts', Stack(
+    signed ? h('div', {style:{fontSize:'13px'}}, Tag('Signed', 'ok'), ' ', h('b', null, a.by), ' · ' + B1.fmt(a.signedAt) + ' · IP ' + a.ip)
+      : dead ? h('div', {style:{fontSize:'13px'}}, Tag('Declined', 'dg'), ' ' + B1.fmt(a.declined) + ' · ' + a.why)
+      : h('div', {style:{display:'flex', gap:'10px', alignItems:'center', flexWrap:'wrap'}}, h('span', {style:{fontSize:'13px', color:C.mut, flex:1}}, '— not signed yet · proposal v' + v.v + ' was sent ' + B1.fmt(v.sentAt) + ' —'), Btn('Simulate: the client signs', {kind:'pri', onClick:() => APP.b3Sign(id)})),
+    h('div', {style:{fontSize:'12px', color:C.mut}}, 'IP address and timestamp are recorded on signing. On acceptance the team is notified: “client accepted, payment initiated”, and the follow-up stops.')), {hard:!signed && !dead}),
   Card('2 · Binder — $500.00', Stack(
-    h('div',{style:{display:'flex', gap:'12px', flexWrap:'wrap'}},
-      h('div',{style:{flex:'1 1 200px'}}, Lbl('Method'), Sel('— awaiting payment —',['— awaiting payment —','Credit card','ACH','Check'])),
-      h('div',{style:{flex:'1 1 140px'}}, Lbl('Received'), Fld('')),
-      h('div',{style:{flex:'1 1 180px'}}, Lbl('Reference'), Fld(''))),
-    Tbl(['Method','Tracked automatically','Behaviour'],[
-      ['Credit card', Tag('Yes','ok'),'Confirmed automatically · cadence stops · deposit clock starts'],
-      ['ACH', Tag('Yes','ok'),'Confirmed automatically · cadence stops · deposit clock starts'],
-      ['Check', Tag('No','dg'),'Tagged as check · reminder after N days to confirm receipt manually'],
-      ['Cash', Tag('Not accepted','dg'),'Not taken — ACH, card or check only']]))),
+    paid ? h('div', {style:{fontSize:'13px'}}, Tag('Received', 'ok'), ' ', h('b', null, a.method), ' · ' + B1.fmt(a.paidAt) + ' · ref ' + a.ref)
+      : h('div', {style:{display:'flex', gap:'10px', alignItems:'flex-end', flexWrap:'wrap'}},
+          h('div', {style:{flex:'0 0 220px'}}, Lbl('Method'), SelC(ui.pay || 'Credit card', ['Credit card','ACH','Check'], x => setP2({pay:x}))),
+          Btn((ui.pay || 'Credit card') === 'Check' ? 'Confirm the check was received' : 'Simulate: the client pays the binder', {kind:'pri', disabled:!signed, title:signed ? '' : 'The client signs first', onClick:() => APP.b3Pay(id, ui.pay || 'Credit card')})),
+    Tbl(['Method','Tracked automatically','Behaviour'], [
+      ['Credit card', Tag('Yes', 'ok'), 'Confirmed automatically · follow-up stops · deposit clock starts'], ['ACH', Tag('Yes', 'ok'), 'Confirmed automatically · follow-up stops · deposit clock starts'],
+      ['Check', Tag('No', 'dg'), 'Tagged as check · reminder after N days to confirm receipt by hand'], ['Cash', Tag('Not accepted', 'dg'), 'Not taken — ACH, card or check only']])), {hard:signed && !paid}),
   Card('3 · Deposit clock', Stack(
-    h('div',{style:{fontSize:'12.5px', color:C.mut}},'Accepted — → deposit invoice due 5 calendar days later (configurable).'),
-    h('div',null, Btn('Draft deposit invoice — $24,920.00',{kind:'pri', disabled:true}))), {hard:true}),
+    h('div', {style:{fontSize:'12.5px', color:C.mut}}, signed ? 'Accepted ' + B1.fmt(a.signedAt) + ' → deposit invoice due ' + B1.fmtDay(a.signedAt + 5 * B3.DAY) + ' (5 calendar days, configurable).' : 'Accepted — → deposit invoice due 5 calendar days later (configurable).'),
+    h('div', null, job.depInv ? Tag('Draft deposit invoice created — ' + B3.M(dep.a) + ' · waits in Billing', 'ok')
+      : Btn('Draft deposit invoice — ' + B3.M(dep.a), {kind:'pri', disabled:!signed, onClick:() => { APP.b3Set(id, j => Object.assign({}, j, {depInv:true})); APP.b3Log(id, 'Deposit invoice drafted', B3.M(dep.a)); toast('Draft deposit invoice created'); }})))),
   Card('4 · Ready to become a job → Phase 3', Stack(
-    h('div',null, Chk('Proposal signed', false), Chk('Client has paid', false)),
-    h('div',null, Btn('Send to the Operations Manager to convert',{kind:'pri', disabled:true, title:'Signed and paid — the Operations Manager converts it and assigns the project manager'})),
-    h('div',{style:{fontSize:'12px', color:C.mut}},'A lead becomes a job only once the client has paid. The Operations Manager converts it in Phase 3 · Jobs & schedule, and assigns the project manager in the same step.'),
-    h('div',{style:{fontSize:'12px', color:C.mut}},'On conversion every lead document, photo, the estimate and the agreement transfer into the job profile automatically — nothing is re-uploaded.')), {hard:true}),
-  Card('Declined or expired', Stack(
-    h('div',{style:{fontSize:'12.5px'}},'→ Move the lead to ', h('b',null,'Lost'),' · loss reason required · all running cadences stop'),
-    h('div',{style:{display:'flex', gap:'8px', alignItems:'center', flexWrap:'wrap'}},
-      Sel('— select —',['— select —','Price','Timeline','Went with a competitor','Insurance denied the claim','Client postponed','No response'],{w:'260px'}),
-      Btn('Mark declined',{kind:'danger', onClick:()=>toast('Lead moved to Lost','dg')}))))]});
+    h('div', null, ChkC('Proposal signed', signed, () => {}, true), ChkC('Client has paid', paid, () => {}, true), signed && paid ? Tag('Lead is Won', 'ok') : null),
+    h('div', null, job.handed ? Tag('Sent to the Operations Manager — waiting to be converted in Jobs & schedule', 'ok')
+      : Btn('Send to the Operations Manager to convert', {kind:'pri', disabled:!(signed && paid), title:'Signed and paid — the Operations Manager converts it and assigns the project manager', onClick:() => APP.b3Handoff(id)}),
+      job.handed ? h('span', null, ' ', Btn('Open Jobs & schedule', {sm:true, onClick:() => go('jobs')})) : null),
+    h('div', {style:{fontSize:'12px', color:C.mut}}, 'A lead becomes a job only once the client has paid. The Operations Manager converts it in Phase 3 · Jobs & schedule, and assigns the project manager in the same step. Every lead document, photo, the estimate and the agreement transfer into the job — nothing is uploaded again.')), {hard:signed && paid && !job.handed}),
+  signed || dead ? null : Card('Declined or expired', Stack(
+    h('div', {style:{fontSize:'12.5px'}}, '→ Move the lead to ', h('b', null, 'Lost'), ' · loss reason required · every running follow-up stops'),
+    h('div', {style:{display:'flex', gap:'8px', alignItems:'center', flexWrap:'wrap'}},
+      SelC(ui.loss || '— select —', ['— select —'].concat(B3.LOSS), x => setP2({loss:x}), {w:'260px'}),
+      Btn('Mark declined', {kind:'danger', onClick:() => { APP.b3Decline(id, ui.loss); setP2({loss:''}); }}))))]};
+});
 
+/* ================= PHOTO LIBRARY · PROPOSALS · PAYMENT SCHEDULES — the same jobs, seen across the board ================= */
+const b3Jobs = st => st.leads.filter(l => !l.archived && st.p2[l.id]).map(l => ({l, j:st.p2[l.id]}));
+SCREENS.photolib = (p, st) => { const rows = st.leads.filter(l => B3.inQueue(l, st) && l.stage !== 'Visit scheduled').map(l => ({l, j:B3.get(st, l.id)}));
+ return Page({key:'photolib', title:'Photo library', sub:'Every photo across every job — filterable, and the source for photo reports',
+  children:[
+   Tiles([[B3.sum(rows.map(r => r.j.photos.length)), 'Photos on open and recent jobs'], [B3.sum(rows.map(r => B3.review(r.j))), 'Need a person to label', null, C.dg], [rows.filter(r => r.j.reports.length).length, 'Jobs with a photo report']]),
+   Tbl(['Job','Client','Job type',{t:'Photos',n:true},{t:'Needs review',n:true},'Report',''],
+     rows.map(r => ({c:[leadLink(r.l), r.l.client, r.l.job, {t:r.j.photos.length, n:true}, {t:B3.review(r.j) ? '<b style="color:#C8442E">' + B3.review(r.j) + '</b>' : '0', n:true},
+       r.j.reports[0] ? r.j.reports[0].pages + ' pages · ' + B1.fmtDay(r.j.reports[0].at) : '—', Btn('Open', {sm:true, onClick:() => APP.b3Open(r.l.id, 'photos')})], onClick:() => APP.b3Open(r.l.id, 'photos')})))]}); };
+
+SCREENS.proposals = (p, st) => { const ui = st.p2ui, all = []; b3Jobs(st).forEach(x => x.j.vers.forEach(v => all.push({l:x.l, j:x.j, v})));
+ const q = (ui.pq || '').toLowerCase(), f = ui.pst || 'Status: All';
+ const rows = all.filter(r => (!q || (r.l.id + ' ' + r.l.client).toLowerCase().indexOf(q) >= 0) && (f === 'Status: All' || r.v.status === f) && (!ui.pest || ui.pest === 'Estimator: All' || r.l.assigned === ui.pest)).sort((a, b) => b.v.sentAt - a.v.sentAt);
+ const wait = all.filter(r => r.v.status === 'Sent' || r.v.status === 'Viewed').sort((a, b) => a.v.sentAt - b.v.sentAt);
+ return Page({key:'proposals', title:'Proposals', sub:'Every proposal sent, across every job, with its version history and signature status',
+  actions:[Btn('Export CSV', {onClick:() => toast('CSV exported — ' + rows.length + ' proposals')})],
+  children:[
+   Tiles([[wait.length, 'Awaiting a reply'], [all.filter(r => r.v.status === 'Signed').length, 'Signed', null, C.ok], [all.filter(r => r.v.status === 'Declined').length, 'Declined', null, C.dg],
+     [B3.M(B3.sum(wait.map(r => r.v.amt))).replace(/\.\d\d$/, ''), 'Value out with clients']]),
+   Bar(FldC(ui.pq || '', v => setP2({pq:v}), {ph:'Search client, lead…', w:'230px'}), SelC(f, ['Status: All','Sent','Viewed','Signed','Declined','Superseded'], v => setP2({pst:v}), {w:'170px'}),
+     SelC(ui.pest || 'Estimator: All', ['Estimator: All'].concat(EST), v => setP2({pest:v}), {w:'180px'}), h('span', {style:{fontSize:'12.5px', color:C.mut}}, h('b', null, rows.length), ' of ' + all.length)),
+   Tbl(['Lead','Client','Version',{t:'Amount',n:true},'Contract template','Sent','Status','Viewed','Signed'],
+     rows.map(r => ({c:[leadLink(r.l), r.l.client, 'v' + r.v.v, {t:B3.M(r.v.amt), n:true}, r.v.tpl, B1.fmt(r.v.sentAt),
+       Tag(r.v.status, r.v.status === 'Signed' ? 'ok' : r.v.status === 'Declined' ? 'dg' : r.v.status === 'Superseded' ? null : 'ai'), r.v.viewedAt ? B1.fmt(r.v.viewedAt) : '—', r.v.signedAt ? B1.fmt(r.v.signedAt) : '—'],
+       onClick:() => APP.b3Open(r.l.id, 'versions')})), {min:'1280px'}),
+   Card('Awaiting a reply', wait.length ? Tbl(['Lead','Client','Sent',{t:'Days out',n:true},'Follow-up','Next touch'],
+     wait.map(r => ({c:[leadLink(r.l), r.l.client, B1.fmtDay(r.v.sentAt), {t:Math.floor((Date.now() - r.v.sentAt) / B3.DAY), n:true}, B1.cadTxt(r.l), B1.nextAction(r.l).t], onClick:() => APP.b3Open(r.l.id, 'acceptance')})), {flush:true})
+     : HTM({padding:'14px 16px', fontSize:'12.5px', color:C.mut}, 'No proposal is waiting on a client.'), {flush:true})]}); };
+
+SCREENS.schedules = (p, st) => { const rows = b3Jobs(st).filter(x => x.j.est && x.j.est.reviewed && (x.j.schedOk || x.j.vers.length)).map(x => Object.assign(x, {sc:B3.schedCalc(x.j)}));
+ return Page({key:'schedules', title:'Payment schedules', sub:'The milestone structure of every job — this is what Phase 4 turns into invoices',
+  actions:[Btn('Policy defaults', {onClick:() => go('s_markup')})],
+  children:[
+   Tbl(['Lead','Client',{t:'Contract value',n:true},{t:'Payments',n:true},{t:'Binder',n:true},{t:'Deposit',n:true},{t:'Final',n:true},'State','Validation'],
+     rows.map(r => { const d = r.sc.rows.find(m => m.type === '%');
+       return {c:[leadLink(r.l), r.l.client, {t:B3.M(r.sc.total), n:true}, {t:r.sc.count, n:true}, {t:'$500', n:true}, {t:d ? B3.num(d.pct) + '%' : '—', n:true}, {t:r.sc.finPct + '%', n:true},
+         Tag(r.l.stage === 'Won' ? 'Active' : r.l.stage === 'Lost' ? 'Closed' : 'Draft', r.l.stage === 'Won' ? 'ok' : null),
+         r.sc.needWhy ? Tag('⚠ final ' + r.sc.finPct + '% > 7% policy — reason on file', 'dg') : Tag('Within policy', 'ok')], onClick:() => APP.b3Open(r.l.id, 'schedule')}; }), {min:'1120px'}),
+   Card('Schedule templates', Tbl(['Template',{t:'Payments',n:true},'Structure'], [
+     ['Residential fixed rate — over $30K', {t:'5', n:true}, '$500 binder · 40% within 5 calendar days · 20% · 20% · the remainder'],
+     ['Residential fixed rate — under $30K', {t:'—', n:true}, 'Not received yet — the estimator walked through the over-$30K template'],
+     ['Standard schedule of values — 4 draws', {t:'4', n:true}, '33% at start · 30% rough complete · 30% finish stage · 7% final']], {flush:true}), {flush:true})]}); };
+
+const B2S = (() => { const leads = B1.seed(); return Object.assign({leads}, B2.seed(leads), {p2:B3.seed(leads)}); })();
+
+/* ================= PHASE 2 — ESTIMATING & PROPOSALS ================= */
 SCREENS.sessions = () => Page({key:'sessions', title:'Inspection sessions',
  sub:'Field capture sessions recorded by estimators on site — the screen that replaces the paper sketch and the paper notes',
  actions:[Btn('Open the mobile capture screen →',{kind:'pri', onClick:()=>go('inspection')})],
@@ -1979,45 +2646,6 @@ SCREENS.inspection = () => Page({key:'inspection', crumb:['Inspection sessions',
       ['Ambient audio capture, AI extracts the scope', Tag('Built — opt-in per session','ok')],
       ['Keyword-driven highlighted notes', Tag('Built','ok')],
       ['Photo capture in the same flow', Tag('Built','ok')]], {flush:true}), {flush:true})))]});
-
-SCREENS.photolib = () => Page({key:'photolib', title:'Photo library', sub:'Every photo across every job — filterable, and the source for photo reports',
- actions:[Btn('+ Upload',{kind:'pri', onClick:()=>APP.pickFile('photos')})],
- children:[
-  Bar(Sel('Job: All',['Job: All'].concat(QUEUE.map(q=>q.id+' — '+q.client)),{w:'280px'}),
-    Sel('Category: All',['Category: All','Pre-job','Overview','Elevation','Affected area','Detail','Post-job'],{w:'190px'}),
-    Sel('Condition: All',['Condition: All','Fire damage','Smoke','Water damage','Mold','Structural'],{w:'180px'}),
-    Sel('All',['All','Needs review (3)','AI-labelled','Human-confirmed'],{w:'170px'})),
-  Tbl(['Job','Client',{t:'Photos',n:true},{t:'Needs review',n:true},'Last capture','Report',''],[
-    ['<b style="color:#087BB2">L-2026-0415</b>','Robert Chen',{t:'63',n:true},{t:'1',n:true},'Aug 7, 08:40','12 pages · Aug 7', Btn('Open',{sm:true, onClick:()=>go('photos')})],
-    ['<b style="color:#087BB2">L-2026-0414</b>','Westmoreland Retail',{t:'22',n:true},{t:'2',n:true},'Aug 1, 10:30','—', Btn('Open',{sm:true, onClick:()=>go('photos')})],
-    ['<b style="color:#087BB2">L-2026-0408</b>','Northside Dental',{t:'8',n:true},{t:'0',n:true},'Jul 25, 09:40','—', Btn('Open',{sm:true, onClick:()=>go('photos')})]])]});
-
-SCREENS.proposals = () => Page({key:'proposals', title:'Proposals', sub:'Every proposal sent, across every job, with its version history and signature status',
- actions:[Btn('Export CSV',{onClick:()=>toast('CSV exported')})],
- children:[
-  Bar(Fld('',{ph:'Search client, lead…', w:'230px'}), Sel('Status: All',['Status: All','Draft','Sent','Viewed','Signed','Declined','Expired'],{w:'170px'}),
-    Sel('Estimator: All',['Estimator: All'].concat(EST),{w:'180px'})),
-  Tbl(['Lead','Client','Version',{t:'Amount',n:true},'Contract template','Sent','Status','Viewed','Signed',''],
-    PROPOSALS.map(p=>({c:['<b style="color:#087BB2">'+p[0]+'</b>', p[1], p[2], {t:'$'+p[3],n:true}, p[4], p[5],
-      Tag(p[6], p[6]==='Sent'?'ai':p[6]==='Declined'?'dg':null), p[7], p[8], Btn('Open',{sm:true, onClick:()=>go('versions')})],
-      onClick:()=>go('versions')})), {min:'1280px'}),
-  Card('Awaiting a reply', Tbl(['Lead','Client','Sent',{t:'Days out',n:true},'Cadence','Next touch'],[
-    ['<b style="color:#087BB2">L-2026-0415</b>','Robert Chen','Aug 7',{t:'0',n:true},'Proposal Follow-Up — friendly','Email · Aug 9']], {flush:true}), {flush:true})]});
-
-SCREENS.schedules = () => Page({key:'schedules', title:'Payment schedules', sub:'The milestone structure of every job — this is what Phase 4 turns into invoices',
- actions:[Btn('Policy defaults',{onClick:()=>go('s_markup')})],
- children:[
-  Bar(Sel('Status: All',['Status: All','Draft','Active','Complete'],{w:'160px'}), Sel('Arm: All',['Arm: All','Commercial GC','Restoration'],{w:'160px'})),
-  Tbl(['Lead','Client',{t:'Contract value',n:true},{t:'Payments',n:true},{t:'Binder',n:true},{t:'Deposit',n:true},{t:'Final',n:true},'Validation',''],[
-    ['<b style="color:#087BB2">L-2026-0415</b>','Robert Chen',{t:'$62,300.00',n:true},{t:'5',n:true},{t:'$500',n:true},{t:'40%',n:true},{t:'19.2%',n:true},
-      Tag('⚠ final 19.2% > 7% policy — reason required','dg'), Btn('Open',{sm:true, onClick:()=>go('schedule')})],
-    ['<b style="color:#087BB2">L-2026-0411</b>','Gregory Palmer',{t:'$8,940.00',n:true},{t:'3',n:true},{t:'$500',n:true},{t:'50%',n:true},{t:'10%',n:true},
-      Tag('⚠ final 10% > 7% policy — reason required','dg'), Btn('Open',{sm:true, onClick:()=>go('schedule')})]], {min:'1120px'}),
-  Card('Schedule templates', Tbl(['Template',{t:'Payments',n:true},'Structure','Used by',''],[
-    ['Standard schedule of values — 4 draws',{t:'4',n:true},'33% at start · 30% rough complete · 30% finish stage · 7% final','6 jobs', Btn('Edit',{sm:true})],
-    ['Residential fixed rate — over $30K',{t:'5',n:true},'$500 binder · 40% within 5 calendar days · 20% · 20% · the remainder','4 jobs', Btn('Edit',{sm:true})],
-    ['Standard commercial — 5 payments',{t:'5',n:true},'$500 binder · 30% deposit · 30/30 milestones · 10% final','2 jobs', Btn('Edit',{sm:true})],
-    ['Residential fixed rate — under $30K',{t:'—',n:true},'Not seen yet — the estimator walked through the over-$30K template','6 jobs', Btn('Edit',{sm:true})]], {flush:true}), {flush:true})]});
 
 /* ================= SETTINGS ================= */
 SCREENS.s_ai = (p, st) => {
@@ -3540,11 +4168,12 @@ SCREENS.s_lists = (p, st) => {
  if(st.tab===3) pane = Stack(
    Card('Divisions', Tbl(['Division','What it covers','Reports separately'],[
      ['<b>Mitigation</b>','The emergency response — drying, containment, extraction.','Yes'],
-     ['<b>Reconstruction</b>','Putting the property back, on an insurance claim.','Yes'],
+     ['<b>Insurance rebuild</b>','Putting the property back, paid through an insurance claim.','Yes'],
+     ['<b>Retail</b>','Work the client pays for directly, with no claim behind it.','Yes'],
      ['<b>Commercial</b>','General contracting for businesses, no insurance involved.','Yes']], {min:'820px', flush:true}), {flush:true}),
-   Card('Why three and not two', HTM({fontSize:'12.5px', lineHeight:1.8},
+   Card('Why four', HTM({fontSize:'12.5px', lineHeight:1.8},
      'The business is often described as two arms — commercial and restoration. Their own procedure ' +
-     'splits it three ways and holds a <b>separate weekly review per division</b>, because mitigation and ' +
+     'splits the work four ways at job setup (to confirm with the client) and holds a <b>separate weekly review per division</b>, because mitigation and ' +
      'reconstruction run on different clocks and different margins even though both are insurance work.')));
  return Page({key:'s_lists', title:'Lists & values',
   sub:'The values behind every dropdown — editable without a code change',
@@ -3557,7 +4186,7 @@ SCREENS.s_lists = (p, st) => {
    billed to date, AR balance, days AR oldest, % complete (PM entered), projected completion,
    past due?, CO pending days, drivers */
 const WIP=[
- {job:'REB - Robert Chen - Fire damage', ref:'L-2026-0415', tgm:0.475, div:'Reconstruction', pm:'Marcus Hale',
+ {job:'REB - Robert Chen - Fire damage', ref:'L-2026-0415', tgm:0.475, div:'Insurance rebuild', pm:'Marcus Hale',
   con:62300, co:0, est:32692, ctd:3900, ctc:28792, bill:24920, ar:0, arDays:0, pct:18,
   due:'Sep 30, 2026', over:[], coDays:0, drivers:[]},
  {job:'COM - Allegheny Property Group - Tenant buildout', ref:'L-2026-0416', tgm:0.36, div:'Commercial', pm:'Marcus Hale',
@@ -3577,11 +4206,11 @@ const WIP=[
  {job:'MIT - Cardello Bldg - Water - SED', ref:'J-2026-0399', tgm:0.40, div:'Mitigation', pm:'Kyle Brennan',
   con:34200, co:0, est:20100, ctd:6400, ctc:13900, bill:0, ar:0, arDays:0, pct:34,
   due:'Sep 26, 2026', over:[], coDays:0, drivers:['Underbilled — 34% complete, nothing billed']},
- {job:'REB - Bella Gerlich - Whole home renovation', ref:'J-2026-0371', tgm:0.32, div:'Reconstruction', pm:'Marcus Hale',
+ {job:'REB - Bella Gerlich - Whole home renovation', ref:'J-2026-0371', tgm:0.32, div:'Insurance rebuild', pm:'Marcus Hale',
   con:412000, co:28900, est:288000, ctd:171000, ctc:129000, bill:198000, ar:9800, arDays:12, pct:58,
   due:'Dec 19, 2026', over:[], coDays:19,
   drivers:['Change order pending 19 days','Change order value not yet in the revised contract']},
- {job:'REB - Greensburg - Water damage - CC', ref:'J-2026-0394', tgm:0.36, div:'Reconstruction', pm:'Danny Kovach',
+ {job:'REB - Greensburg - Water damage - CC', ref:'J-2026-0394', tgm:0.36, div:'Insurance rebuild', pm:'Danny Kovach',
   con:76400, co:0, est:49100, ctd:24200, ctc:24600, bill:30560, ar:0, arDays:0, pct:48,
   due:'Oct 3, 2026', over:[], coDays:0, drivers:[]}];
 
@@ -3634,7 +4263,7 @@ SCREENS.wip = () => {
           [money(totalRev),'Revised contract value'],
           [money(totalGP),'Projected gross profit'],
           [money(totalAR),'Accounts receivable']]),
-   Bar(Sel('Division: All', ['Division: All','Division: Mitigation','Division: Reconstruction','Division: Commercial'],
+   Bar(Sel('Division: All', ['Division: All','Division: Mitigation','Division: Insurance rebuild','Division: Retail','Division: Commercial'],
         {w:'230px'}),
      Sel('Risk: All',['Risk: All','Red only','Red and amber'],{w:'170px'}),
      Sel('Project manager: All',['Project manager: All','Marcus Hale','Danny Kovach','Kyle Brennan'],{w:'220px'}),
@@ -3693,7 +4322,7 @@ SCREENS.scorecard = () => Page({key:'scorecard', title:'Project manager scorecar
  sub:'Pulled straight from the jobs — nobody types these figures in',
  children:[
   Bar(Sel('Week of Aug 24, 2026',['Week of Aug 24, 2026','Week of Aug 17, 2026','Week of Aug 10, 2026'],{w:'240px'}),
-    Sel('Division: All',['Division: All','Mitigation','Reconstruction','Commercial'],{w:'200px'}),
+    Sel('Division: All',['Division: All','Mitigation','Insurance rebuild','Retail','Commercial'],{w:'200px'}),
     Sp(), Btn('Export',{onClick:()=>toast('Scorecard exported')})),
   Tbl(['Project manager',{t:'Open jobs',n:true},{t:'Gross margin',n:true},{t:'Margin variance',n:true},
        {t:'Labour variance',n:true},{t:'AR over 30 days',n:true},{t:'CO capture ratio',n:true},
