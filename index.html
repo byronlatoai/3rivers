@@ -1698,6 +1698,7 @@ Object.assign(Component.prototype, {
    if(c.leadId) this.b1Patch([c.leadId], l => ({lastAt:Date.now(), comms:l.comms.concat([{at:Date.now(), ch:'Call', who:'HUMAN — Joshua Tohey', head:'Outbound call', body:'Called the client back after the failed transfer.'}])}), () => ['Call logged', 'Outbound · call back after the failed transfer']);
    toast('Call back logged' + (c.leadId ? ' on ' + c.leadId : '')); },
  b2Mail(kind){
+   if(kind === 'form'){ closeM(); return setTimeout(() => this.b2FormDlg(), 0); }
    closeM(); const st = this.state, now = Date.now(), mid = 'M-' + (301 + st.inbox.filter(m => m.sim).length), form = kind === 'form';
    if(kind === 'bad'){ const m = {id:mid, at:now, sim:true, from:'tdonnelly@example.com', subj:'question', src:'Email', status:'Needs a person', leadId:'', missing:['phone', 'address', 'what the work is'],
        body:'hi is this the right place to ask about the thing my neighbour had done last spring?? need to know roughly how much. thx T', ex:{name:'T. Donnelly', email:'tdonnelly@example.com', phone:'', addr:'', city:'', state:'PA', arm:'Restoration', job:PROJTYPES[28]}};
@@ -1714,12 +1715,47 @@ Object.assign(Component.prototype, {
    this.setState({leads:[lead].concat(st.leads), inbox:[m].concat(st.inbox), mrev:mid});
    toast((form ? 'Web form' : 'Email') + ' read by the AI · ' + lead.id + ' created' + (partial ? ' · missing information requested' : ''));
  },
+ /* the real website form (3riverscm.com/contact, checked 19-oct): same fields, same options */
+ b2FormDlg(){
+   const p = B2.person(), v = {name:p.first + ' ' + p.last, phone:p.phone, addr:p.addr + ', ' + p.city + ', ' + (p.state || 'PA') + ' ' + (p.zip || ''), type:WEBFORM.types[3][0],
+     budget:WEBFORM.budgets[6], time:WEBFORM.times[1], det:'Water came through the kitchen ceiling from the bathroom upstairs. The ceiling is stained and the floor is warped.', photos:'2', county:true};
+   const inp = (k, ta) => h(ta ? 'textarea' : 'input', {defaultValue:v[k], onChange:e => v[k] = e.target.value, style:Object.assign(inputStyle(), ta ? {minHeight:'70px'} : {})});
+   const sel = (k, opts) => h('select', {defaultValue:v[k], onChange:e => v[k] = e.target.value, style:inputStyle()}, ...opts.map(o => h('option', {key:o}, o)));
+   modal('Website contact form — 3riverscm.com/contact', Stack(
+     HTM({fontSize:'12.5px', color:C.mut}, 'The same fields and options the client sees on the 3Rivers website. <b>*</b> = required on the website. Submitting stands in for the form arriving at the platform.'),
+     Lbl('Full Name *'), inp('name'), Lbl('Phone Number *'), inp('phone'), Lbl('Property Address *'), inp('addr'),
+     Lbl('Project Type *'), sel('type', WEBFORM.types.map(t => t[0])), Lbl('Budget *'), sel('budget', WEBFORM.budgets), Lbl('Timeline *'), sel('time', WEBFORM.times),
+     Lbl('Project Details *'), inp('det', true), Lbl('Upload Project Photos (number of files)'), sel('photos', ['0','1','2','3','4','5']),
+     h('label', {style:{display:'flex', gap:'8px', fontSize:'12.5px', alignItems:'flex-start'}}, h('input', {type:'checkbox', defaultChecked:v.county, onChange:e => v.county = e.target.checked}),
+       'I confirm that my property is located in ' + WEBFORM.counties + ' County.')),
+     [Btn('Cancel', {onClick:() => closeM()}), Btn('Submit the form', {kind:'pri', onClick:() => { closeM(); this.b2FormSubmit(v); }})]);
+ },
+ b2FormSubmit(v){
+   const req = [['Full Name', v.name], ['Phone Number', v.phone], ['Property Address', v.addr], ['Project Details', v.det]].filter(x => !String(x[1] || '').trim());
+   if(req.length) return toast('The website would not send it — required: ' + req.map(x => x[0]).join(', '), 'dg');
+   const st = this.state, now = Date.now(), mid = 'M-' + (301 + st.inbox.filter(m => m.sim).length), t = WEBFORM.types.find(x => x[0] === v.type) || WEBFORM.types[7];
+   const parts = v.addr.split(',').map(x => x.trim()), sz = (parts[2] || 'PA').split(' ');
+   const emg = v.time === WEBFORM.times[0] && t[3], resto = v.budget === 'Restoration Services';
+   const missing = v.county ? [] : ['service area (county not confirmed)'];
+   const lead = this.b2Lead({client:v.name.trim(), phone:v.phone.trim(), email:'', pref:'Phone', addr:parts[0] || v.addr, city:parts[1] || '', state:sz[0] || 'PA', zip:sz[1] || '',
+     src:'Web form', arm:t[1], job:PROJTYPES[t[2]], desc:v.det.trim(), emg,
+     q:{scope:v.det.trim(), sa:'Qualified', budget:v.budget + (resto ? ' (insurance / restoration)' : ''), ba:'Qualified', time:v.time, ta:'Qualified', out:v.county ? 'Qualified' : 'Needs more info'},
+     comms:[{at:now, ch:'Email', who:'SYSTEM', head:'Website contact form · 3riverscm.com/contact', body:'Scope, budget and timeline filled from the form. Project type “' + v.type + '” → ' + t[1] + ' · ' + PROJTYPES[t[2]] + '.' +
+       (+v.photos ? ' ' + v.photos + ' photo(s) uploaded with the form.' : '') + (v.county ? ' Service area confirmed by the client.' : ' The client did not confirm the county — a person checks the service area.')}]}, 'Inbox Capture', 'AI');
+   if(v.county && !emg){ lead.stage = 'Qualified'; lead.activity.push(B1.act(now, 'System', 'System', 'Stage changed', 'New → Qualified · scope, budget and timeline came with the website form')); }
+   const m = {id:mid, at:now, sim:true, from:'noreply@3riverscm.com', subj:'Website contact form — ' + v.type, src:'Web form', status:'Parsed', leadId:lead.id, missing,
+     body:['Full Name: ' + v.name, 'Phone Number: ' + v.phone, 'Property Address: ' + v.addr, 'Project Type: ' + v.type, 'Budget: ' + v.budget, 'Timeline: ' + v.time,
+       'Project Details: ' + v.det, 'Upload Project Photos: ' + (+v.photos ? v.photos + ' file(s)' : 'none'), 'County confirmation: ' + (v.county ? 'Yes' : 'No')].join('\n'),
+     ex:{name:lead.client, email:'', phone:lead.phone, addr:lead.addr, city:lead.city, state:lead.state, arm:lead.arm, job:lead.job}};
+   this.setState({leads:[lead].concat(st.leads), inbox:[m].concat(st.inbox), mrev:mid, tab:0});
+   toast('Website form received · ' + lead.id + ' created' + (emg ? ' · EMERGENCY' : v.county ? ' · already Qualified' : ' · service area to check'), emg ? 'dg' : 'ok');
+ },
  b2SimMail(){ const opt = (k, t, d) => h('div', {key:k, onClick:() => this.b2Mail(k), style:{border:'1px solid ' + C.bd, borderRadius:'9px', padding:'11px 14px', cursor:'pointer'},
      onMouseEnter:e => e.currentTarget.style.borderColor = C.pri, onMouseLeave:e => e.currentTarget.style.borderColor = C.bd}, h('b', {style:{fontSize:'13px'}}, t), h('div', {style:{fontSize:'12px', color:C.mut, marginTop:'2px'}}, d));
    modal('Simulate an incoming message', Stack(HTM({fontSize:'12.5px', color:C.mut}, 'No mailbox is connected. This stands in for the monitored inboxes and the website form.'),
      opt('email', 'An email with everything needed', 'The AI reads it and creates the lead on its own.'),
      opt('partial', 'An email missing the budget and the timeline', 'The lead is created and the missing information is requested automatically.'),
-     opt('form', 'A website form submission', 'Lands in the same queue and creates the lead.'),
+     opt('form', 'A website form submission — the real 3riverscm.com/contact form', 'Fill in the same fields the client sees. It lands in the same queue, creates the lead and fills in scope, budget and timeline.'),
      opt('bid', 'A bid invitation from a company', 'Creates a Commercial GC lead with its bid reference.'),
      opt('bad', 'An email the AI cannot read', 'No lead. It waits here for a person, and appears under Needs a human.')), [Btn('Cancel', {onClick:() => closeM()})]); },
  b2MailDo(mid, what, arg){
@@ -1795,9 +1831,34 @@ SCREENS.call = (cid, st) => {
    : ab ? Card('Call-back task', Stack(HTM({fontSize:'12.5px'}, c.handled ? 'Done — the number was called back.' : 'Open — call <b>' + c.from + '</b> back.'), h('div', null, Btn('Mark as called back', {kind:'pri', disabled:c.handled, onClick:() => APP.b2CallBack(c.id)}))), {hard:true}) : null]});
 };
 
+/* the 3Rivers website form, as published at 3riverscm.com/contact (checked 19-oct). Project type → [label, arm, PROJTYPES index, damage?] */
+const WEBFORM = {
+ types:[['Commercial Construction / General Contracting','Commercial GC',15,false], ['Commercial Renovation / Tenant Improvement','Commercial GC',16,false], ['Commercial Build-Out','Commercial GC',13,false],
+  ['Water Damage / Emergency Mitigation','Restoration',28,true], ['Fire / Smoke / Soot Damage','Restoration',8,true], ['Storm / Other Property Damage','Restoration',8,true],
+  ['Reconstruction After Property Damage','Restoration',9,false], ['Other / Not Sure','Restoration',20,false]],
+ budgets:['Under $100,000','$100,000 — $200,000','$200,000 — $500,000','$500,000 — $1,000,000','$1,000,000 — $5,000,000','$5,000,000+','Restoration Services'],
+ times:['Immediately / Emergency','1–3 Months','3–6 Months','6+ Months'],
+ counties:'Allegheny, Butler, Beaver, Washington, Westmoreland, or Armstrong'};
+
 /* ================= INBOX CAPTURE ================= */
 const _inboxOld = SCREENS.inbox;
 SCREENS.inbox = (p, st) => {
+ if(st.tab === 2) return Page({key:'inbox', title:'Inbox Capture', sub:'Monitored Gmail inboxes and website form submissions, parsed into structured leads',
+  actions:[Btn('Simulate an incoming message', {kind:'pri', onClick:() => APP.b2SimMail()})],
+  children:[Tabs(['Queue','Monitored inboxes','Web forms','Parsing rules'], st.tab),
+   Tbl(['Form','Where it lives','Fields mapped','Auto-create','Status',''], [['Website contact form', '3riverscm.com/contact', '9 of 9', '☑', Tag('Active', 'ok'), Btn('Fill it in (simulate)', {sm:true, onClick:() => APP.b2FormDlg()})]]),
+   Card('Field mapping — website contact form', Tbl(['Form field','On the website','→ Lead field','How'], [
+     ['Full Name', 'Required', 'Contact name', '—'], ['Phone Number', 'Required', 'Phone', 'Normalised. The form has no email field, so follow-up goes by phone and text.'],
+     ['Property Address', 'Required', 'Job site address · city · state · ZIP', 'Split into its parts'],
+     ['Project Type', 'Required · 8 options', 'Business arm + Job type', 'Commercial options → Commercial GC; damage and reconstruction → Restoration (table below)'],
+     ['Budget', 'Required · 7 ranges', 'Qualification · Budget', '“Restoration Services” = insurance work, no range'],
+     ['Timeline', 'Required · 4 options', 'Qualification · Timeline', '“Immediately / Emergency” on a damage type → Emergency'],
+     ['Project Details', 'Required', 'Qualification · Scope + Loss description', '—'],
+     ['Upload Project Photos', 'Optional', 'Files & Photos', '—'],
+     ['County confirmation', 'Checkbox', 'Service area', 'Not ticked → Needs more info; a person checks the address']], {flush:true}), {flush:true}),
+   Card('Project Type → business arm and job type', Tbl(['Project Type on the website','Business arm','Job type','Damage?'],
+     WEBFORM.types.map(t => [t[0], t[1], PROJTYPES[t[2]], t[3] ? 'Yes' : '—']), {flush:true}), {flush:true}),
+   HTM({fontSize:'12.5px', color:C.mut}, 'With scope, budget, timeline and the county all answered, the lead arrives already <b>Qualified</b>. The budget thresholds (for example, a minimum) are still to be confirmed with the client. How the form reaches the platform — reading the notification mail or posting directly — is decision D-03.')]});
  if(st.tab !== 0) return _inboxOld(p, st);
  const T = ['Queue','Monitored inboxes','Web forms','Parsing rules'];
  const m = st.inbox.find(x => x.id === st.mrev) || st.inbox.find(x => x.status === 'Needs a person') || st.inbox[0];
