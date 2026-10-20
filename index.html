@@ -1376,12 +1376,12 @@ SCREENS.hotlist = (p, st) => {
   h('div', {style:{display:'flex', gap:'4px', background:'#fff', border:'1px solid ' + C.bd, borderRadius:'9px', padding:'4px', alignSelf:'flex-start'}},
     ...['Restoration','Commercial GC'].map(a => h('div', {key:a, onClick:() => setHot({barm:a}), style:{padding:'7px 13px', borderRadius:'6px', cursor:'pointer', fontSize:'12.5px', fontWeight:600,
       background:f.barm === a ? C.pri : 'transparent', color:f.barm === a ? '#fff' : C.mut}}, (a === 'Restoration' ? 'Restoration / Insurance' : a) + ' · ' + hotFilter(st.leads, Object.assign({}, f, {arm:a, stage:'All'})).length))),
-  Kanban(lanes, L => { const cs = brows.filter(l => l.stage === L);
+  (typeof KanbanFU === 'function' ? KanbanFU : Kanban)(lanes, L => { const cs = (typeof fuSort === 'function' ? fuSort(st, f.barm, L) : (x => x))(brows.filter(l => l.stage === L));
      return [h('div', {key:'n', style:{fontSize:'11px', color:C.faint, padding:'0 2px'}}, cs.length + (cs.length === 1 ? ' lead' : ' leads') + (cs.some(x => x.value) ? ' · ' + B1.money(cs.reduce((a, x) => a + (x.value || 0), 0)) : ''))]
       .concat(cs.slice(0, 12).map(l => KCard({key:l.id, drag:l.id, onClick:() => go('lead', l.id), title:l.client, meta:l.id + ' · ' + l.job + (l.assigned ? ' · ' + l.assigned.split(' ')[0] : ''),
         foot:h('div', {style:{marginTop:'6px', display:'flex', gap:'6px', flexWrap:'wrap', alignItems:'center'}}, l.emg ? Tag('EMERGENCY', 'dg') : null, l.assigned ? null : Tag('Unassigned', 'wn'), overChip(l))})))
       .concat(cs.length > 12 ? [h('div', {key:'more', style:{fontSize:'11.5px', color:C.mut, textAlign:'center', padding:'4px'}}, '+ ' + (cs.length - 12) + ' more — use the table')] : []); },
-   (id, L) => { const l = st.leads.find(x => x.id === id); if(l && l.stage !== L) APP.b1Stage([id], L); }),
+   (id, L) => { const l = st.leads.find(x => x.id === id); if(l && l.stage !== L) APP.b1Stage([id], L); }, f.barm),
   HTM({fontSize:'11.5px', color:C.faint}, 'Drag a card to another column to change its stage. Each business arm has its own stages, so the board shows one arm at a time.'));
  return Page({key:'hot', title:'Hotlist', sub:'All incoming and active opportunities — every channel, one queue',
   actions:[Btn('Export CSV', {onClick:() => APP.b1Csv(rows)}), Btn('+ New lead', {kind:'pri', onClick:() => go('newlead')})],
@@ -1427,7 +1427,7 @@ SCREENS.lead = (id, st) => {
    h('b', {style:{fontSize:'12.5px', color:C.wn}}, Object.keys(ed).length + ' unsaved change' + (Object.keys(ed).length > 1 ? 's' : '')), Sp(),
    Btn('Discard', {sm:true, onClick:() => APP.setState(s => ({led:Object.assign({}, s.led, {[l.id]:undefined})}))}), Btn('Save changes', {sm:true, kind:'pri', onClick:() => APP.b1Save(l.id)})) : null;
  let pane = null;
- if(tab === 0) pane = Stack(
+ if(tab === 0) pane = Stack(typeof b3LeadCards === 'function' ? b3LeadCards(l, st) : null,
    Row(Card('Contact', Stack(S('Client type', 'ctype', ['Individual','Organization']), F('Company name', 'company'), F('Contact name', 'client'), F('Phone', 'phone'), F('Alt phone', 'phone2'), F('Email', 'email'),
        S('Preferred contact method', 'pref', ['Phone','Email','Text']), h('div', null, Btn('Open the contact →', {sm:true, onClick:() => go('contact', B1.contactKey(l))})))),
      Card('Job site / property', Stack(F('Address', 'addr'), Lbl('City / State / ZIP'),
@@ -1488,7 +1488,7 @@ SCREENS.lead = (id, st) => {
  return Page({key:'lead' + l.id, crumb:['Hotlist', () => go('hotlist'), l.id], title:l.client, sub:l.id + ' · ' + [l.addr, l.city, l.state + ' ' + l.zip].filter(x => x && x.trim()).join(', '),
    actions:[Btn('Reassign', {onClick:() => APP.b1Assign([l.id])}), Btn('Start follow-up', {onClick:() => APP.b1Cadence([l.id])}),
      l.archived ? Btn('Restore', {onClick:() => APP.b1Restore(l.id)}) : Btn('Archive', {onClick:() => APP.b1Archive([l.id])}),
-     Btn('Open estimating workflow →', {onClick:() => APP.b3Open(l.id), disabled:['Estimating', B1.SENT(l.arm), 'Won'].indexOf(l.stage) < 0, title:'Available once the visit is done and the lead is in Estimating'}),
+     Btn('Open estimate ' + (typeof B3 === 'object' ? B3.estNo(l.id) : '') + ' →', {onClick:() => APP.b3Open(l.id), disabled:['Estimating', B1.SENT(l.arm), 'Won'].indexOf(l.stage) < 0, title:'Opens once the estimator marks I’m on site'}),
      Btn('Convert to job', {kind:'pri', disabled:true, title:'Enabled once the proposal is signed and the client has paid — converted by the Operations Manager'})],
    children:[
     h('div', {style:{display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'center'}},
@@ -1770,10 +1770,20 @@ Object.assign(Component.prototype, {
    this.setState(s => ({leads:[lead].concat(s.leads), inbox:s.inbox.map(x => x.id === mid ? Object.assign({}, x, {status:'Parsed', leadId:lead.id, ex}) : x)})); toast('Lead created from the message — ' + lead.id);
  },
  b2Visit(id, what){
+   if(what === 'onsite') { this.b1Patch([id], l => ({visit:Object.assign({}, l.visit, {st:'On site', onAt:Date.now()}), stage:'Estimating', stageAt:Date.now(), lastAt:Date.now()}), () => ['Estimator on site', 'Visit started · lead moved to Estimating · ' + B3.estNo(id) + ' opened']); closeM(); return toast('On site — ' + B3.estNo(id) + ' is open and the lead is in Estimating'); }
    if(what === 'cancel') { this.b1Patch([id], l => Object.assign({visit:null}, l.stage === 'Visit scheduled' ? {stage:'Assigned', stageAt:Date.now()} : {}), () => ['Visit cancelled', 'Client and estimator notified']); return toast('Visit cancelled — ' + id + ' is back in Assigned'); }
-   if(what === 'done') { this.b1Patch([id], l => ({visit:Object.assign({}, l.visit, {st:'Completed'}), stage:'Estimating', stageAt:Date.now(), lastAt:Date.now()}), () => ['Visit completed', 'Lead moved to Estimating']); return toast('Visit completed — ' + id + ' moved to Estimating'); }
+   if(what === 'done') { closeM(); this.b1Patch([id], l => ({visit:Object.assign({}, l.visit, {st:'Completed'}), stage:'Estimating', stageAt:Date.now(), lastAt:Date.now()}), () => ['Visit completed', 'Lead moved to Estimating']); return toast('Visit completed — ' + id + ' moved to Estimating'); }
    if(what === 'noshow') { this.b1Patch([id], l => ({visit:Object.assign({}, l.visit, {st:'No-show'})}), () => ['No-show', 'A task was created for the estimator']); return toast('Marked as a no-show — a task was created', 'dg'); }
  },
+ b2VisitPop(id){ const l = this.state.leads.find(x => x.id === id); if(!l || !l.visit) return; const v = l.visit, stt = v.st || (v.at < Date.now() - 2 * B1.HOUR ? 'Past — confirm' : 'Booked'), live = stt === 'Booked' || stt === 'Past — confirm';
+   modal('Site visit — ' + l.client, Stack(
+     Tbl(['', ''], [['When', B1.fmt(v.at)], ['Estimator', v.est || '—'], ['Address', l.addr + ', ' + l.city], ['Lead', l.id + ' · ' + l.stage], ['Estimate', '<b>' + B3.estNo(l.id) + '</b> · ' + B3.lane(l, B3.get(this.state, l.id))], ['Visit status', stt]], {flush:true}),
+     h('div', {style:{display:'flex', gap:'8px', flexWrap:'wrap'}},
+       live ? Btn('I\u2019m on site', {kind:'pri', onClick:() => this.b2Visit(l.id, 'onsite')}) : null,
+       stt === 'On site' ? Btn('Visit completed', {kind:'pri', onClick:() => this.b2Visit(l.id, 'done')}) : null,
+       Btn('Open estimate ' + B3.estNo(l.id), {onClick:() => { closeM(); this.b3Open(l.id, 'estimate'); }}), Btn('Open lead', {onClick:() => { closeM(); go('lead', l.id); }}),
+       live ? Btn('Move', {onClick:() => { closeM(); this.b2BookDlg(l.id); }}) : null, live ? Btn('No-show', {onClick:() => { closeM(); this.b2Visit(l.id, 'noshow'); }}) : null, live ? Btn('Cancel visit', {onClick:() => { closeM(); this.b2Visit(l.id, 'cancel'); }}) : null)),
+     [Btn('Close', {onClick:() => closeM()})]); },
  b2BookDlg(preId){
    const leads = this.state.leads.filter(l => B1.isOpen(l) && (preId ? l.id === preId : !l.visit)).slice(0, 60); if(!leads.length) return toast('No open lead without a visit');
    const base = new Date(); base.setMinutes(0, 0, 0); const slots = [20, 26, 44, 50, 74, 98].map(x => { const d = new Date(base.getTime() + x * B1.HOUR); if(d.getHours() < 8) d.setHours(9); if(d.getHours() > 16) d.setHours(14); return d.getTime(); });
@@ -1900,15 +1910,15 @@ SCREENS.appointments = (p, st) => {
  if(st.tab === 0){
    const d0 = new Date(); d0.setHours(0, 0, 0, 0); const days = []; for(let i = 0; days.length < 5; i++){ const d = new Date(d0.getTime() + i * B1.DAY); if(d.getDay() !== 0 && d.getDay() !== 6) days.push(d); }
    const hrs = [8, 9, 10, 11, 12, 13, 14, 15, 16], inSlot = (d, hr) => vis.filter(l => { const v = new Date(l.visit.at); return v.toDateString() === d.toDateString() && Math.min(16, Math.max(8, v.getHours())) === hr; });
-   const slot = l => h('div', {key:l.id, onClick:() => go('lead', l.id), style:{background:l.emg ? C.dgL : C.priL, borderLeft:'3px solid ' + (l.emg ? C.dg : C.pri), borderRadius:'6px', padding:'7px 9px', cursor:'pointer', marginBottom:'4px'}},
+   const slot = l => h('div', {key:l.id, onClick:() => APP.b2VisitPop(l.id), style:{background:l.emg ? C.dgL : C.priL, borderLeft:'3px solid ' + (l.emg ? C.dg : C.pri), borderRadius:'6px', padding:'7px 9px', cursor:'pointer', marginBottom:'4px'}},
      h('b', {style:{fontSize:'12px'}}, l.client), h('div', {style:{fontSize:'11px', color:C.mut, marginTop:'2px'}}, (l.visit.est || '').split(' ')[0] + ' · ' + B1.fmtTime(l.visit.at) + ' · ' + l.addr));
    pane = Stack(bar, Tbl([''].concat(days.map(d => d.toLocaleDateString('en-US', {weekday:'short', month:'short', day:'numeric'}))),
      hrs.map(hr => [(hr > 12 ? hr - 12 : hr) + ':00 ' + (hr >= 12 ? 'PM' : 'AM')].concat(days.map(d => { const x = inSlot(d, hr); return x.length ? h('div', null, ...x.map(slot)) : ''; }))), {min:'1100px'}),
      HTM({fontSize:'11.5px', color:C.faint}, 'The next five working days. A visit booked from a lead, from here, or by the AI during a call lands in the same calendar.'));
- } else pane = Stack(bar, Tbl(['When','Estimator','Client','Address','Arm','Lead','Status','Booked by',''],
-   vis.map(l => { const s = stOf(l), live = s === 'Booked' || s === 'Past — confirm';
-     return {c:[B1.fmt(l.visit.at), l.visit.est || '—', '<b>' + l.client + '</b>', l.addr + ', ' + l.city, armTag(l.arm), leadLink(l), Tag(s, s === 'Completed' ? 'ok' : s === 'No-show' ? 'dg' : s === 'Booked' ? 'ai' : 'wn'), l.visit.by === 'AI' ? Tag('AI', 'ai') : 'Person',
-       h('div', {onClick:e => e.stopPropagation(), style:{display:'flex', gap:'6px', flexWrap:'wrap'}}, live ? Btn('Completed', {sm:true, onClick:() => APP.b2Visit(l.id, 'done')}) : null, live ? Btn('No-show', {sm:true, onClick:() => APP.b2Visit(l.id, 'noshow')}) : null,
+ } else pane = Stack(bar, Tbl(['When','Estimator','Client','Address','Arm','Lead','Estimate','Status','Booked by',''],
+   vis.map(l => { const s = stOf(l), live = s === 'Booked' || s === 'Past — confirm', on = s === 'On site';
+     return {c:[B1.fmt(l.visit.at), l.visit.est || '—', '<b>' + l.client + '</b>', l.addr + ', ' + l.city, armTag(l.arm), leadLink(l), h('a', {href:'#', onClick:e => { e.preventDefault(); e.stopPropagation(); APP.b3Open(l.id, 'estimate'); }, style:{color:C.pri, fontWeight:600}}, B3.estNo(l.id)), Tag(s, s === 'Completed' ? 'ok' : s === 'No-show' ? 'dg' : s === 'Booked' ? 'ai' : on ? 'ok' : 'wn'), l.visit.by === 'AI' ? Tag('AI', 'ai') : 'Person',
+       h('div', {onClick:e => e.stopPropagation(), style:{display:'flex', gap:'6px', flexWrap:'wrap'}}, live ? Btn('I’m on site', {sm:true, kind:'pri', onClick:() => APP.b2Visit(l.id, 'onsite')}) : null, on ? Btn('Completed', {sm:true, kind:'pri', onClick:() => APP.b2Visit(l.id, 'done')}) : null, live ? Btn('No-show', {sm:true, onClick:() => APP.b2Visit(l.id, 'noshow')}) : null,
          live ? Btn('Move', {sm:true, onClick:() => APP.b2BookDlg(l.id)}) : null, live ? Btn('Cancel', {sm:true, onClick:() => APP.b2Visit(l.id, 'cancel')}) : null)], onClick:() => go('lead', l.id)}; }), {min:'1280px'}));
  return Page({key:'appts', title:'Appointments', sub:'Estimator site visits — synced two-way with Google Calendar (Gmail, not Outlook)', children:[Tabs(T, st.tab), pane]});
 };
@@ -1959,11 +1969,60 @@ const B3 = (() => {
    ['Drywall','Drywall','Subcontracted',['05.1']], ['Millwork & finish carpentry','Carpentry','Subcontracted',['08.1','08.2']], ['Painting','Painting','Subcontracted',['06.1']],
    ['Flooring','Flooring','Subcontracted',['07.1']], ['Plumbing','Plumbing','Subcontracted',['10.1']], ['Other trades','General Contractor','Subcontracted',['12.2','12.3','12.4']]];
  const LANES = ['Visit scheduled','Awaiting estimate','In review','Structuring','Proposal draft','Sent — awaiting client','Won','Lost'];
- const COMPS = [['intro','Introductory statement',false], ['contract','Contract',true], ['scope','Scope of work',true], ['sched','Payment schedule',true],
-   ['license','GC license',false], ['coi','Proof of insurance',false], ['photo','Photo report',false], ['refs','References / past work',false]];
- const SCOPEMODES = ['AI narrative only','Structured line item table only','Original Xactimate PDF only','AI narrative + structured table','AI narrative + structured table + original Xactimate PDF'];
+ const COMPS = [['intro','Introductory statement',false], ['contract','Contract — with the payment schedule',true], ['scope','Scope of work',true], ['total','Customer total amount',true],
+   ['license','GC license (PA HIC)',false], ['coi','Proof of insurance',false], ['iicrc','IICRC firm certification',false], ['photo','Photo report',false], ['refs','References / past work',false]];
+ const SCOPEMODES = ['AI scope of work + Xactimate scope report (quantities, no prices)','AI scope of work only','Xactimate scope report only (quantities, no prices)','AI scope of work + full estimate with prices'];
  const LOSS = ['Price','Timeline','Went with a competitor','Insurance denied the claim','Client postponed','No response'];
  const CHEN_NARR = 'SCOPE OF WORK — 88 Hillcrest Dr, Mt Lebanon, PA 15228\nFire and smoke restoration · Claim AL-772104 (Allstate)\n\n1. MITIGATION AND ODOUR CONTROL\nSet and monitor HEPA air scrubbers throughout the affected first floor for a five-day period. Perform thermal fogging across approximately 1,850 square feet to neutralise smoke odour. Heavy-clean all affected surfaces in the living and dining rooms.\n\n2. DEMOLITION AND DEBRIS REMOVAL\nTear out, cut and bag approximately 320 square feet of fire-damaged drywall in the kitchen. Remove and dispose of damaged cabinetry, countertop, flooring and trim. Two 30-yard dumpster loads included.\n\n3. STRUCTURAL REPAIR\nRemove and replace the engineered load-bearing header above the kitchen opening. Final quantity to be confirmed on site prior to fabrication.\n\n4. MECHANICAL, ELECTRICAL AND ROUGH-IN\nRewire the kitchen branch circuit and replace three light fixtures. Clean the full duct system to remove smoke residue.\n\n5. FINISHES\nHang, tape and float new drywall in the kitchen. Seal and paint all affected walls and ceilings. Install new cabinetry, solid-surface countertop, engineered hardwood flooring, carpet, baseboard and interior doors.\n\n6. CLOSEOUT\nConstruction clean of approximately 1,850 square feet, punch list walk with the homeowner, and final sign-off.';
+
+ /* ---------- site intake: the Xactimate vocabulary the estimator already speaks (from their reports and screenshots, 19-oct) ---------- */
+ const XCATS = {APP:'Appliances', CAB:'Cabinetry', CLN:'Cleaning', DMO:'General demolition', DOR:'Doors', DRY:'Drywall', ELE:'Electrical', FCC:'Floor covering — carpet', FCT:'Floor covering — ceramic tile',
+   FCV:'Floor covering — vinyl', FNC:'Finish carpentry / trim', FNH:'Finish hardware', FRM:'Framing & rough carpentry', HVC:'Heat, vent & A/C', INS:'Insulation', LIT:'Light fixtures', PLA:'Interior lath & plaster',
+   PLM:'Plumbing', PNT:'Painting', SDG:'Siding', STR:'Stairs', TIL:'Tile', WDT:'Window treatment', WDV:'Windows — vinyl', SFG:'Soffit, fascia & gutter', RFG:'Roofing'};
+ const XSEL = {DRY:{'1/2':['1/2" drywall — hung, taped, floated, ready for paint','SF'], '5/8':['5/8" drywall — hung, taped, floated, ready for paint','SF'], TEX:['Texture drywall — light hand','SF']},
+   PNT:{SP:['Seal/prime, then paint walls and ceiling (2 coats)','SF'], B1SP:['Seal & paint baseboard','LF'], C1SP:['Seal & paint casing','LF'], SWALL:['Seal stud wall for odor control','SF'], JST:['Seal floor or ceiling joists','SF'], UL:['Seal underlayment for odor control','SF']},
+   PLA:{G2:['Two coat plaster over 1/2" blueboard','SF'], 'G2>':['Two coat plaster over 5/8" blueboard','SF']},
+   FNC:{B3M:['Baseboard 3 1/4" MDF','LF'], 'CAM>':['Casing 3 1/4" MDF','LF'], SH24:['Shelving 24"','LF']},
+   FCC:{AV:['Carpet','SF'], PAD:['Carpet pad','SF'], 'I/O':['Indoor/outdoor carpet','SF']}, FCV:{'PLK-':['Vinyl plank flooring — standard','SF'], AV:['Vinyl sheet flooring','SF'], 'UL1/2W':['Underlayment 1/2" OSB','SF']},
+   FCT:{'AV-':['Ceramic tile floor — standard','SF'], 'BCEM1/2':['Cement board 1/2"','SF'], MORTAR:['Mortar bed','SF']}, TIL:{AV:['Ceramic / porcelain tile','SF']},
+   DMO:{'DUMP>':['Dumpster load — approx. 30 yards','EA'], HRBDR:['Demolish room — up to 200 SF','SF'], HRBR:['Demolish bathroom — up to 50 SF','SF'], HRK:['Demolish kitchen / laundry','SF']},
+   ELE:{OS:['Outlet','EA'], OSS:['Switch','EA'], GFI:['GFCI outlet','EA'], 'BFANL-':['Bath fan with light','EA']}, LIT:{AV:['Light fixture','EA'], HG:['Hanging light fixture','EA'], 'FNL-':['Ceiling fan with light','EA'], 'X-':['Exterior light fixture','EA']},
+   INS:{'BT4+':['Batt insulation 4" R13','SF']}, DOR:{MAH:['Interior door — pre-hung','EA'], WALUM:['Exterior door — aluminum skin','EA']}, FNH:{DORH:['Door knob — interior','EA'], DBX:['Lockset & deadbolt — exterior','EA']},
+   CAB:{LOW:['Cabinetry — lower (base) units','LF'], UP:['Cabinetry — upper (wall) units','LF'], CTFLP:['Countertop — laminate','LF']}, PLM:{'SNK-':['Sink','EA'], 'TLT-':['Toilet','EA'], PTRAP:['P-trap','EA']},
+   HVC:{'FRCLN+':['Furnace / A/C — check, clean, service','EA']}, CLN:{'DCTV+':['Clean ductwork — per register','EA']}, WDV:{'D++':['Vinyl window double hung 9–12 SF — premium','EA']}, FRM:{'4LF':['Stud wall 2x4 — 16" oc','LF']},
+   APP:{'DW-':['Dishwasher','EA'], 'MWS-':['Microwave over range','EA']}};
+ const XKW = [['seal and paint','PNT','SP'],['paint','PNT','SP'],['seal stud','PNT','SWALL'],['odor','PNT','SWALL'],['5/8','DRY','5/8'],['drywall','DRY','1/2'],['texture','DRY','TEX'],['plaster','PLA','G2'],['baseboard','FNC','B3M'],['casing','FNC','CAM>'],
+   ['carpet pad','FCC','PAD'],['pad','FCC','PAD'],['carpet','FCC','AV'],['vinyl plank','FCV','PLK-'],['underlayment','FCV','UL1/2W'],['tile floor','FCT','AV-'],['cement board','FCT','BCEM1/2'],['tile','TIL','AV'],['gfci','ELE','GFI'],['outlet','ELE','OS'],['switch','ELE','OSS'],
+   ['bath fan','ELE','BFANL-'],['ceiling fan','LIT','FNL-'],['light','LIT','AV'],['insulation','INS','BT4+'],['dumpster','DMO','DUMP>'],['exterior door','DOR','WALUM'],['door','DOR','MAH'],['toilet','PLM','TLT-'],['sink','PLM','SNK-'],
+   ['upper cabinet','CAB','UP'],['cabinet','CAB','LOW'],['countertop','CAB','CTFLP'],['duct','CLN','DCTV+'],['furnace','HVC','FRCLN+'],['window','WDV','D++'],['stud wall','FRM','4LF'],['dishwasher','APP','DW-']];
+ const ACTS = {'+':'Replace', '-':'Remove', '&':'Remove & replace', R:'Detach & reset', F:'Repair'};
+ const roomMath = r => { const L = num(r.L), W = num(r.W), H = num(r.H), per = 2 * (L + W), op = (r.op || []).reduce((a, o) => a + num(o.w) * num(o.h), 0), wid = (r.op || []).filter(o => o.t !== 'Window').reduce((a, o) => a + num(o.w), 0);
+   const walls = r2(Math.max(0, per * H - op)), ceil = r2(L * W);
+   return {W:walls, C:ceil, F:ceil, PF:r2(Math.max(0, per - wid)), WC:r2(walls + ceil), ok:L > 0 && W > 0 && H > 0}; };
+ const parseItem = (raw, room) => { const t = ' ' + String(raw).toLowerCase().trim() + ' ', up = String(raw).trim().split(/\s+/); let cat = '', sel = '';
+   if(up[0] && XCATS[up[0].toUpperCase()]){ cat = up[0].toUpperCase(); const k = up[1] && Object.keys(XSEL[cat] || {}).find(x => x.toLowerCase() === up[1].toLowerCase()); if(k) sel = k; }
+   if(!cat){ const kw = XKW.find(k => t.indexOf(k[0]) >= 0); if(kw){ cat = kw[1]; sel = kw[2]; } }
+   const act = /r&r|remove and replace|\s&\s/.test(t) ? '&' : /detach|reset/.test(t) ? 'R' : /\bremove\b|tear out|\bdemo\b|\s-\s/.test(t) ? '-' : /repair/.test(t) ? 'F' : '+';
+   const m = room ? roomMath(room) : null, unit = sel ? XSEL[cat][sel][1] : 'EA', n = t.match(/(\d+(?:\.\d+)?)\s*(sf|lf|ea|sy|yd)?\s/);
+   let calc = '', qty = 0;
+   if(/walls and ceiling|walls & ceiling/.test(t)){ calc = 'WC'; } else if(/\bwalls?\b/.test(t)){ calc = 'W'; } else if(/ceiling/.test(t)){ calc = 'C'; } else if(/\bfloor\b/.test(t) && unit === 'SF'){ calc = 'F'; } else if(/perimeter/.test(t)){ calc = 'PF'; }
+   if(!calc && n && !(sel && n[1] === sel.replace(/\D/g, ''))){ qty = num(n[1]); calc = n[1]; }
+   if(!calc){ calc = unit === 'SF' ? (/^(FCC|FCV|FCT|TIL)$/.test(cat) ? 'F' : 'W') : unit === 'LF' ? (cat === 'FNC' ? 'PF' : '1') : '1'; }
+   if(m && m[calc] != null) qty = m[calc]; else qty = qty || num(calc) || 1;
+   return {raw:String(raw).trim(), cat, sel, act, calc, qty:r2(qty), unit, desc:sel ? XSEL[cat][sel][0] : cat ? XCATS[cat] + ' — selector to confirm' : 'Not recognised — a person picks the code', conf:sel ? 0.95 : cat ? 0.6 : 0.2}; };
+ const siteChecks = site => { const out = []; (site ? site.rooms : []).forEach(r => { const m = roomMath(r);
+     if(!m.ok) out.push([r.name, 'Dimensions missing — Xactimate needs length, width and height to draw the room']);
+     const dry = (r.items || []).filter(i => i.cat === 'DRY' || i.cat === 'PLA').reduce((a, i) => a + num(i.qty), 0); if(m.ok && dry > m.WC + 1) out.push([r.name, 'Drywall / plaster (' + r2(dry) + ' SF) is more than walls + ceiling (' + m.WC + ' SF) — check for a duplicate']);
+     if((r.op || []).some(o => o.t !== 'Window') && (r.items || []).some(i => i.cat === 'DOR') && !(r.items || []).some(i => i.cat === 'FNC' && i.sel === 'CAM>')) out.push([r.name, 'A new door without casing (FNC CAM>)']);
+     (r.items || []).filter(i => i.conf < 0.9).forEach(i => out.push([r.name, '“' + i.raw + '” — ' + (i.cat ? 'category ' + i.cat + ' only, pick the selector' : 'not recognised')])); });
+   return out; };
+ const sampleSite = (lead, done) => { const it = (r, xs) => Object.assign(r, {items:xs.map(x => parseItem(x, r))});
+   const k = it({id:'R1', level:'Main level', name:'Kitchen', type:'Kitchen', L:'14', W:'11', H:'8', op:[{t:'Door', w:'3', h:'6.8'}, {t:'Window', w:'4', h:'3'}], fin:{floor:'Vinyl plank', walls:'Drywall', ceil:'Drywall'}, photos:9, notes:'Ceiling stain under the upstairs bathroom.'},
+     ['drywall 1/2 r&r ceiling', 'seal and paint walls and ceiling', 'cabinet r&r 14 lf', 'baseboard r&r', 'outlet replace 3']);
+   const lv = it({id:'R2', level:'Main level', name:'Living / Dining', type:'Living room', L:'20', W:'14', H:'8', op:[{t:'Missing wall', w:'8', h:'8'}, {t:'Window', w:'6', h:'4'}], fin:{floor:'Carpet', walls:'Drywall', ceil:'Drywall'}, photos:6, notes:''},
+     ['carpet remove floor', 'carpet pad replace floor', 'paint walls', 'baseboard r&r']);
+   const hw = it({id:'R3', level:'Main level', name:'Hallway', type:'Hallway', L:'12', W:'4', H:'8', op:[{t:'Door', w:'3', h:'6.8'}], fin:{floor:'Vinyl plank', walls:'Drywall', ceil:'Drywall'}, photos:3, notes:''}, ['drywall 1/2 replace 64 sf', 'paint walls']);
+   return {mode:'Voice', startedAt:lead.stageAt, rooms:[k, lv, hw], cur:'R1', done:!!done, doneAt:done ? lead.stageAt + 3 * HOUR : null}; };
 
  /* ---------- a job, and what can be read off it ---------- */
  const condOf = lead => /Recon|Fire/i.test(lead.job) ? 'Fire damage' : /Water|Mitig|Plumb|Waterproof/i.test(lead.job) ? 'Water damage' : /Roof|Structur/i.test(lead.job) ? 'Structural' : 'Undamaged';
@@ -1974,8 +2033,8 @@ const B3 = (() => {
    out.push({n:'Unlabelled capture', dir:'—', cat:'—', room:'—', cond:'—', dsrc:'—', conf:0.41, by:'AI'});
    return out; };
  const fresh = lead => ({id:lead.id, k:lead.id === 'L-2026-0415' ? 1 : Math.max(0.12, (lead.value || 24000 + hash(lead.id) % 52000) / 62300),
-   est:null, hist:[], mapDone:false, pk:[], scopeDone:false, bud:null, narr:'', narrOk:false, photos:mkPhotos(lead), reports:[],
-   prop:{on:{intro:true, contract:true, scope:true, sched:true, license:true, coi:true, photo:true, refs:false}, mode:SCOPEMODES[4], saved:false},
+   site:null, est:null, hist:[], mapDone:false, pk:[], scopeDone:false, bud:null, narr:'', narrOk:false, photos:mkPhotos(lead), reports:[],
+   prop:{on:{intro:true, contract:true, scope:true, total:true, license:true, coi:true, iicrc:true, photo:true, refs:false}, mode:SCOPEMODES[0], saved:false, intro:null},
    sched:null, schedWhy:'', schedOk:false, send:null, vers:[], acc:{}, handed:false, depInv:false});
  const get = (st, id) => (st.p2 && st.p2[id]) || fresh(st.leads.find(l => l.id === id) || st.leads[0]);
  const lt = l => r2(l.qty * num(l.unit));
@@ -1993,22 +2052,65 @@ const B3 = (() => {
    {name:'Draw 2', trig:'Completion of drywall', type:'%', pct:'20', inv:'On milestone marked complete', cov:'40.7 %'},
    {name:'Draw 3', trig:'Completion of painting', type:'%', pct:'20', inv:'On milestone marked complete', cov:'39.0 %'},
    {name:'Final', trig:'Punch list and final walkthrough — whatever is left', type:'Remainder', inv:'On completion', cov:'20.2 %'}];
- const schedOf = job => job.sched || sched0();
+ /* the AI suggestion: binder and deposit from the template, then the scope packages, in the order they finish, grouped into
+    one to three milestone draws by the value of the work they carry; the final is what is left (about 5 %) */
+ const pkVal = job => { const m = {}; (job.est ? job.est.lines : []).forEach(l => { if(l.pk) m[l.pk] = r2((m[l.pk] || 0) + lt(l)); }); return m; };
+ const dayOf = x => parseInt(String(x || '').replace(/\D/g, ''), 10) || 0;
+ const suggest = (job, n) => { const t = totals(job), g = t ? t.grand : 0, V = pkVal(job);
+   const pks = (job.pk || []).filter(p => V[p.c]).slice().sort((a, b) => dayOf(a.fin) - dayOf(b.fin) || dayOf(a.start) - dayOf(b.start));
+   if(!pks.length || !g) return sched0();
+   const N = Math.max(1, Math.min(3, n || job.drawN || (g <= 30000 ? 1 : 2), pks.length)), W = sum(pks.map(p => V[p.c])), groups = [];
+   let k = 0, cum = 0;
+   pks.forEach((p, i) => { (groups[k] = groups[k] || []).push(p); cum += V[p.c]; if(k < N - 1 && cum >= W * (k + 1) / N && pks.length - i - 1 >= N - k - 1) k++; });
+   const dep = 40, pool = 100 - dep - 5 - 500 / g * 100;
+   const draws = groups.map((gp, i) => { const w = sum(gp.map(p => V[p.c])), nm = gp.slice(-2).map(p => p.n.split(' ').map(w => w === w.toUpperCase() && w.length > 1 ? w : w.toLowerCase()).join(' '));
+     return {name:'Draw ' + (i + 2), trig:(nm.length > 1 ? nm[0].charAt(0).toUpperCase() + nm[0].slice(1) + ' and ' + nm[1] : nm[0].charAt(0).toUpperCase() + nm[0].slice(1)) + ' completed', type:'%',
+       pct:String(Math.max(1, Math.floor(pool * w / W))), inv:'On milestone marked complete', pks:gp.map(p => p.c), ai:true}; });
+   return [{name:'Binder', trig:'On signature — non-refundable', type:'Fixed', amt:500, lock:true, inv:'On acceptance'},
+     {name:'Draw 1', trig:'Deposit — due within 5 calendar days of signing', type:'%', pct:String(dep), inv:'Auto draft invoice on acceptance', dep:true}]
+     .concat(draws).concat([{name:'Final', trig:'Punch list and final walkthrough — whatever is left', type:'Remainder', inv:'On completion'}]); };
+ const schedOf = job => job.sched || suggest(job);
  const schedCalc = job => { const t = totals(job), g = t ? t.grand : 0, rows = schedOf(job); let used = 0;
    const out = rows.map(m => { if(m.type === 'Remainder') return Object.assign({}, m); const a = m.type === 'Fixed' ? num(m.amt) : r2(g * num(m.pct) / 100); used = r2(used + a); return Object.assign({}, m, {a}); });
    out.forEach(m => { if(m.type === 'Remainder'){ m.a = r2(g - used); m.p = g ? r2(m.a / g * 100) : 0; } });
+   const V = pkVal(job), W = sum(Object.keys(V).map(k => V[k])) || 1; let bill = 0, work = 0;
+   out.forEach(m => { if(m.pks){ m.work = r2(sum(m.pks.map(c => V[c] || 0))); m.workPct = r2(m.work / W * 100); work = r2(work + m.workPct); } bill = r2(bill + (g ? m.a / g * 100 : 0)); m.cumBill = bill; m.cumWork = m.type === 'Remainder' ? 100 : work; });
    const fin = out.find(m => m.type === 'Remainder');
    return {rows:out, total:g, finPct:fin ? Math.round(fin.p * 10) / 10 : 0, neg:fin ? fin.a < 0 : false, count:out.length, needWhy:fin ? fin.p > 7 : false}; };
+ const LET = 'ABCDEFGHIJ';
+ const startOf = job => (job.acc && job.acc.signedAt ? job.acc.signedAt : Date.now()) + 7 * DAY;
+ const dueOf = (job, m) => { const d = Math.max.apply(null, (m.pks || []).map(c => dayOf(((job.pk || []).find(p => p.c === c) || {}).fin)).concat([0])); return d ? startOf(job) + d * DAY : 0; };
+ const fday = ms => new Date(ms).toLocaleDateString('en-US', {month:'numeric', day:'numeric', year:'numeric'});
+ const contractDoc = (job, lead) => { const sc = schedCalc(job), g = sc.total, subs = (job.pk || []).filter(p => p.ex !== 'Self-perform').map(p => p.t);
+   const pay = sc.rows.map((m, i) => LET[i] + '. The sum of ' + M(m.a) + (m.type === 'Fixed' ? ' is nonrefundable and is due upon execution of this Agreement.'
+     : m.dep ? ' is due within 5 calendar days of the execution of this Agreement. Contractor is responsible for purchase and supply of all materials. Material orders will be placed once deposit is received. A 5% fee will apply when paying with a credit card. Late fees in addition to original invoices will apply to invoices unpaid outside of payment terms.'
+     : m.type === 'Remainder' ? ' on final completion of the work and settlement of all claims of laborers and material suppliers. Includes any additions or deductions to the original scope of work.'
+     : ' on or before ' + (dueOf(job, m) ? fday(dueOf(job, m)) : 'TBD') + ', which is at the defined milestone below:\n     ' + m.trig)).join('\n\n');
+   return '3RIVERS GENERAL CONTRACTING HOME IMPROVEMENT CONSTRUCTION CONTRACT\n' + tplOf(g) + '\n\n'
+     + 'This Agreement made on ' + fday(job.acc && job.acc.signedAt ? job.acc.signedAt : Date.now()) + ' between ' + (lead.person || lead.client) + ' of ' + lead.addr + ', ' + lead.city + ' ' + lead.state + ' ' + lead.zip
+     + ', hereinafter called Owner, and 3Rivers General Contracting, LLC (Contractor), a Limited Liability Company existing under the laws of the state of Pennsylvania, with its principal office at 1735 E. Carson St, Suite 324, Pittsburgh PA 15203. Contractor\'s License No. PA161418.\n\n'
+     + '1. SCOPE AND DESCRIPTION OF WORK\nContractor agrees to perform certain alterations and improvements in and upon the home of Owner located at ' + lead.addr + ', in accordance with the attached scope of work (' + (job.pk || []).length + ' scope packages) and materials to be used.\n\n'
+     + '2. CONTRACT PRICE\nOwner will pay Contractor for performance of the work the total sum of ' + M(g) + ', payable as follows:\n\n' + pay + '\n\n'
+     + LET[sc.rows.length] + '. Contractor shall retain a valid credit card of Owner on file for billing purposes. It is not the primary form of payment; should any invoice become more than 5 calendar days past due, the card on file will be billed.\n\n'
+     + '3. START & COMPLETION OF WORK AND COMMUNICATION\nThe estimated work start date is ' + fday(startOf(job)) + ' and the work is estimated to be completed within ' + r2(g / 1000) + ' calendar days following such date. Communication goes through the client portal. Upon completion, one project walkthrough with Owner determines the punch list.\n\n'
+     + '4. CANCELLATION\nThis Agreement may be canceled by Owner within three (3) business days following its execution by written notice, in which event Owner is entitled to a complete refund of the down payment (section 2B).\n\n'
+     + '5–9. Warranty · Insurance · Permits · Changes in writing · Bureau of Consumer Protection (1-888-520-6680)\n\n'
+     + '10. SUBCONTRACTORS known as of the date of signing\n' + (subs.length ? subs.filter((x, i) => subs.indexOf(x) === i).map(x => '   ' + x + ' — company assigned in Phase 3').join('\n') : '   3Rivers General Contracting') + '\n\n'
+     + '11–16. No waiver · Governing law: Pennsylvania · Entire agreement · Modification in writing · Assignment of rights · Counterparts\n'
+     + (job.terms ? '\nSPECIAL TERMS FOR THIS JOB\n' + job.terms + '\n' : '')
+     + '\nOwner ____________________  Date ________        Contractor ____________________  Date ________'; };
+ const estNo = id => 'EST-' + String(id).slice(-4);
  const steps = job => { const e = job.est, unm = e ? e.lines.filter(l => !l.code).length : 0, rv = review(job), v = cur(job), a = job.acc;
-   return [['estimate','Estimate intake', !e ? 'not uploaded' : e.reviewed ? 'reviewed · v' + e.v : 'in review · v' + e.v, !!(e && e.reviewed)],
+   const si = job.site, rp = job.reports[0];
+   return [['site','Site intake', !si ? '—' : si.done ? si.rooms.length + ' rooms · ' + si.rooms.reduce((a, r) => a + (r.items || []).length, 0) + ' items' : 'in progress', !!(si && si.done)],
+    ['estimate','Xactimate intake', !e ? 'not uploaded' : e.reviewed ? 'reviewed · v' + e.v : 'in review · v' + e.v, !!(e && e.reviewed)],
     ['mapping','Line item mapping', !e ? '—' : job.mapDone ? 'mapped' : unm + ' unmapped', !!job.mapDone],
     ['scope','Scope structuring', job.scopeDone ? job.pk.length + ' packages' : job.pk.length ? 'in progress' : '—', !!job.scopeDone],
     ['budget','Budget & cost', !job.bud ? '—' : job.bud.locked ? 'baseline locked' : job.bud.saved ? 'saved' : 'draft', !!(job.bud && job.bud.saved)],
-    ['narrative','Scope narrative', job.narrOk ? 'ready' : job.narr ? 'draft' : '—', !!job.narrOk],
-    ['photos','Photos', job.photos.length + (rv ? ' · ' + rv + ' to review' : ' labelled'), !rv],
-    ['photoreport','Photo report', job.reports.length ? job.reports[0].pages + ' pages' : '—', job.reports.length > 0],
+    ['narrative','Scope of work', job.narrOk ? 'ready' : job.narr ? 'draft' : '—', !!job.narrOk],
+    ['photos','Photos & report', rp ? rp.pages + '-page report' : job.photos.length + (rv ? ' · ' + rv + ' to review' : ' labelled'), !!rp || !job.photos.length],
+    ['schedule','Payment schedule & contract', job.schedOk ? 'contract ready' : '—', !!job.schedOk],
     ['proposal','Proposal builder', job.prop.saved ? 'package ready' : '—', !!job.prop.saved],
-    ['schedule','Payment schedule', job.schedOk ? 'confirmed' : '—', !!job.schedOk],
     ['versions','Send & versions', v ? v.status + ' · v' + v.v : '—', !!v && ['Sent','Viewed','Signed'].indexOf(v.status) >= 0],
     ['acceptance','Acceptance', a.declined ? 'Declined' : a.signedAt ? (a.paidAt ? 'Signed · binder paid' : 'Signed · binder due') : '—', !!(a.signedAt && a.paidAt)]]; };
  const nextStep = job => { const s = steps(job).find(x => !x[3]); return s ? s[0] : 'acceptance'; };
@@ -2075,11 +2177,11 @@ const B3 = (() => {
   decline(job, at, why){ return Object.assign({}, T.ver(job, {status:'Declined'}), {acc:Object.assign({}, job.acc, {declined:at, why})}); }
  };
  const budCost = job => r2(sum(job.bud.rows.map(r => num(r.cost))));
- const canSend = job => steps(job).slice(0, 9).filter(s => !s[3]).map(s => s[1]);
+ const canSend = job => { const S = steps(job); return S.slice(0, S.findIndex(x => x[0] === 'versions')).filter(s => !s[3] && s[0] !== 'site').map(s => s[1]); };
 
  /* ---------- sample jobs: every lead already past the visit has its estimating work at a believable point ---------- */
  const build = (lead, lvl) => { const t0 = lead.stageAt; let j = fresh(lead);
-   if(lvl >= 1) j = T.upload(j, lead, t0 + 2 * HOUR, lead.assigned || ME);
+   if(lvl >= 1) j = Object.assign(T.upload(j, lead, t0 + 2 * HOUR, lead.assigned || ME), {site:sampleSite(lead, true)});
    if(lvl >= 2) j = T.mapAll(T.automap(T.reviewed(T.confirmAll(T.fix(j)))));
    if(lvl >= 3) j = T.budget(T.scopeDone(T.group(j)));
    if(lvl >= 4) j = T.narrOk(T.narr(T.budSave(j, t0 + 5 * HOUR, true), lead));
@@ -2102,7 +2204,7 @@ const B3 = (() => {
      p2[l.id] = j; });
    return p2; };
  return {DAY, M, r2, num, sum, hash, dec, ME, TPL, BAD, BAD_REAL, ROOMS, LANES, COMPS, SCOPEMODES, LOSS, CODEOPTS, codeLbl, tradeOf, ctypeOf, fresh, get, lt, totals, checks, cur, review, tplOf,
-   schedOf, schedCalc, steps, nextStep, lane, visitAt, inQueue, divOf, T, budCost, canSend, seed, sched0};
+   XCATS, XSEL, ACTS, roomMath, parseItem, siteChecks, sampleSite, estNo, schedOf, schedCalc, suggest, pkVal, contractDoc, dueOf, startOf, fday, LET, steps, nextStep, lane, visitAt, inQueue, divOf, T, budCost, canSend, seed, sched0};
 })();
 
 const setP2 = patch => APP.setState(s => ({p2ui:Object.assign({}, s.p2ui, patch)}));
@@ -2196,11 +2298,11 @@ const b3Header = (curStep, lead, job) => { const S = B3.steps(job), done = S.fil
  return h('div', {style:{background:'#fff', border:'1px solid ' + C.bd, borderRadius:'12px', overflow:'hidden'}},
   h('div', {style:{display:'flex', gap:'12px', alignItems:'center', flexWrap:'wrap', padding:'13px 16px', borderBottom:'1px solid ' + C.line}},
    h('b', {style:{fontFamily:BAR, fontSize:'16px'}}, lead.client), armTag(lead.arm), Tag(lead.job), lead.emg ? Tag('EMERGENCY', 'dg') : null,
-   h('span', {style:{fontSize:'12px', color:C.mut}}, lead.id + ' · ' + lead.addr + ', ' + lead.city + ', ' + lead.state + (lead.claim ? ' · claim ' + lead.claim : '')),
+   h('b', {style:{fontSize:'12.5px', color:C.pri}}, B3.estNo(lead.id)), h('span', {style:{fontSize:'12px', color:C.mut}}, lead.id + ' · ' + lead.addr + ', ' + lead.city + ', ' + lead.state + (lead.claim ? ' · claim ' + lead.claim : '')),
    h('span', {style:{flex:1}}), h('b', {style:{fontFamily:BAR, fontSize:'17px'}}, t ? B3.M(t.grand) : 'No estimate yet'),
    Btn('Open lead record', {sm:true, onClick:() => go('lead', lead.id)})),
   h('div', {style:{display:'flex', gap:'18px', alignItems:'center', flexWrap:'wrap', padding:'9px 16px', borderBottom:'1px solid ' + C.line, fontSize:'11.5px'}},
-   ...[['Division', B3.divOf(lead)], ['Carrier', lead.carrier || '—'], ['Claim', lead.claim || '—'], ['Adjuster', chen ? JOB.adjuster : '—'], ['Estimator', lead.assigned || '—'],
+   ...[['Site visit', lead.visit ? B1.fmt(lead.visit.at) + ' · ' + (lead.visit.st || 'Booked') : '—'], ['Division', B3.divOf(lead)], ['Carrier', lead.carrier || '—'], ['Claim', lead.claim || '—'], ['Adjuster', chen ? JOB.adjuster : '—'], ['Estimator', lead.assigned || '—'],
        ['Project manager', 'Assigned at conversion'], ['Target gross margin', '45%']]
      .map(f => h('span', {key:f[0]}, h('span', {style:{color:C.faint}}, f[0] + ' '), h('b', null, f[1])))),
   h('div', {style:{display:'flex', gap:'14px', alignItems:'center', flexWrap:'wrap', padding:'10px 16px', background:'#F8FBFD', borderBottom:'1px solid ' + C.line, fontSize:'12px'}},
@@ -2217,7 +2319,7 @@ const b3Header = (curStep, lead, job) => { const S = B3.steps(job), done = S.fil
     h('div', {style:{fontSize:'11.5px', fontWeight:600}}, (i + 1) + ' · ' + s[1]),
     h('div', {style:{fontSize:'10.5px', opacity:.75, marginTop:'2px'}}, (s[3] ? '✓ ' : '') + s[2])))));
 };
-const b3Page = (st, step, title, fn) => { const x = b3Ctx(st), o = fn(x.lead, x.job, x.id);
+const b3Page = (st, step, title, fn) => { const x = b3Ctx(st), o = fn(x.lead, x.job, x.id), ix = B3.steps(x.job).findIndex(s => s[0] === step); title = ix >= 0 ? (ix + 1) + ' · ' + title.replace(/^\d+ · /, '') : title;
  return Page({key:step + x.id, crumb:['Estimating queue', () => go('equeue'), x.lead.id + ' · ' + x.lead.client], title, sub:o.sub, children:[b3Header(step, x.lead, x.job)].concat(o.children || [])}); };
 const b3Gate = (msg, label, step) => Card('Not yet', h('div', {style:{display:'flex', gap:'12px', alignItems:'center', flexWrap:'wrap'}}, h('span', {style:{fontSize:'13px', flex:1}}, msg), Btn(label, {kind:'pri', onClick:() => go(step)})));
 
@@ -2232,14 +2334,14 @@ SCREENS.equeue = (p, st) => {
    && (!ui.arm || ui.arm === 'Arm: All' || r.l.arm === ui.arm) && (!ui.lane || ui.lane === 'Status: All' || (ui.lane === 'Ageing > 5 days' ? r.old : r.ln === ui.lane)))
    .sort((a, b) => B3.LANES.indexOf(a.ln) - B3.LANES.indexOf(b.ln) || (b.days || 0) - (a.days || 0));
  const open = r => APP.b3Open(r.l.id);
- const table = rows.length ? Tbl(['Lead','Client','Arm','Job type','Estimator','Status','Visit',{t:'Days since',n:true},'Estimate','Scope','Budget',{t:'Photos',n:true},'Proposal',{t:'Value',n:true}],
-   rows.map(r => ({c:[leadLink(r.l), r.l.client, armTag(r.l.arm), r.l.job, r.l.assigned || '—', Tag(r.ln, r.ln === 'Won' ? 'ok' : r.ln === 'Lost' ? 'dg' : r.ln === 'Awaiting estimate' ? 'wn' : null),
+ const table = rows.length ? Tbl(['Estimate','Lead','Client','Arm','Job type','Estimator','Status','Visit',{t:'Days since',n:true},'Estimate','Scope','Budget',{t:'Photos',n:true},'Proposal',{t:'Value',n:true}],
+   rows.map(r => ({c:['<b style="color:#2C6E9B">' + B3.estNo(r.l.id) + '</b>', h('a', {href:'#', onClick:e => { e.preventDefault(); e.stopPropagation(); go('lead', r.l.id); }, style:{color:C.pri, fontWeight:600}}, r.l.id), r.l.client, armTag(r.l.arm), r.l.job, r.l.assigned || '—', Tag(r.ln, r.ln === 'Won' ? 'ok' : r.ln === 'Lost' ? 'dg' : r.ln === 'Awaiting estimate' ? 'wn' : null),
      B1.fmtDay(B3.visitAt(r.l)), {t:r.days == null ? '—' : r.old ? '<b style="color:#C8442E">' + r.days + ' ⚠</b>' : r.days, n:true},
      r.S[0][2], r.S[2][2], r.S[3][2], {t:r.j.photos.length, n:true}, r.prop, {t:r.total ? B3.M(r.total) : '—', n:true}],
      onClick:() => open(r), style:r.old ? {background:'#FFFCF5'} : null})), {min:'1480px'})
    : Card('', HTM({fontSize:'13px', color:C.mut}, 'No jobs match these filters.'));
  const kanban = Kanban(B3.LANES, L => rows.filter(r => r.ln === L).map(r => KCard({key:r.l.id, onClick:() => open(r),
-   title:r.l.client, meta:r.l.id + ' · ' + r.l.arm + ' · ' + r.l.job + ' · ' + (r.l.assigned || 'unassigned'),
+   title:r.l.client, meta:B3.estNo(r.l.id) + ' · ' + r.l.id + ' · ' + r.l.arm + ' · ' + r.l.job + ' · ' + (r.l.assigned || 'unassigned'),
    foot:h('div', {style:{marginTop:'6px', display:'flex', gap:'6px', alignItems:'center', flexWrap:'wrap'}},
      r.total ? h('b', {style:{fontSize:'12px'}}, B3.M(r.total)) : null,
      r.old ? Tag(r.days + ' d since visit', 'dg') : Tag('visit ' + B1.fmtDay(B3.visitAt(r.l))))})));
@@ -2259,10 +2361,10 @@ SCREENS.equeue = (p, st) => {
 };
 
 /* ================= 1 · ESTIMATE INTAKE ================= */
-SCREENS.estimate = (p, st) => b3Page(st, 'estimate', '1 · Estimate intake', (lead, job, id) => {
+SCREENS.estimate = (p, st) => b3Page(st, 'estimate', 'Xactimate intake', (lead, job, id) => {
  const e = job.est, ui = st.p2ui;
  if(!e && lead.stage === 'Visit scheduled') return {sub:'The estimate is written after the site visit', children:[Card('Not yet', h('div', {style:{display:'flex', gap:'12px', alignItems:'center', flexWrap:'wrap'}},
-   h('span', {style:{fontSize:'13px', flex:1}}, 'The site visit is booked for ' + B1.fmt(lead.visit && lead.visit.at) + ' and has not been marked completed. Completing it moves the lead to Estimating and opens this step.'), Btn('Open appointments', {kind:'pri', onClick:() => go('appointments')})))]};
+   h('span', {style:{fontSize:'13px', flex:1}}, 'The site visit is booked for ' + B1.fmt(lead.visit && lead.visit.at) + '. When the estimator arrives and marks “I’m on site” — on the appointment or on the lead — this estimate opens and the lead moves to Estimating.'), Btn('I’m on site', {kind:'pri', onClick:() => APP.b2Visit(lead.id, 'onsite')}), Btn('Open the lead', {onClick:() => go('lead', lead.id)})))]};
  if(!e) return {sub:'No estimate yet — the two reports come out of Xactimate as PDFs', children:[
    Row(xDrop('Final draft', 'The report that goes to the carrier and the client. The lines, room by room, and the recap by category and by room at the back.'),
        xDrop('Components report', 'The internal report. Every material with its code, the equipment, and the labour hours by trade.')),
@@ -2271,6 +2373,7 @@ SCREENS.estimate = (p, st) => b3Page(st, 'estimate', '1 · Estimate intake', (le
  const t = B3.totals(job), ck = B3.checks(job), T = ['Review extraction','Source reports','Versions'], pend = e.lines.filter(l => !l.ok).length, bad = e.lines.find(l => l.conf < 0.9);
  const show = ui.show || 'Show: all lines';
  let lines = e.lines.slice(); if(show === 'Low confidence first') lines.sort((a, b) => a.conf - b.conf); if(show === 'Unconfirmed only') lines = lines.filter(l => !l.ok);
+ if(ui.fr && ui.fr !== 'Room: All') lines = lines.filter(l => l.room === ui.fr); if(ui.fc && ui.fc !== 'Category: All') lines = lines.filter(l => XCATNAME[l.cat] === ui.fc);
  const block = t.delta ? 'Blocked: the three checks do not reconcile — Δ ' + B3.M(t.delta) : pend ? 'Blocked: ' + pend + ' line(s) not confirmed yet' : '';
  const mism = r => Math.abs(r[2] - r[1]) >= 0.005;
  let pane = null;
@@ -2279,7 +2382,8 @@ SCREENS.estimate = (p, st) => b3Page(st, 'estimate', '1 · Estimate intake', (le
      ...[['Final draft', e.file + ' — final draft.pdf', 'The lines, room by room — and the recap by category and by room at the back'], ['Components report', e.file + ' — components.pdf', 'Every material with its code, the equipment, and the labour hours by trade']]
        .map(r => h('div', {key:r[0], style:{display:'flex', gap:'12px', alignItems:'flex-start', border:'1px solid ' + C.bd, borderRadius:'10px', padding:'10px 14px', background:'#fff'}},
          h('div', {style:{fontSize:'18px', color:C.ok, lineHeight:1.2}}, '✓'), h('div', null, h('div', {style:{fontSize:'13px', fontWeight:700}}, r[0]), h('div', {style:{fontSize:'12px', color:C.mut}}, r[1]), h('div', {style:{fontSize:'11.5px', color:C.faint, marginTop:'2px'}}, r[2]))))), {hard:true}),
-   Bar(SelC(show, ['Show: all lines','Low confidence first','Unconfirmed only'], v => setP2({show:v}), {w:'200px'}), Sp(),
+   Bar(SelC(show, ['Show: all lines','Low confidence first','Unconfirmed only'], v => setP2({show:v}), {w:'200px'}), SelC(ui.fr || 'Room: All', ['Room: All'].concat(B3.ROOMS), v => setP2({fr:v}), {w:'170px'}),
+     SelC(ui.fc || 'Category: All', ['Category: All'].concat(Object.keys(e.recap.cat).map(k => XCATNAME[k] || k)), v => setP2({fc:v}), {w:'230px'}), h('span', {style:{fontSize:'12px', color:C.mut}}, lines.length + ' shown'), Sp(),
      h('span', {style:{fontSize:'12.5px'}}, h('b', null, e.lines.length - pend), ' of ' + e.lines.length + ' lines confirmed'),
      Btn('Confirm all high-confidence', {sm:true, disabled:e.reviewed || !e.lines.some(l => !l.ok && l.conf >= 0.9), onClick:() => { APP.b3Set(id, j => B3.T.confirmAll(j)); toast(e.lines.filter(l => !l.ok && l.conf >= 0.9).length + ' lines confirmed'); }})),
    h('div', {style:{display:'grid', gridTemplateColumns:'minmax(300px,.7fr) minmax(620px,1.3fr)', gap:'14px', alignItems:'start'}},
@@ -2426,8 +2530,8 @@ SCREENS.budget = (p, st) => b3Page(st, 'budget', '4 · Budget & cost modeling', 
 });
 
 /* ================= 5 · NARRATIVE ================= */
-SCREENS.narrative = (p, st) => b3Page(st, 'narrative', '5 · Scope narrative — AI-assisted drafting', (lead, job, id) => {
- const sub = 'The client-facing scope of work, generated from everything the system already knows';
+SCREENS.narrative = (p, st) => b3Page(st, 'narrative', '5 · Scope of work — AI-assisted drafting', (lead, job, id) => {
+ const sub = 'The scope of work the contract points to in its section 1 — drafted by the AI from everything the system already knows, edited by a person';
  if(!job.scopeDone) return {sub, children:[b3Gate('The narrative is written from the scope packages, so the scope has to be confirmed first.', 'Go to scope structuring', 'scope')]};
  const ui = st.p2ui;
  return {sub, children:[
@@ -2438,11 +2542,11 @@ SCREENS.narrative = (p, st) => b3Page(st, 'narrative', '5 · Scope narrative —
     : Card('Draft', Ph('No draft yet. Generate one, then edit it — nothing reaches the client until it is put in the proposal.')),
   job.narr ? Bar(FldC(ui.instr || '', v => setP2({instr:v}), {ph:'Regenerate with instructions — "more detail on the mitigation work", "plain language for a homeowner"'}),
     Btn('Regenerate', {onClick:() => { APP.b3Narr(id); setP2({instr:''}); }}), Sp(),
-    Btn(job.narrOk ? 'Continue to photos →' : 'Use in proposal →', {kind:'pri', onClick:() => { if(!job.narrOk){ APP.b3Set(id, j => B3.T.narrOk(j)); toast('Narrative saved for the proposal'); } go('photos'); }})) : null]};
+    Btn(job.narrOk ? 'Continue to photos →' : 'Use in the contract →', {kind:'pri', onClick:() => { if(!job.narrOk){ APP.b3Set(id, j => B3.T.narrOk(j)); toast('Scope of work saved for the contract'); } go('photos'); }})) : null]};
 });
 
 /* ================= 6 · PHOTOS ================= */
-SCREENS.photos = (p, st) => b3Page(st, 'photos', '6 · Photos & AI labelling', (lead, job, id) => {
+SCREENS.photos = (p, st) => b3Page(st, 'photos', 'Photos & photo report', (lead, job, id) => {
  const ui = st.p2ui, rv = B3.review(job), CATS = ['Pre-job','Overview','Elevation','Affected area','Detail','Post-job'], RMS = ['Exterior','Kitchen','Living room','Dining room','Hallway','Basement'], CND = ['Fire damage','Smoke','Water damage','Mold','Structural','Undamaged'];
  const f = {c:ui.pc || 'Category: All', r:ui.pr || 'Room: All', d:ui.pd || 'Condition: All', s:ui.ps || 'All'};
  const list = job.photos.map((ph, i) => ({ph, i})).filter(x => (f.c === 'Category: All' || x.ph.cat === f.c) && (f.r === 'Room: All' || x.ph.room === f.r) && (f.d === 'Condition: All' || x.ph.cond === f.d)
@@ -2452,7 +2556,7 @@ SCREENS.photos = (p, st) => b3Page(st, 'photos', '6 · Photos & AI labelling', (
   Bar(SelC(f.c, ['Category: All'].concat(CATS), v => setP2({pc:v}), {w:'180px'}), SelC(f.r, ['Room: All'].concat(RMS), v => setP2({pr:v}), {w:'150px'}), SelC(f.d, ['Condition: All'].concat(CND), v => setP2({pd:v}), {w:'170px'}),
     SelC(f.s, ['All','Needs review (' + rv + ')','AI-labelled','Human-confirmed'], v => setP2({ps:v}), {w:'170px'}),
     h('span', {style:{fontSize:'12.5px', color:C.mut}}, h('b', null, list.length), ' of ' + job.photos.length), Sp(),
-    Btn('+ Simulate an upload', {onClick:() => APP.b3Photos(id)}), Btn('Generate photo report →', {kind:'pri', onClick:() => go('photoreport')})),
+    Btn('+ Simulate an upload', {onClick:() => APP.b3Photos(id)})),
   list.length ? h('div', {style:{display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(210px,1fr))', gap:'12px'}},
     ...list.map(x => { const ph = x.ph, i = x.i, bad = ph.conf < 1; return h('div', {key:i, 'data-ph':bad ? 'review' : 'ok', style:{background:'#fff', border:'1px solid ' + (bad ? '#F0D6D1' : C.bd), borderRadius:'10px', overflow:'hidden'}},
       h('div', {style:{height:'76px', background:'repeating-linear-gradient(135deg,#EEF3F7,#EEF3F7 8px,#E6EDF3 8px,#E6EDF3 16px)', display:'flex', alignItems:'center', justifyContent:'center', color:C.faint, fontSize:'11.5px'}}, bad ? '⚠ needs review' : 'photo ' + (i + 1)),
@@ -2462,11 +2566,11 @@ SCREENS.photos = (p, st) => b3Page(st, 'photos', '6 · Photos & AI labelling', (
         Lbl('Category'), SelC(ph.cat === '—' ? '— select —' : ph.cat, ['— select —'].concat(CATS), v => setPh(i, {cat:v.charAt(0) === '—' ? '—' : v})),
         ph.cat === 'Elevation' ? Lbl('Direction · ' + ph.dsrc) : null, ph.cat === 'Elevation' ? SelC(ph.dir, ['North','South','East','West'], v => setPh(i, {dir:v})) : null,
         ph.cond !== '—' ? Lbl('Condition') : null, ph.cond !== '—' ? SelC(ph.cond, CND, v => setPh(i, {cond:v})) : null)); }))
-   : Card('', HTM({fontSize:'13px', color:C.mut}, 'No photos match these filters.'))]};
+   : Card('', HTM({fontSize:'13px', color:C.mut}, 'No photos match these filters.'))].concat([h('h3', {key:'rh', style:{fontFamily:BAR, fontSize:'17px', margin:'10px 0 0'}}, 'Photo report — optional: some jobs have no photos')]).concat(b3RepBody(st, lead, job, id).children)};
 });
 
 /* ================= 7 · PHOTO REPORT ================= */
-SCREENS.photoreport = (p, st) => b3Page(st, 'photoreport', '7 · Photo report', (lead, job, id) => {
+const b3RepBody = (st, lead, job, id) => {
  const ui = st.p2ui, layout = ui.layout || '2 per page', per = parseInt(layout, 10), n = job.photos.length, rv = B3.review(job), rooms = {};
  job.photos.forEach(ph => { const k = ph.cat === 'Elevation' ? 'Exterior elevations' : ph.room === '—' ? 'Unlabelled' : ph.room; rooms[k] = (rooms[k] || 0) + 1; });
  let pg = 2; const prev = Object.keys(rooms).map(k => { const c = Math.ceil(rooms[k] / per), s = 'page ' + pg + (c > 1 ? '–' + (pg + c - 1) : '') + ' — ' + k + ' (' + rooms[k] + ')'; pg += c; return s; });
@@ -2479,70 +2583,106 @@ SCREENS.photoreport = (p, st) => b3Page(st, 'photoreport', '7 · Photo report', 
       Lbl('Photos included'), h('b', {style:{fontSize:'13px'}}, n + ' of ' + n))),
     Card('Preview', PhPre('page 1 — Cover: ' + lead.client + ' · ' + lead.addr + (lead.claim ? ' · Claim ' + lead.claim : '') + '\n\n' + prev.join('\n') + '\n\n' + (pg - 1) + ' pages', {left:true, mono:true, h:'260px'}))),
   Bar(Sp(), Btn('Generate the report and save it to the lead', {kind:'pri', disabled:rv > 0, title:rv ? 'Blocked: ' + rv + ' photo(s) need a label' : '', onClick:() => APP.b3Report(id, layout)}),
-    job.reports.length ? Btn('Continue to proposal →', {onClick:() => go('proposal')}) : null),
+    job.reports.length ? Btn('Continue to payment schedule & contract →', {onClick:() => go('schedule')}) : null),
   Card('Generated reports', job.reports.length ? Tbl(['Generated','By',{t:'Photos',n:true},{t:'Pages',n:true},'Layout','Used in'],
     job.reports.map((r, k) => [B1.fmt(r.at), r.who, {t:r.n, n:true}, {t:r.pages, n:true}, r.layout, k === 0 ? Tag('Current — goes in the proposal', 'ok') : 'Superseded']), {flush:true})
     : HTM({padding:'14px 16px', fontSize:'12.5px', color:C.mut}, 'No report generated yet.'), {flush:true})]};
+};
+SCREENS.photoreport = (p, st) => SCREENS.photos(p, st);
+
+
+/* ================= 8 · PAYMENT SCHEDULE & CONTRACT ================= */
+SCREENS.schedule = (p, st) => b3Page(st, 'schedule', '8 · Payment schedule & contract', (lead, job, id) => {
+ const t = B3.totals(job); if(!t || !job.est.reviewed) return {sub:'The draws of the contract — every invoice Phase 4 will create', children:[b3Gate('The draws are a share of the estimate total, so the estimate has to be reviewed first.', 'Go to estimate intake', 'estimate')]};
+ if(!job.scopeDone) return {sub:'The draws of the contract — every invoice Phase 4 will create', children:[b3Gate('The AI builds the draws from the scope packages, so the scope has to be confirmed first.', 'Go to scope structuring', 'scope')]};
+ const sc = B3.schedCalc(job), rows = B3.schedOf(job), V = B3.pkVal(job), PK = c => job.pk.find(x => x.c === c) || {n:c};
+ const N = rows.filter(m => m.pks).length || job.drawN || 1;
+ const setS = fn => APP.b3Set(id, j => Object.assign({}, j, {sched:fn(B3.schedOf(j).map(m => Object.assign({}, m))), schedOk:false}));
+ const resug = n => APP.b3Set(id, j => Object.assign({}, j, {drawN:n, sched:B3.suggest(Object.assign({}, j, {drawN:n}), n), schedOk:false}));
+ const add = () => { const v = {n:'Draw ' + (rows.filter(m => m.type === '%').length + 1), p:'10', tr:''};
+   modal('Add a milestone draw', Stack(Lbl('Name'), h('input', {autoFocus:true, defaultValue:v.n, onChange:e => v.n = e.target.value, style:inputStyle()}),
+     Lbl('Milestone — in plain words, as it will read in the contract'), h('input', {onChange:e => v.tr = e.target.value, placeholder:'e.g. Completion of flooring', style:inputStyle()}), Lbl('Percentage of the contract'), h('input', {defaultValue:'10', onChange:e => v.p = e.target.value, style:inputStyle('90px')})),
+     [Btn('Cancel', {onClick:() => closeM()}), Btn('Add', {kind:'pri', onClick:() => { closeM(); setS(r => { r.splice(r.length - 1, 0, {name:v.n, trig:v.tr || 'Milestone to be named', type:'%', pct:v.p, inv:'On milestone marked complete', pks:[]}); return r; }); }})]); };
+ const errs = []; if(sc.neg) errs.push('The payments add up to more than the contract value');
+ if(sc.needWhy && !job.schedWhy.trim()) errs.push('The final payment is above policy — a reason is required');
+ const covTxt = m => m.pks ? (m.pks.length ? m.pks.map(c => c + ' ' + PK(c).n).join(' · ') : 'no packages — typed by a person') : m.dep ? 'materials and mobilisation' : m.type === 'Remainder' ? 'punch list and closeout' : '—';
+ const why = m => m.type === 'Fixed' ? 'Fixed by the contract template: $500 on signature, non-refundable.'
+   : m.dep ? B3.num(m.pct) + '% of ' + B3.M(sc.total) + ' = ' + B3.M(m.a) + '. The contracts in their current system put 40% here; it can be changed for this job.'
+   : m.type === 'Remainder' ? 'What is left once the binder and every draw come off the contract: ' + B3.M(m.a) + ' (' + sc.finPct + '%).'
+   : m.pks && m.pks.length ? 'Covers ' + m.pks.map(c => c + ' ' + PK(c).n + ' (' + B3.M(V[c] || 0) + ')').join(' + ') + ' = ' + B3.M(m.work) + ' of work, ' + m.workPct + '% of the job. '
+     + (m.ai ? 'The AI gave it that share of what is left after the binder, the deposit and about 5% held for the end: ' : 'Set by a person: ') + B3.num(m.pct) + '% = ' + B3.M(m.a) + '. By this milestone ' + Math.round(m.cumWork) + '% of the work is done and ' + Math.round(m.cumBill) + '% has been billed.'
+   : B3.num(m.pct) + '% = ' + B3.M(m.a) + '.';
+ return {sub:'Contract value <b>' + B3.M(sc.total) + '</b> · ' + sc.count + ' payments · the AI suggests the draws from the scope packages, a person adjusts them · every row becomes an invoice in Phase 4', children:[
+  Bar(h('span', {style:{fontSize:'12.5px'}}, 'Template: ', h('b', null, B3.tplOf(sc.total))), Sp(),
+    h('span', {style:{fontSize:'12.5px', color:C.mut}}, 'Milestone draws'), SelC(String(N), ['1','2','3'], v => resug(parseInt(v, 10)), {w:'70px'}),
+    Btn('Suggest again', {onClick:() => resug(N)}), Btn('+ Add milestone', {onClick:add}), job.schedOk ? Tag('Confirmed', 'ok') : Tag('AI suggestion — review it', 'ai')),
+  Tbl(['','Payment','Milestone — as it reads in the contract','Type',{t:'%',n:true},{t:'Amount',n:true},'What it covers',{t:'Work it covers',n:true},'Invoice trigger',''],
+    sc.rows.map((m, n) => ({key:n, c:[B3.LET[n], '<b>' + m.name + '</b>' + (m.ai ? ' ' + '<span style="font-size:10.5px;color:#2C6E9B">AI</span>' : ''),
+      m.lock || m.type === 'Remainder' || m.dep ? m.trig : FldC(m.trig, v => setS(r => { r[n].trig = v; r[n].ai = false; return r; })), m.type,
+      m.type === 'Fixed' ? '—' : m.type === 'Remainder' ? {t:sc.finPct + '% · the rest', n:true} : FldC(m.pct, v => setS(r => { r[n].pct = v; r[n].ai = false; return r; }), {w:'64px'}),
+      {t:B3.M(m.a), n:true}, h('span', {style:{fontSize:'12px'}}, covTxt(m)), {t:m.pks ? m.workPct + '%' : '—', n:true}, m.inv,
+      m.lock || m.dep ? '🔒' : m.type === 'Remainder' ? '' : Btn('🗑', {sm:true, onClick:() => setS(r => { r.splice(n, 1); return r; })})]})),
+    {min:'1380px', foot:['', '<b>TOTAL</b>', '', '', {t:'<b>100%</b>'}, {t:'<b>' + B3.M(sc.total) + '</b>'}, '', '', 'The binder and the draws come off the contract — the final is what is left', '']}),
+  Card('What each payment contains — open a draw to see its items', Stack(...sc.rows.map((m, n) => { const open = (st.p2ui.dx || {})[n], items = m.pks ? job.est.lines.filter(l => m.pks.indexOf(l.pk) >= 0).sort((a, b) => a.pk < b.pk ? -1 : a.pk > b.pk ? 1 : 0) : [];
+    const toggle = () => setP2({dx:Object.assign({}, st.p2ui.dx || {}, {[n]:!open})}), ext = B3.r2(B3.sum(job.est.lines.map(B3.lt))) || 1;
+    return h('div', {key:n, 'data-draw':n, style:{border:'1px solid ' + C.bd, borderRadius:'10px', overflow:'hidden'}},
+      h('div', {onClick:items.length ? toggle : null, style:{display:'flex', gap:'12px', alignItems:'flex-start', padding:'11px 14px', cursor:items.length ? 'pointer' : 'default', background:open ? '#F3F8FB' : '#fff'}},
+        h('span', {style:{fontWeight:700, width:'18px', color:C.mut}}, B3.LET[n]), h('div', {style:{flex:1, minWidth:0}},
+          h('div', {style:{display:'flex', gap:'10px', flexWrap:'wrap', alignItems:'baseline'}}, h('b', null, m.name + ' · ' + m.trig), h('span', {style:{marginLeft:'auto', fontFamily:BAR, fontWeight:700}}, B3.M(m.a))),
+          h('div', {style:{fontSize:'12px', color:C.mut, marginTop:'3px', lineHeight:1.6}}, why(m))),
+        items.length ? h('span', {style:{fontSize:'12px', color:C.pri, fontWeight:600, whiteSpace:'nowrap'}}, (open ? '▾ Hide' : '▸ Show') + ' ' + items.length + ' items') : null),
+      open ? h('div', {style:{borderTop:'1px solid ' + C.bd}}, Tbl(['Package','Room','Line item (from Xactimate)',{t:'Qty',n:true},'Cost code',{t:'Estimate $',n:true}],
+          items.map(l => ['<b>' + l.pk + '</b>', l.room, l.desc, {t:l.qty.toLocaleString('en-US') + ' ' + l.uom, n:true}, B3.codeLbl(l.code), {t:B3.M(B3.lt(l)), n:true}]),
+          {flush:true, foot:['', '', '<b>Work in this draw</b> — before overhead, profit and tax · with them it is about ' + B3.M(B3.r2(m.work / ext * sc.total)), '', '', {t:'<b>' + B3.M(m.work) + '</b>'}]})) : null); })), {flush:false}),
+  Card('Validation', h('div', {style:{fontSize:'12.5px', lineHeight:2}},
+    h('div', {style:sc.neg ? {color:C.dg} : null}, sc.neg ? '⚠ The payments add up to more than the contract value — lower a percentage' : '✓ The payments total 100% of the contract value'),
+    h('div', {style:sc.needWhy ? {color:C.dg} : null}, sc.needWhy ? '⚠ Final payment ' : '✓ Final payment ', h('b', null, sc.finPct + '%'), sc.needWhy ? ' is above the 7% set in Markup defaults — confirming asks for a reason' : ' is within the 7% set in Markup defaults'),
+    sc.needWhy ? h('div', {style:{margin:'4px 0 8px', maxWidth:'560px'}}, FldC(job.schedWhy, v => APP.b3Set(id, j => Object.assign({}, j, {schedWhy:v, schedOk:false})), {ph:'Reason for a final payment above policy', bad:!job.schedWhy.trim()})) : null,
+    h('div', {style:sc.count > 6 ? {color:C.dg} : null}, (sc.count > 6 ? '⚠' : '✓') + ' Payment count ', h('b', null, sc.count), sc.count > 6 ? ' is above six, the maximum without change orders — a warning, it does not block' : ' — six is the maximum without change orders'),
+    h('div', null, '✓ Deposit clock ', h('b', null, '5 calendar days'), ' from signing')), {hard:true}),
+  Card('Contract — exactly as the client will sign it', Stack(
+    h('div', {style:{fontSize:'12.5px', color:C.mut}}, 'Filled from the template for jobs ' + (sc.total > 30000 ? 'over' : 'under') + ' $30,000, the client, the total and the draws above. Changing a draw changes the contract.'),
+    PhPre(B3.contractDoc(job, lead), {left:true, mono:true, h:'460px'}),
+    Lbl('Special terms for this job (optional) — they print in the contract'), TaC(job.terms || '', v => APP.b3Set(id, j => Object.assign({}, j, {terms:v, schedOk:false})), {min:60}),
+    h('div', null, Btn('Open the contract templates', {sm:true, onClick:() => go('s_contracts')})))),
+  Bar(errs.length ? h('span', {style:{fontSize:'12px', color:C.dg, fontWeight:600}}, errs[0]) : null, Sp(),
+    job.schedOk ? Btn('Continue to the proposal builder →', {kind:'pri', onClick:() => go('proposal')})
+      : Btn('Confirm the schedule and the contract', {kind:'pri', disabled:errs.length > 0, title:errs[0] || '', onClick:() => { APP.b3Set(id, j => B3.T.schedOk(j)); APP.b3Log(id, 'Payment schedule and contract confirmed', sc.count + ' payments · final ' + sc.finPct + '%'); toast('Payment schedule and contract confirmed'); }}))]};
 });
 
-/* ================= 8 · PROPOSAL ================= */
-SCREENS.proposal = (p, st) => b3Page(st, 'proposal', '8 · Proposal builder', (lead, job, id) => {
- const sub = 'A proposal is a <b>package</b>, not a document. It is sent as one item to review and sign.';
+/* ================= 9 · PROPOSAL BUILDER — the last check before sending ================= */
+SCREENS.proposal = (p, st) => b3Page(st, 'proposal', '9 · Proposal builder', (lead, job, id) => {
+ const sub = 'The last step before sending: a checklist of everything the client receives, in one package. Each piece opens here, without leaving this step.';
  const t = B3.totals(job); if(!t || !job.est.reviewed) return {sub, children:[b3Gate('A proposal needs a reviewed estimate — the total and the scope come from it.', 'Go to estimate intake', 'estimate')]};
+ if(!job.schedOk) return {sub, children:[b3Gate('The contract and its draws come first — confirm them in Payment schedule & contract.', 'Go to payment schedule & contract', 'schedule')]};
  const P = job.prop, sc = B3.schedCalc(job), rep = job.reports[0], nV = job.vers.length + 1;
  const setProp = patch => APP.b3Set(id, j => Object.assign({}, j, {prop:Object.assign({}, j.prop, patch, {saved:false})}));
- const what = {intro:'Cover message stating what is enclosed', contract:B3.tplOf(t.grand) + ' · includes all legal verbiage and payment terms',
-   scope:SelC(P.mode, B3.SCOPEMODES, v => setProp({mode:v}), {w:'360px'}), sched:sc.count + ' payments · binder $500 · ' + sc.rows.filter(m => m.type === '%').map(m => m.name.toLowerCase() + ' ' + B3.num(m.pct) + '%').join(' · ') + ' · final the remainder',
-   license:'PA HIC #PA-118442 · expires Mar 31, 2027 · valid', coi:'COI — Erie Insurance · <b style="color:#C8442E">⚠ expires in 21 days</b>',
+ const intro = P.intro != null ? P.intro : 'Thank you for the opportunity to work on your home at ' + lead.addr + '. Enclosed are our contract, the scope of work, the total amount, our license, insurance and certification' + (P.on.photo ? ', and the photo documentation of the damage' : '') + '. The contract becomes binding once it is signed and the $500 binder is paid.';
+ const what = {intro:'Cover message — edit it below', contract:B3.tplOf(t.grand) + ' · ' + sc.count + ' payments: ' + sc.rows.map(m => m.type === 'Fixed' ? 'binder $500' : m.type === 'Remainder' ? 'final ' + sc.finPct + '%' : B3.num(m.pct) + '%').join(' · '),
+   scope:SelC(P.mode, B3.SCOPEMODES, v => setProp({mode:v}), {w:'420px'}), total:'Total ' + B3.M(t.grand) + ' — line items, overhead, profit and tax in one figure',
+   license:'PA HIC #PA161418 · valid', coi:'COI — <b style="color:#C8442E">⚠ expires in 21 days</b>', iicrc:'IICRC firm certification · valid',
    photo:rep ? rep.pages + ' pages · ' + rep.n + ' photos · generated ' + B1.fmt(rep.at) : '<b style="color:#C8442E">No photo report generated yet</b>', refs:'Optional — not included by default'};
- const jump = {scope:'narrative', sched:'schedule', license:'s_docs', coi:'s_docs', photo:'photoreport'};
- const warn = []; if(!job.narrOk && P.mode.indexOf('narrative') >= 0) warn.push('the scope narrative is not ready (step 5)'); if(P.on.photo && !rep) warn.push('the photo report is not generated (step 7)');
+ const body = {intro, contract:B3.contractDoc(job, lead),
+   scope:(P.mode.indexOf('AI scope') === 0 ? (job.narr || '(the scope of work is not written yet)') + '\n\n' : '') + (P.mode.indexOf('scope report') >= 0 ? 'XACTIMATE SCOPE REPORT — ' + job.est.lines.length + ' lines, room by room, with quantities and no prices' : P.mode.indexOf('full estimate') >= 0 ? 'FULL ESTIMATE — ' + job.est.lines.length + ' lines with unit prices' : ''),
+   total:'CUSTOMER TOTAL AMOUNT\nLine item total   ' + B3.M(t.sub) + '\nOverhead          ' + B3.M(t.oh) + '\nProfit            ' + B3.M(t.pr) + '\nSales tax         ' + B3.M(t.tax) + '\nTOTAL             ' + B3.M(t.grand),
+   license:'Pennsylvania Home Improvement Contractor registration PA161418 — from Settings → Company documents.', coi:'Certificate of insurance — from Settings → Company documents. It expires in 21 days: renew it before sending.', iicrc:'IICRC firm certification — from Settings → Company documents.',
+   photo:rep ? 'Photo report · ' + rep.pages + ' pages · ' + rep.n + ' photos · layout ' + rep.layout : 'No photo report yet. It is optional: untick it, or generate it in Photos & report.', refs:'Past work and references — optional.'};
+ const warn = []; if(!job.narrOk && P.mode.indexOf('AI scope') === 0) warn.push('the scope of work is not ready'); if(P.on.photo && !rep) warn.push('the photo report is not generated — untick it or generate it');
  const on = B3.COMPS.filter(c => P.on[c[0]]);
+ const pv = c => modal(c[1], Stack(PhPre(body[c[0]], {left:true, mono:true, h:'420px'})), [Btn('Close', {onClick:() => closeM()})]);
  return {sub:'Version ' + nV + ' · ' + (P.saved ? 'package ready' : 'draft') + ' — ' + sub.charAt(0).toLowerCase() + sub.slice(1), children:[
   Card('Total proposal amount', h('div', {style:{display:'flex', gap:'14px', alignItems:'center', flexWrap:'wrap'}},
-    h('b', {style:{fontFamily:BAR, fontSize:'26px'}}, B3.M(t.grand)),
-    h('span', {style:{fontSize:'12.5px', color:C.mut}}, '→ contract template for jobs ' + (t.grand > 30000 ? 'over' : 'under') + ' $30,000 → '),
+    h('b', {style:{fontFamily:BAR, fontSize:'26px'}}, B3.M(t.grand)), h('span', {style:{fontSize:'12.5px', color:C.mut}}, '→ contract template for jobs ' + (t.grand > 30000 ? 'over' : 'under') + ' $30,000 → '),
     h('b', {style:{fontSize:'12.5px'}}, B3.tplOf(t.grand))), {hard:true}),
-  Tbl(['In','Component','Content','Order',''], B3.COMPS.map((c, n) => [ChkC('', P.on[c[0]], v => setProp({on:Object.assign({}, P.on, {[c[0]]:v})}), c[2]), '<b>' + c[1] + '</b>' + (c[2] ? ' <span style="color:#7C93A5;font-size:11px">always included</span>' : ''), what[c[0]], String(n + 1),
-    jump[c[0]] ? Btn('Open', {sm:true, onClick:() => go(jump[c[0]])}) : '']), {min:'980px'}),
-  Card('Preview — exactly as the client will see it', PhPre('3RIVERS GENERAL CONTRACTING — PROPOSAL\nPrepared for: ' + lead.client + ' · ' + lead.addr + ', ' + lead.city + ', ' + lead.state + ' ' + lead.zip + '\nProposal ' + lead.id + ' v' + nV + (lead.claim ? ' · Claim ' + lead.claim : '') + '\nTOTAL: ' + B3.M(t.grand) + '\n\n' +
-    on.map(c => '[ ' + c[1].toLowerCase() + ' ]').join(' → ') + '\n\nAssembled package · ' + on.length + ' components · signature block after the contract', {left:true, mono:true})),
+  Tbl(['In','Component','What goes out','Order',''], B3.COMPS.map((c, n) => [ChkC('', P.on[c[0]], v => setProp({on:Object.assign({}, P.on, {[c[0]]:v})}), c[2]), '<b>' + c[1] + '</b>' + (c[2] ? ' <span style="color:#7C93A5;font-size:11px">always included</span>' : ' <span style="color:#7C93A5;font-size:11px">optional</span>'), what[c[0]], String(n + 1),
+    Btn('Preview', {sm:true, onClick:() => pv(c)})]), {min:'1080px'}),
+  Card('Introductory statement — the first page the client reads', Stack(TaC(intro, v => setProp({intro:v}), {min:90}), h('div', {style:{fontSize:'11.5px', color:C.faint}}, 'Edited here. The cover email is written in Send & versions.'))),
+  Card('Preview — the package in the order the client sees it', PhPre('3RIVERS GENERAL CONTRACTING — PROPOSAL\nPrepared for: ' + lead.client + ' · ' + lead.addr + ', ' + lead.city + ', ' + lead.state + ' ' + lead.zip + '\nProposal ' + lead.id + ' v' + nV + (lead.claim ? ' · Claim ' + lead.claim : '') + '\nTOTAL: ' + B3.M(t.grand) + '\n\n' +
+    on.map(c => '[ ' + c[1].toLowerCase() + ' ]').join(' → ') + '\n\n' + on.length + ' pieces · the client signs the contract and pays the binder from the same link', {left:true, mono:true})),
   Bar(warn.length ? h('span', {style:{fontSize:'12px', color:C.dg, fontWeight:600}}, '⚠ Before saving: ' + warn.join(' · ')) : P.saved ? Tag('Package ready', 'ok') : null, Sp(),
     Btn('Download PDF', {onClick:() => toast('Package PDF downloaded')}),
     Btn(P.saved ? 'Saved' : 'Save the package', {kind:P.saved ? 'ghost' : 'pri', disabled:P.saved || warn.length > 0, title:warn.join(' · '), onClick:() => { APP.b3Set(id, j => B3.T.propSave(j)); toast('Proposal package saved'); }}),
-    Btn('Payment schedule →', {kind:P.saved ? 'pri' : 'ghost', onClick:() => go('schedule')}))]};
-});
-
-/* ================= 9 · PAYMENT SCHEDULE ================= */
-SCREENS.schedule = (p, st) => b3Page(st, 'schedule', '9 · Payment schedule & milestones', (lead, job, id) => {
- const t = B3.totals(job); if(!t || !job.est.reviewed) return {sub:'Defines every invoice Phase 4 will create', children:[b3Gate('The schedule is a share of the estimate total, so the estimate has to be reviewed first.', 'Go to estimate intake', 'estimate')]};
- const sc = B3.schedCalc(job), rows = B3.schedOf(job), small = t.grand <= 30000;
- const setS = fn => APP.b3Set(id, j => Object.assign({}, j, {sched:fn(B3.schedOf(j).map(m => Object.assign({}, m))), schedOk:false}));
- const add = () => { const v = {n:'Draw ' + (rows.filter(m => m.type === '%').length + 1), p:'10', tr:''};
-   modal('Add a milestone', Stack(Lbl('Name'), h('input', {autoFocus:true, defaultValue:'Draw ' + (rows.filter(m => m.type === '%').length + 1), onChange:e => v.n = e.target.value, style:inputStyle()}),
-     Lbl('Trigger / milestone'), h('input', {onChange:e => v.tr = e.target.value, placeholder:'e.g. Completion of flooring', style:inputStyle()}), Lbl('Percentage'), h('input', {defaultValue:'10', onChange:e => v.p = e.target.value, style:inputStyle('90px')})),
-     [Btn('Cancel', {onClick:() => closeM()}), Btn('Add', {kind:'pri', onClick:() => { closeM(); setS(r => { r.splice(r.length - 1, 0, {name:v.n || 'Draw ' + (r.filter(m => m.type === '%').length + 1), trig:v.tr || 'Milestone to be named', type:'%', pct:v.p, inv:'On milestone marked complete', cov:'—'}); return r; }); }})]); };
- const errs = []; if(sc.neg) errs.push('The payments add up to more than the contract value');
- if(sc.needWhy && !job.schedWhy.trim()) errs.push('The final payment is above policy — a reason is required');
- return {sub:'Contract value <b>' + B3.M(sc.total) + '</b> · ' + sc.count + ' payments · from the contract template for jobs ' + (small ? 'under' : 'over') + ' $30,000 · defines every invoice Phase 4 will create', children:[
-  small ? Card('', HTM({fontSize:'12.5px', color:C.wn}, '<b>The under-$30,000 template has not been received from the client yet.</b> This schedule starts from the over-$30,000 structure until it is.')) : null,
-  Bar(h('span', {style:{fontSize:'12.5px'}}, 'Template: ', h('b', null, 'Residential fixed rate · binder + 40 / 20 / 20 + remainder')), Sp(),
-    job.schedOk ? Tag('Confirmed', 'ok') : null, Btn('Reset to the template', {onClick:() => APP.b3Set(id, j => Object.assign({}, j, {sched:null, schedOk:false}))}), Btn('+ Add milestone', {onClick:add})),
-  Tbl(['#','Payment','Trigger / milestone','Type',{t:'Amount',n:true},{t:'%',n:true},{t:'Work it covers',n:true},'Invoice trigger',''],
-    sc.rows.map((m, n) => ({key:n, c:[String(n + 1), '<b>' + m.name + '</b>', m.lock || m.type === 'Remainder' ? m.trig : FldC(m.trig, v => setS(r => { r[n].trig = v; return r; })), m.type, {t:B3.M(m.a), n:true},
-      m.type === 'Fixed' ? '—' : m.type === 'Remainder' ? {t:sc.finPct + '% · the rest', n:true} : FldC(m.pct, v => setS(r => { r[n].pct = v; return r; }), {w:'64px'}),
-      {t:m.cov, n:true}, m.inv, m.lock ? '🔒' : m.type === 'Remainder' ? '' : Btn('🗑', {sm:true, onClick:() => setS(r => { r.splice(n, 1); return r; })})]})),
-    {min:'1280px', foot:['', '<b>TOTAL</b>', '', '', {t:'<b>' + B3.M(sc.total) + '</b>'}, {t:'<b>100%</b>'}, '', 'The binder and the draws come off the contract — the final is what is left', '']}),
-  HTM({fontSize:'11.5px', color:C.faint, margin:'-4px 0 0', lineHeight:1.6}, '<b>Work it covers</b> comes from the recap by category at the back of the estimate: the trades that finish by each milestone, as a share of the work. This column is what a person checks each milestone against before the contract goes out.'),
-  Card('Validation', h('div', {style:{fontSize:'12.5px', lineHeight:2}},
-    h('div', {style:sc.neg ? {color:C.dg} : null}, sc.neg ? '⚠ The payments add up to more than the contract value — lower a percentage' : '✓ The payments total 100% of the contract value'),
-    h('div', {style:sc.needWhy ? {color:C.dg} : null}, sc.needWhy ? '⚠ Final payment ' : '✓ Final payment ', h('b', null, sc.finPct + '%'), sc.needWhy ? ' is above the 7% set in Markup defaults. The template leaves the remainder for the end, so confirming asks for a reason until the policy is settled' : ' is within the 7% set in Markup defaults'),
-    sc.needWhy ? h('div', {style:{margin:'4px 0 8px', maxWidth:'560px'}}, FldC(job.schedWhy, v => APP.b3Set(id, j => Object.assign({}, j, {schedWhy:v, schedOk:false})), {ph:'Reason for a final payment above policy', bad:!job.schedWhy.trim()})) : null,
-    h('div', {style:sc.count > 6 ? {color:C.dg} : null}, (sc.count > 6 ? '⚠' : '✓') + ' Payment count ', h('b', null, sc.count), sc.count > 6 ? ' is above six, the maximum without change orders — a warning, it does not block' : ' — six is the maximum without change orders'),
-    h('div', null, '✓ Draw 1 clock ', h('b', null, '5 calendar days'), ' from signing')), {hard:true}),
-  Bar(errs.length ? h('span', {style:{fontSize:'12px', color:C.dg, fontWeight:600}}, errs[0]) : null, Sp(),
-    job.schedOk ? Btn('Continue to send →', {kind:'pri', onClick:() => go('versions')})
-      : Btn('Confirm the schedule', {kind:'pri', disabled:errs.length > 0, title:errs[0] || '', onClick:() => { APP.b3Set(id, j => B3.T.schedOk(j)); APP.b3Log(id, 'Payment schedule confirmed', sc.count + ' payments · final ' + sc.finPct + '%'); toast('Payment schedule confirmed'); }}))]};
+    Btn('Continue to send →', {kind:P.saved ? 'pri' : 'ghost', onClick:() => go('versions')}))]};
 });
 
 /* ================= 10 · SEND & VERSIONS ================= */
@@ -2560,7 +2700,7 @@ SCREENS.versions = (p, st) => b3Page(st, 'versions', '10 · Send & versions', (l
       Btn('Simulate: the client opens the proposal', {disabled:v.status === 'Viewed', onClick:() => APP.b3Viewed(id)}), Btn('Go to acceptance →', {kind:'pri', onClick:() => go('acceptance')})),
     simNote('In the real platform these happen on the client side. Here a button stands in for the client so the rest of the flow can be seen.')), {hard:true}) : null,
   closed ? null : Card(v ? 'Send a new version (v' + (job.vers.length + 1) + ')' : 'Send', Stack(
-    miss.length ? HTM({fontSize:'12.5px', color:C.dg, fontWeight:600}, '⚠ Not ready to send. Pending: ' + miss.join(' · ')) : HTM({fontSize:'12.5px', color:C.ok, fontWeight:600}, '✓ Steps 1 to 9 are complete — the package can go out.'),
+    miss.length ? HTM({fontSize:'12.5px', color:C.dg, fontWeight:600}, '⚠ Not ready to send. Pending: ' + miss.join(' · ')) : HTM({fontSize:'12.5px', color:C.ok, fontWeight:600}, '✓ Every step before sending is complete — the package can go out.'),
     Lbl('To'), FldC(S.to != null ? S.to : lead.email, x => setSend({to:x})), Lbl('CC'), FldC(S.cc || '', x => setSend({cc:x}), {ph:'adjuster, spouse, property manager…'}),
     Lbl('Cover email'), TaC(body, x => setSend({body:x}), {min:170}),
     Lbl('Options'), h('div', {style:{display:'flex', flexDirection:'column', gap:'6px'}}, Chk('Include a payment link for the $500 binder'), Chk('Request a digital signature — the signed proposal is the contract'), Chk('Expire this proposal after 30 days'), Chk('Store a PDF snapshot at the moment of sending')),
@@ -2570,7 +2710,11 @@ SCREENS.versions = (p, st) => b3Page(st, 'versions', '10 · Send & versions', (l
   v ? Card('Status timeline — v' + v.v, Tbl(['Status','When','Detail'], [
     ['Sent', B1.fmt(v.sentAt), 'One package · ' + v.pages + ' pages · payment link included'], ['Viewed', v.viewedAt ? B1.fmt(v.viewedAt) : '—', v.viewedAt ? 'Opened from the link in the email' : '—'],
     ['Signed', v.signedAt ? B1.fmt(v.signedAt) : '—', v.signedAt ? 'Signed by ' + job.acc.by + ' · IP ' + job.acc.ip : '—'], ['Declined', job.acc.declined ? B1.fmt(job.acc.declined) : '—', job.acc.why || '—'],
-    ['Expires', B1.fmtDay(v.sentAt + 30 * B3.DAY), '30 days after sending']], {flush:true}), {flush:true}) : null]};
+    ['Expires', B1.fmtDay(v.sentAt + 30 * B3.DAY), '30 days after sending']], {flush:true}), {flush:true}) : null,
+  v ? (() => { const stop = ['Signed','Declined','Superseded'].indexOf(v.status) >= 0, now = Date.now(), FU = [['Email','Friendly proposal check-in',2], ['SMS','Friendly reminder',5], ['AI voice call','Courtesy call',10]];
+    let nx = false; return Card('Follow-up on this proposal — Proposal Follow-Up · friendly', Tbl(['Step','Channel','Template','When','Status'], FU.map((f, i) => { const at = v.sentAt + f[2] * B3.DAY, done = !stop && at <= now, next = !stop && !done && !nx; if(next) nx = true;
+      return [String(i + 1), f[0], f[1], B1.fmt(at), stop ? Tag('Stopped — ' + v.status.toLowerCase(), null) : done ? Tag('Sent', 'ok') : next ? Tag('Next', 'ai') : Tag('Scheduled')]; }), {flush:true}),
+      {flush:true, actions:[h('span', {key:'n', style:{fontSize:'11.5px', color:C.faint}}, 'Stops when the client signs or declines · steps in Settings → Automations & cadences')]}); })() : null]};
 });
 
 /* ================= 11 · ACCEPTANCE ================= */
@@ -2578,7 +2722,7 @@ SCREENS.acceptance = (p, st) => b3Page(st, 'acceptance', '11 · Acceptance, bind
  const sub = 'What happens the moment the client signs';
  const v = B3.cur(job), a = job.acc, ui = st.p2ui;
  if(!v || v.status === 'Superseded') return {sub, children:[b3Gate('There is nothing for the client to accept until a proposal has been sent.', 'Go to send & versions', 'versions')]};
- const sc = B3.schedCalc(job), dep = sc.rows.find(m => m.type === '%') || {a:0}, signed = !!a.signedAt, paid = !!a.paidAt, dead = !!a.declined;
+ const sc = B3.schedCalc(job), dep = sc.rows.find(m => m.dep) || sc.rows.find(m => m.type === '%') || {a:0}, signed = !!a.signedAt, paid = !!a.paidAt, dead = !!a.declined;
  return {sub, children:[
   Card('1 · Client accepts', Stack(
     signed ? h('div', {style:{fontSize:'13px'}}, Tag('Signed', 'ok'), ' ', h('b', null, a.by), ' · ' + B1.fmt(a.signedAt) + ' · IP ' + a.ip)
@@ -2595,6 +2739,8 @@ SCREENS.acceptance = (p, st) => b3Page(st, 'acceptance', '11 · Acceptance, bind
       ['Check', Tag('No', 'dg'), 'Tagged as check · reminder after N days to confirm receipt by hand'], ['Cash', Tag('Not accepted', 'dg'), 'Not taken — ACH, card or check only']])), {hard:signed && !paid}),
   Card('3 · Deposit clock', Stack(
     h('div', {style:{fontSize:'12.5px', color:C.mut}}, signed ? 'Accepted ' + B1.fmt(a.signedAt) + ' → deposit invoice due ' + B1.fmtDay(a.signedAt + 5 * B3.DAY) + ' (5 calendar days, configurable).' : 'Accepted — → deposit invoice due 5 calendar days later (configurable).'),
+    signed ? Tbl(['Deposit reminder','When','Status'], [['Reminder — deposit due in 2 days (email + SMS)', B1.fmt(a.signedAt + 3 * B3.DAY)], ['Due today (email + SMS)', B1.fmt(a.signedAt + 5 * B3.DAY)], ['Friendly follow-up — the job has not started, so the tone stays friendly', B1.fmt(a.signedAt + 6 * B3.DAY)]]
+      .map(r => r.concat([Date.now() >= a.signedAt + 3 * B3.DAY && r[1] === B1.fmt(a.signedAt + 3 * B3.DAY) ? Tag('Sent', 'ok') : Tag('Scheduled')])), {flush:true}) : null,
     h('div', null, job.depInv ? Tag('Draft deposit invoice created — ' + B3.M(dep.a) + ' · waits in Billing', 'ok')
       : Btn('Draft deposit invoice — ' + B3.M(dep.a), {kind:'pri', disabled:!signed, onClick:() => { APP.b3Set(id, j => Object.assign({}, j, {depInv:true})); APP.b3Log(id, 'Deposit invoice drafted', B3.M(dep.a)); toast('Draft deposit invoice created'); }})))),
   Card('4 · Ready to become a job → Phase 3', Stack(
@@ -2652,6 +2798,223 @@ SCREENS.schedules = (p, st) => { const rows = b3Jobs(st).filter(x => x.j.est && 
      ['Residential fixed rate — over $30K', {t:'5', n:true}, '$500 binder · 40% within 5 calendar days · 20% · 20% · the remainder'],
      ['Residential fixed rate — under $30K', {t:'—', n:true}, 'Not received yet — the estimator walked through the over-$30K template'],
      ['Standard schedule of values — 4 draws', {t:'4', n:true}, '33% at start · 30% rough complete · 30% finish stage · 7% final']], {flush:true}), {flush:true})]}); };
+
+
+/* ================= SETTINGS · CONTRACT TEMPLATES — what the real contracts show (19-oct) ================= */
+/* ================= LEAD RECORD · the visit and the estimate, at the top of Overview (Phase 1 → Phase 2) ================= */
+const b3LeadCards = (l, st) => { if(l.stage === 'Lost' && !l.visit) return null;
+ const v = l.visit, stt = v ? (v.st || (v.at < Date.now() - 2 * B1.HOUR ? 'Past — confirm' : 'Booked')) : null, live = stt === 'Booked' || stt === 'Past — confirm';
+ const j = B3.get(st, l.id), S = B3.steps(j), done = S.filter(x => x[3]).length, nx = S.findIndex(x => !x[3]), open = ['Estimating', B1.SENT(l.arm), 'Won'].indexOf(l.stage) >= 0 || stt === 'On site' || stt === 'Completed';
+ return Row(
+  Card('Site visit', Stack(
+    !v ? HTM({fontSize:'12.5px', color:C.mut}, 'No visit booked yet. Booking it moves the lead to <b>Visit scheduled</b>.')
+      : h('div', {style:{fontSize:'13px', lineHeight:1.7}}, h('b', null, B1.fmt(v.at)), ' · ' + (v.est || '—') + ' · ', Tag(stt, stt === 'Completed' || stt === 'On site' ? 'ok' : stt === 'No-show' ? 'dg' : 'ai'),
+          v.onAt ? h('div', {style:{fontSize:'12px', color:C.mut}}, 'On site since ' + B1.fmt(v.onAt)) : null),
+    h('div', {style:{display:'flex', gap:'8px', flexWrap:'wrap'}},
+      !v ? Btn('Book a visit', {kind:'pri', onClick:() => APP.b2BookDlg(l.id)}) : null,
+      live ? Btn('I\u2019m on site', {kind:'pri', onClick:() => APP.b2Visit(l.id, 'onsite')}) : null,
+      stt === 'On site' ? Btn('Open the site intake', {kind:'pri', onClick:() => APP.b3Open(l.id, 'site')}) : null,
+      stt === 'On site' ? Btn('Visit completed', {onClick:() => APP.b2Visit(l.id, 'done')}) : null,
+      live ? Btn('Move', {onClick:() => APP.b2BookDlg(l.id)}) : null, live ? Btn('No-show', {onClick:() => APP.b2Visit(l.id, 'noshow')}) : null)), {hard:live}),
+  Card('Estimate ' + B3.estNo(l.id), Stack(
+    open ? h('div', {style:{fontSize:'13px', lineHeight:1.7}}, h('b', null, B3.lane(l, j)), ' · ' + done + ' of ' + S.length + ' steps', h('div', {style:{fontSize:'12px', color:C.mut}}, nx >= 0 ? 'Next: ' + (nx + 1) + ' · ' + S[nx][1] : 'Ready to become a job'))
+      : HTM({fontSize:'12.5px', color:C.mut}, 'Opens when the estimator marks <b>I\u2019m on site</b> at the visit. From then on the estimate, the contract and the proposal live here.'),
+    h('div', null, Btn('Open estimate ' + B3.estNo(l.id) + ' →', {kind:open ? 'pri' : 'ghost', disabled:!open, onClick:() => APP.b3Open(l.id)})))));
+};
+
+setTimeout(() => { SCREENS.s_contracts = () => Page({key:'s_contracts', title:'Contract templates',
+ sub:'Two templates, split at $30,000 — the right one is selected from the proposal total and can be overridden. The draws are suggested per job in Phase 2 · Payment schedule & contract.',
+ actions:[Btn('+ Add template', {kind:'pri', onClick:() => APP.mContract()})],
+ children:[
+  Tbl(['Template','Band from','Band to','Version','Active',''], [['<b>Resi Fixed Rate — Less Than $30K — PA HIC</b>', '$0', '$30,000', 'current', '☑'], ['<b>Resi Fixed Rate — Greater Than $30K — PA HIC</b>', '$30,000.01', '—', 'v2.8', '☑']]
+    .map(r => r.concat([h('div', {style:{display:'flex', gap:'6px'}}, Btn('Edit', {sm:true}), Btn('Preview', {sm:true}), Btn('History', {sm:true}))])), {min:'980px'}),
+  Row(
+   Card('Payment structure in the template', Stack(
+    Tbl(['','Payment','Amount','When it falls due'], [
+     ['A', '<b>Binder</b>', '$500', 'On signature — non-refundable'],
+     ['B', '<b>Deposit</b>', 'about 40%', 'Within <b>5 calendar days</b> of signing. Material orders are placed once it is received'],
+     ['C…', '<b>Milestone draw(s)</b>', 'the job decides', 'On or before a date, at a milestone written in words — <i>“Drywall finished &amp; tile installed”</i>, <i>“Completion of flashing”</i>'],
+     ['last', '<b>Final</b>', 'what is left', 'On final completion and settlement of all claims of laborers and suppliers']], {flush:true}),
+    HTM({fontSize:'11.5px', color:C.faint, padding:'0 16px 12px', lineHeight:1.6},
+     'Seen in two signed contracts in their current system. Over $30,000: 40% deposit, one 50% milestone draw, the rest (about 8%) at the end. Under $30,000: two equal payments and a fixed $200 at the end. ' +
+     'There is no fixed 40 / 20 / 20: the number of draws and their percentages change with each job, so the platform suggests them from the scope and a person confirms.')), {flush:true}),
+   Card('Clauses that carry over', HTM({fontSize:'12.5px', lineHeight:1.9},
+    '• <b>Duration</b> in calendar days — the total divided by $1,000 (a $33,160 job reads “33.16 calendar days”)<br>' +
+    '• Material orders are placed once the deposit is received · 5% fee when paying by card · late fees outside the terms<br>' +
+    '• A credit card on file, billed if an invoice is more than 5 days past due<br>' +
+    '• Cancellation within three business days, with the deposit refunded<br>' +
+    '• Bureau of Consumer Protection notice · a list of the subcontractors known at signing · Pennsylvania law<br>' +
+    '• <b>Changes:</b> the clause that makes the client a user of their current system now points at the client portal')))]});
+
+
+
+}, 0);
+
+/* ================= 1 · SITE INTAKE — on the phone, at the property (replaces Inspection sessions) ================= */
+const b3SiteSet = (id, fn) => APP.b3Set(id, j => Object.assign({}, j, {site:fn(JSON.parse(JSON.stringify(j.site)))}));
+SCREENS.site = (p, st) => b3Page(st, 'site', 'Site intake', (lead, job, id) => {
+ const sub = 'Filled on the phone during the visit. It is what the estimator takes back to the office to build the estimate in Xactimate — rooms, measurements, photos and the items, in Xactimate’s own codes.';
+ const si = job.site, ui = st.p2ui;
+ if(!si) return {sub, children:[Card('Start the site intake', Stack(
+   HTM({fontSize:'13px'}, (lead.visit && lead.visit.st === 'On site' ? 'The estimator is on site since ' + B1.fmt(lead.visit.onAt) + '. ' : '') + 'Add the rooms as you walk the property. Talk or type each item — the platform turns it into Xactimate codes.'),
+   h('div', null, Btn('Start the site intake', {kind:'pri', onClick:() => { APP.b3Set(id, j => Object.assign({}, j, {site:{mode:'Voice', startedAt:Date.now(), rooms:[{id:'R1', level:'Main level', name:'Kitchen', type:'Kitchen', L:'', W:'', H:'8', op:[], fin:{floor:'Vinyl plank', walls:'Drywall', ceil:'Drywall'}, items:[], photos:0, notes:''}], cur:'R1', done:false}})); APP.b3Log(id, 'Site intake started', 'On the phone at the property'); }})),
+   simNote('On the phone this is the first screen after “I’m on site”. Jobs that skip the visit (an emergency, a bid from drawings) can go straight to Xactimate intake.')), {hard:true})]};
+ const r = si.rooms.find(x => x.id === si.cur) || si.rooms[0], m = r ? B3.roomMath(r) : null, chk = B3.siteChecks(si), lock = si.done;
+ const setR = patch => b3SiteSet(id, z => { const q = z.rooms.find(x => x.id === z.cur) || z.rooms[0]; Object.assign(q, typeof patch === 'function' ? patch(q) : patch); (q.items || []).forEach((it, n) => { if(it.calc && isNaN(Number(it.calc))) q.items[n] = Object.assign(it, {qty:B3.roomMath(q)[it.calc] || it.qty}); }); z.done = false; return z; });
+ const addRoom = () => { const v = {lv:'Main level', n:'', t:'Bedroom'};
+   modal('Add a room or area', Stack(Lbl('Level'), SelC(v.lv, ['Main level','2nd floor','Basement','Exterior','Roof'], x => v.lv = x), Lbl('Type'), SelC(v.t, ['Kitchen','Bathroom','Bedroom','Living room','Dining room','Hallway','Office','Laundry','Garage','Stairs','Closet','Exterior','Other'], x => v.t = x),
+     Lbl('Name — as it will be named in the Xactimate sketch'), h('input', {autoFocus:true, placeholder:'e.g. Bedroom 2', onChange:e => v.n = e.target.value, style:inputStyle()})),
+     [Btn('Cancel', {onClick:() => closeM()}), Btn('Add room', {kind:'pri', onClick:() => { closeM(); b3SiteSet(id, z => { const nid = 'R' + (z.rooms.length + 1) + '-' + Date.now() % 1000; z.rooms.push({id:nid, level:v.lv, name:v.n.trim() || v.t, type:v.t, L:'', W:'', H:v.lv === 'Exterior' ? '' : '8', op:[], fin:{floor:'Carpet', walls:'Drywall', ceil:'Drywall'}, items:[], photos:0, notes:''}); z.cur = nid; z.done = false; return z; }); }})]); };
+ const SAY = ['seal and paint walls and ceiling', 'drywall 1/2 r&r walls', 'baseboard r&r', 'outlet replace 2', 'carpet remove floor', 'PNT SWALL walls', 'insulation replace 120 sf', 'DMO DUMP> 1', 'door replace', 'casing replace 34 lf'];
+ const addItem = txt => { if(!String(txt || '').trim()) return; setR(q => ({items:(q.items || []).concat([B3.parseItem(txt, q)])})); setP2({say:''}); };
+ const f3 = (k, ph) => h('div', {style:{flex:1}}, Lbl(ph), FldC(r[k], v => setR({[k]:v}), {ph:'ft'}));
+ const phone = h('div', {style:{width:'100%', maxWidth:'420px', margin:'0 auto', background:'#0F2A3D', borderRadius:'34px', padding:'14px 12px', boxShadow:'0 18px 40px rgba(15,42,61,.25)'}},
+  h('div', {style:{background:'#F4F8FB', borderRadius:'24px', overflow:'hidden'}},
+   h('div', {style:{background:C.pri, color:'#fff', padding:'14px 16px'}}, h('div', {style:{fontSize:'11px', letterSpacing:'.08em', opacity:.85}}, 'SITE INTAKE · ' + B3.estNo(lead.id)), h('b', {style:{fontSize:'15px'}}, lead.client + ' · ' + lead.addr),
+     h('div', {style:{display:'flex', gap:'6px', marginTop:'8px'}}, ...['Voice','Silent'].map(md => h('span', {key:md, onClick:() => b3SiteSet(id, z => Object.assign(z, {mode:md})), style:{cursor:'pointer', fontSize:'11.5px', padding:'4px 10px', borderRadius:'99px', background:si.mode === md ? '#fff' : 'rgba(255,255,255,.18)', color:si.mode === md ? C.pri : '#fff', fontWeight:600}}, md === 'Voice' ? '🎙 Voice' : '🔇 Silent')),
+       h('span', {style:{marginLeft:'auto', fontSize:'11px', opacity:.85}}, 'offline-ready'))),
+   h('div', {style:{padding:'12px', display:'flex', flexDirection:'column', gap:'10px'}},
+    h('div', {style:{display:'flex', gap:'6px', flexWrap:'wrap'}}, ...si.rooms.map(x => h('span', {key:x.id, onClick:() => b3SiteSet(id, z => Object.assign(z, {cur:x.id})), style:{cursor:'pointer', fontSize:'12px', padding:'5px 10px', borderRadius:'99px', border:'1px solid ' + (x.id === r.id ? C.pri : C.bd), background:x.id === r.id ? C.priL : '#fff', fontWeight:x.id === r.id ? 700 : 500}}, x.name + ((x.items || []).length ? ' · ' + x.items.length : ''))),
+      lock ? null : h('span', {onClick:addRoom, style:{cursor:'pointer', fontSize:'12px', padding:'5px 10px', borderRadius:'99px', border:'1px dashed ' + C.pri, color:C.pri, fontWeight:600}}, '+ Room')),
+    Card(r.name + ' · ' + r.level, Stack(
+      h('div', {style:{display:'flex', gap:'8px'}}, f3('L', 'Length'), f3('W', 'Width'), f3('H', 'Height')),
+      m.ok ? h('div', {style:{fontSize:'11.5px', color:C.mut, lineHeight:1.6}}, 'Walls ' + m.W + ' SF · Ceiling ' + m.C + ' SF · Floor ' + m.F + ' SF · Perimeter ' + m.PF + ' LF') : HTM({fontSize:'11.5px', color:C.wn}, 'Add length, width and height — the items use them'),
+      Lbl('Openings — they come off the walls'), ...(r.op || []).map((o, n) => h('div', {key:n, style:{display:'flex', gap:'6px', alignItems:'center', fontSize:'12.5px'}}, h('span', {style:{flex:1}}, o.t + ' · ' + o.w + ' × ' + o.h + ' ft'), lock ? null : Btn('🗑', {sm:true, onClick:() => setR(q => ({op:q.op.filter((x, i) => i !== n)}))}))),
+      lock ? null : h('div', {style:{display:'flex', gap:'6px'}}, ...['Door','Window','Missing wall'].map(tp => Btn('+ ' + tp, {sm:true, onClick:() => setR(q => ({op:(q.op || []).concat([{t:tp, w:tp === 'Window' ? '3' : tp === 'Door' ? '3' : '6', h:tp === 'Window' ? '4' : tp === 'Door' ? '6.8' : q.H || '8'}])}))}))),
+      Lbl('Finishes there today'), h('div', {style:{display:'flex', gap:'6px'}},
+        h('div', {style:{flex:1}}, SelC(r.fin.floor, ['Carpet','Vinyl plank','Tile','Wood','Concrete'], v => setR(q => ({fin:Object.assign({}, q.fin, {floor:v})})))),
+        h('div', {style:{flex:1}}, SelC(r.fin.walls, ['Drywall','Plaster','Paneling'], v => setR(q => ({fin:Object.assign({}, q.fin, {walls:v})})))),
+        h('div', {style:{flex:1}}, SelC(r.fin.ceil, ['Drywall','Plaster','Popcorn'], v => setR(q => ({fin:Object.assign({}, q.fin, {ceil:v})}))))))),
+    Card('Items — say them as you would in Xactimate', Stack(
+      ...(r.items || []).map((it, n) => h('div', {key:n, style:{display:'flex', gap:'8px', alignItems:'flex-start', borderBottom:'1px solid ' + C.line, paddingBottom:'6px'}},
+        h('span', {style:{fontFamily:'ui-monospace,Menlo,monospace', fontSize:'11.5px', fontWeight:700, color:it.conf < 0.9 ? C.dg : C.pri, minWidth:'92px'}}, (it.cat || '???') + ' ' + (it.sel || '—') + ' ' + it.act),
+        h('div', {style:{flex:1, fontSize:'12px'}}, h('div', null, it.desc), h('div', {style:{color:C.faint, fontSize:'11px'}}, '“' + it.raw + '” · ' + B3.ACTS[it.act] + ' · ' + it.qty + ' ' + it.unit + (isNaN(Number(it.calc)) ? ' (' + it.calc + ')' : ''))),
+        lock ? null : Btn('🗑', {sm:true, onClick:() => setR(q => ({items:q.items.filter((x, i) => i !== n)}))}))),
+      lock ? null : h('div', {style:{display:'flex', gap:'6px'}}, h('div', {style:{flex:1}}, FldC(ui.say || '', v => setP2({say:v}), {ph:'e.g. “drywall 1/2 r&r walls”, “PNT SP”'})), Btn('Add', {onClick:() => addItem(ui.say)})),
+      lock ? null : Btn('🎙 Dictate (simulated)', {kind:'pri', onClick:() => addItem(SAY[((r.items || []).length + r.name.length) % SAY.length])}))),
+    Card('Photos · ' + r.photos + ' in this room', Stack(h('div', {style:{fontSize:'11.5px', color:C.mut}}, 'Tagged to ' + r.name + ' automatically — they arrive in Photos & report already labelled by room.'),
+      lock ? null : h('div', null, Btn('📷 Take photo (simulated)', {onClick:() => setR(q => ({photos:(q.photos || 0) + 1}))})))),
+    Card('Notes', TaC(r.notes || '', v => setR({notes:v}), {min:50})),
+    lock ? h('div', {style:{fontSize:'12.5px', color:C.ok, fontWeight:600, textAlign:'center'}}, '✓ Session ended ' + B1.fmt(si.doneAt) + ' — saved to ' + B3.estNo(lead.id))
+      : Btn('End session → save to ' + B3.estNo(lead.id), {kind:'pri', onClick:() => { b3SiteSet(id, z => Object.assign(z, {done:true, doneAt:Date.now()})); APP.b3Log(id, 'Site intake saved', si.rooms.length + ' rooms · ' + si.rooms.reduce((a, x) => a + (x.items || []).length, 0) + ' items'); toast('Site intake saved to ' + B3.estNo(lead.id)); }}))));
+ const sheet = [];
+ si.rooms.forEach(x => (x.items || []).forEach(it => sheet.push([x.level + ' › <b>' + x.name + '</b>', '<b>' + (it.cat || '—') + '</b>', it.sel || '<span style="color:#C8442E">pick</span>', it.act + ' ' + B3.ACTS[it.act], isNaN(Number(it.calc)) ? it.calc : '—', {t:String(it.qty), n:true}, it.unit, it.desc])));
+ return {sub, children:[
+  h('div', {style:{display:'grid', gridTemplateColumns:'minmax(320px,440px) minmax(0,1fr)', gap:'20px', alignItems:'start'}},
+   phone,
+   Stack(
+    Card('For the office — the same order as Xactimate Quick Entry', sheet.length ? Tbl(['Room','Cat','Sel','Act','Calc',{t:'Qty',n:true},'Unit','Description'], sheet, {flush:true, min:'760px'}) : HTM({padding:'14px 16px', fontSize:'12.5px', color:C.mut}, 'Nothing dictated yet.'),
+      {flush:true, actions:[h('span', {key:'n', style:{fontSize:'11.5px', color:C.faint}}, 'No prices here — the price list, O&P, minimums and tax are Xactimate’s')]}),
+    Card('Rooms and measurements', Tbl(['Room','L × W × H',{t:'Walls SF',n:true},{t:'Ceiling SF',n:true},{t:'Floor SF',n:true},{t:'Perimeter LF',n:true},'Openings',{t:'Photos',n:true}],
+      si.rooms.map(x => { const q = B3.roomMath(x); return ['<b>' + x.name + '</b> · ' + x.level, q.ok ? x.L + ' × ' + x.W + ' × ' + x.H : '—', {t:q.ok ? q.W : '—', n:true}, {t:q.ok ? q.C : '—', n:true}, {t:q.ok ? q.F : '—', n:true}, {t:q.ok ? q.PF : '—', n:true}, (x.op || []).map(o => o.t + ' ' + o.w + '×' + o.h).join(' · ') || '—', {t:x.photos || 0, n:true}]; }), {flush:true}), {flush:true}),
+    Card('Checks — the same kind Xactimate runs', chk.length ? Tbl(['Room','What to look at'], chk, {flush:true}) : HTM({padding:'14px 16px', fontSize:'12.5px', color:C.ok, fontWeight:600}, '✓ Nothing to check'), {flush:true}),
+    Card('Where this goes', HTM({fontSize:'12.5px', lineHeight:1.8}, '• The estimator types it into <b>Xactimate</b> at the office — the platform cannot connect to it.<br>• The photos go to <b>Photos &amp; report</b>, already tagged by room.<br>• The items are cross-checked against the Xactimate PDFs in <b>Xactimate intake</b>, and feed the <b>Scope of work</b> draft.')),
+    Bar(Sp(), Btn('Continue to Xactimate intake →', {kind:si.done ? 'pri' : 'ghost', onClick:() => go('estimate')}))))]};
+});
+
+/* the menu: Inspection sessions is now this step; Photo library lives inside each estimate (Dana, 19-oct) */
+(() => { const g = NAV.find(n => n.id === 'g_est'); if(g) g.items = g.items.filter(i => i[0] !== 'sessions' && i[0] !== 'photolib'); })();
+setTimeout(() => { SCREENS.sessions = (p, st) => SCREENS.equeue(p, st); SCREENS.inspection = (p, st) => SCREENS.equeue(p, st); }, 0);
+
+
+/* ================= FOLLOW-UP BY COLUMN — the Elite approach Dana asked for (19-oct) =================
+   One configuration per pipeline column, edited from the column's ⋯ menu on the Hotlist board or from Settings — the same data either way. */
+const FU_TABS = {'Restoration':['Default','Water & mitigation','Fire & smoke','Remodel'], 'Commercial GC':['Default','Bid invitation','Private client']};
+const FU_WAITS = ['Immediately','10 minutes','1 hour','4 hours','23 hours','24 hours','48 hours','72 hours','5 days','7 days','10 days'];
+const FU_H = {'Immediately':0, '10 minutes':1 / 6, '1 hour':1, '4 hours':4, '23 hours':23, '24 hours':24, '48 hours':48, '72 hours':72, '5 days':120, '7 days':168, '10 days':240};
+const fuWait = w => ({'After 1 day':'24 hours', 'After 2 days':'48 hours', 'After 3 days':'72 hours', 'After 5 days':'5 days', 'After 7 days':'7 days', 'After 8 days':'7 days', 'After 10 days':'10 days', 'After 30 minutes':'10 minutes'})[w] || (FU_WAITS.indexOf(w) >= 0 ? w : 'Immediately');
+const FU_FROM = {'New':'Default Lead Cadence', 'Emergency dispatch':'Emergency Response', 'Proposal sent':'Proposal Follow-Up — friendly', 'Proposal / bid submitted':'Proposal Follow-Up — friendly'};
+const FU_WHEN = ['Lead replies','Visit booked','Visit completed','Proposal signed','Client declines','No reply after the last follow-up'];
+const FU_THEN = ['Move to stage','Stop follow-ups','Notify the assignee','Escalate to the Operations Manager'];
+const fuDefault = (arm, stage) => { const c = CADENCES.find(x => x.n === FU_FROM[stage]);
+  const steps = c ? c.steps.map(x => ({ch:x[1] === 'AI voice call' ? 'AI voice call' : x[1], w:fuWait(x[2]), tpl:x[3]}))
+    : stage === 'Visit scheduled' ? [{ch:'SMS', w:'Immediately', tpl:'Appointment confirmation'}, {ch:'SMS', w:'23 hours', tpl:'Appointment reminder — tomorrow'}] : [];
+  const rules = stage === 'New' || stage === 'Bid invitation received' ? [['Lead replies','Move to stage','Qualified',''], ['Visit booked','Move to stage','Visit scheduled',''], ['No reply after the last follow-up','Notify the assignee','','168']]
+    : /Proposal/.test(stage) ? [['Proposal signed','Move to stage','Won',''], ['Client declines','Move to stage','Lost',''], ['No reply after the last follow-up','Escalate to the Operations Manager','','240']]
+    : stage === 'Visit scheduled' ? [['Visit completed','Move to stage','Estimating','']] : stage === 'Emergency dispatch' ? [['Lead replies','Stop follow-ups','','']] : [];
+  return {tabs:{Default:steps}, rules, on:steps.length > 0}; };
+const fuGet = (st, arm, stage) => ((st.fu || {})[arm + '|' + stage]) || fuDefault(arm, stage);
+const fuPut = (arm, stage, fn) => APP.setState(s => { const k = arm + '|' + stage, cur = JSON.parse(JSON.stringify(((s.fu || {})[k]) || fuDefault(arm, stage))); return {fu:Object.assign({}, s.fu, {[k]:fn(cur) || cur})}; });
+const fuSort = (st, arm, L) => list => { const o = (st.laneSort || {})[arm + '|' + L]; if(o === 'Newest first') return list.slice().sort((a, b) => b.createdAt - a.createdAt); if(o === 'Oldest first') return list.slice().sort((a, b) => a.createdAt - b.createdAt); return list; };
+const fuPreview = (steps, t0) => { let t = t0; return steps.map(x => { t += (FU_H[x.w] || 0) * B1.HOUR; let d = new Date(t), moved = false;
+  const fix = () => { const hh = d.getHours() + d.getMinutes() / 60, wd = d.getDay(); if(wd === 0 || wd === 6 || hh < 8 || hh >= 18){ moved = true; if(hh >= 18 || wd === 6 || wd === 0) d.setDate(d.getDate() + 1); d.setHours(8, 0, 0, 0); while(d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1); } };
+  if(x.ch !== 'Call') fix(); t = d.getTime(); return {x, at:t, moved}; }); };
+
+/* the Kanban with a ⋯ menu on each column */
+const KanbanFU = (lanes, cardsFor, onDrop, arm) => { const st = APP.state, menu = st.laneMenu;
+ return h('div', {style:{display:'flex', gap:'10px', overflowX:'auto', paddingBottom:'6px'}},
+  ...lanes.map(L => { const fu = fuGet(st, arm, L), n = (fu.tabs.Default || []).length, k = arm + '|' + L;
+   return h('div', {key:L, onDragOver:onDrop ? e => { e.preventDefault(); e.currentTarget.style.background = '#EDF5FA'; } : null, onDragLeave:onDrop ? e => e.currentTarget.style.background = '#FAFCFD' : null,
+     onDrop:onDrop ? e => { e.preventDefault(); e.currentTarget.style.background = '#FAFCFD'; onDrop(e.dataTransfer.getData('text/plain'), L); } : null,
+     style:{minWidth:'210px', flex:'1 0 210px', background:'#FAFCFD', border:'1px solid ' + C.bd, borderRadius:'10px', position:'relative'}},
+    h('div', {style:{padding:'8px 8px 8px 11px', borderBottom:'1px solid ' + C.bd, display:'flex', alignItems:'center', gap:'6px', background:C.priL, borderRadius:'9px 9px 0 0'}},
+      h('span', {style:{fontFamily:BAR, fontSize:'11px', fontWeight:600, letterSpacing:'.07em', textTransform:'uppercase', color:C.priD, flex:1}}, L),
+      n ? h('span', {title:'Follow-up runs in this column', style:{fontSize:'10.5px', color:C.pri, fontWeight:600}}, '⟳ ' + n) : null,
+      h('span', {'data-lanemenu':L, onClick:e => { e.stopPropagation(); APP.setState({laneMenu:menu === k ? null : k}); }, style:{cursor:'pointer', padding:'0 6px', fontWeight:700, color:C.priD, borderRadius:'6px'}}, '⋯')),
+    menu === k ? h('div', {style:{position:'absolute', top:'38px', right:'6px', zIndex:20, background:'#fff', border:'1px solid ' + C.bd, borderRadius:'10px', boxShadow:'0 10px 24px rgba(14,42,59,.14)', padding:'6px', minWidth:'190px'}},
+      ...[['Follow-up settings', () => { APP.setState({laneMenu:null}); go('fucol', k); }], ['↓ Newest first', () => APP.setState(s => ({laneMenu:null, laneSort:Object.assign({}, s.laneSort, {[k]:'Newest first'})}))],
+          ['↑ Oldest first', () => APP.setState(s => ({laneMenu:null, laneSort:Object.assign({}, s.laneSort, {[k]:'Oldest first'})}))], ['⇅ Default order', () => APP.setState(s => ({laneMenu:null, laneSort:Object.assign({}, s.laneSort, {[k]:''})}))]]
+        .map((m, i) => h('div', {key:i, onClick:m[1], style:{padding:'8px 10px', fontSize:'12.5px', cursor:'pointer', borderRadius:'6px', fontWeight:i === 0 ? 600 : 400, borderBottom:i === 0 ? '1px solid ' + C.line : 'none'}}, m[0]))) : null,
+    h('div', {style:{padding:'8px', display:'flex', flexDirection:'column', gap:'8px'}}, ...cardsFor(L))); })); };
+
+/* the editor — one page, reached from the board or from Settings */
+SCREENS.fucol = (k, st) => { const [arm, stage] = String(k || 'Restoration|New').split('|'), fu = fuGet(st, arm, stage), tabs = FU_TABS[arm] || ['Default'], tab = st.fuTab && tabs.indexOf(st.fuTab) >= 0 ? st.fuTab : 'Default';
+ const own = !!fu.tabs[tab], steps = fu.tabs[tab] || fu.tabs.Default || [], t0 = st.fuT0 || Date.now(), pv = fuPreview(steps, t0), stages = B1.stagesFor(arm);
+ const setSteps = fn => fuPut(arm, stage, c => { c.tabs[tab] = fn((c.tabs[tab] || c.tabs.Default || []).map(x => Object.assign({}, x))); c.on = true; return c; });
+ const TPL = ['(write inline)'].concat(TEMPLATES.map(t => t.n)).concat(['Appointment confirmation','Appointment reminder — tomorrow']);
+ const stepCard = (x, i) => h('div', {key:i, style:{border:'1px solid ' + C.bd, borderRadius:'10px', padding:'10px 12px', background:'#fff'}},
+   h('div', {style:{display:'flex', gap:'8px', alignItems:'center', marginBottom:'8px'}}, h('span', {style:{width:'22px', height:'22px', borderRadius:'50%', background:C.priL, color:C.priD, fontSize:'11.5px', fontWeight:700, display:'inline-flex', alignItems:'center', justifyContent:'center'}}, i + 1),
+     h('b', {style:{fontSize:'12.5px', flex:1}}, 'Step ' + (i + 1)), Btn('↑', {sm:true, disabled:i === 0, onClick:() => setSteps(a => { a.splice(i - 1, 0, a.splice(i, 1)[0]); return a; })}),
+     Btn('↓', {sm:true, disabled:i === steps.length - 1, onClick:() => setSteps(a => { a.splice(i + 1, 0, a.splice(i, 1)[0]); return a; })}), Btn('🗑', {sm:true, onClick:() => setSteps(a => a.filter((y, j) => j !== i))})),
+   h('div', {style:{display:'flex', gap:'8px', flexWrap:'wrap'}},
+     h('div', {style:{flex:'1 1 120px'}}, Lbl('Channel'), SelC(x.ch, ['Email','SMS','Call','AI voice call'], v => setSteps(a => { a[i].ch = v; return a; }))),
+     h('div', {style:{flex:'1 1 130px'}}, Lbl(i === 0 ? 'After entering the column' : 'After previous send'), SelC(x.w, FU_WAITS, v => setSteps(a => { a[i].w = v; return a; }))),
+     x.ch === 'Call' ? null : h('div', {style:{flex:'2 1 180px'}}, Lbl('Template'), SelC(x.tpl, TPL.indexOf(x.tpl) < 0 ? [x.tpl].concat(TPL) : TPL, v => setSteps(a => { a[i].tpl = v; return a; })))));
+ const back = st.fuBack === 's_fucols' ? ['Follow-up by column', () => go('s_fucols')] : ['Hotlist', () => go('hotlist')];
+ return Page({key:'fu' + k, crumb:[back[0], back[1], arm + ' · ' + stage], title:'Follow-up settings — ' + stage, sub:arm + ' · runs for every lead that enters this column. The same settings open from the column’s ⋯ menu on the Hotlist board and from Settings → Follow-up.',
+  actions:[Btn(fu.on ? 'Turn off for this column' : 'Turn on', {onClick:() => fuPut(arm, stage, c => Object.assign(c, {on:!c.on}))}), Btn('Save', {kind:'pri', onClick:() => { toast('Follow-up for ' + stage + ' saved — applies to leads entering the column from now on'); back[1](); }})],
+  children:[
+   h('div', {style:{display:'flex', gap:'4px', borderBottom:'1px solid ' + C.bd}}, ...tabs.map(t => h('div', {key:t, onClick:() => APP.setState({fuTab:t}), style:{padding:'9px 14px', cursor:'pointer', fontSize:'12.5px', fontWeight:600, letterSpacing:'.04em', textTransform:'uppercase', color:t === tab ? C.priD : C.mut, borderBottom:'2px solid ' + (t === tab ? C.pri : 'transparent')}}, t + (t !== 'Default' && fu.tabs[t] ? ' ●' : '')))),
+   h('div', {style:{display:'grid', gridTemplateColumns:'minmax(0,1.25fr) minmax(280px,.9fr)', gap:'18px', alignItems:'start'}},
+    Stack(
+     tab !== 'Default' && !own ? Card('', h('div', {style:{display:'flex', gap:'10px', alignItems:'center', flexWrap:'wrap'}}, h('span', {style:{fontSize:'12.5px', flex:1}}, 'Leads of type “' + tab + '” use the Default steps.'), Btn('Customize for ' + tab, {kind:'pri', onClick:() => fuPut(arm, stage, c => { c.tabs[tab] = (c.tabs.Default || []).map(x => Object.assign({}, x)); return c; })}))) : null,
+     ...(tab === 'Default' || own ? steps.map(stepCard) : []),
+     tab === 'Default' || own ? h('div', null, Btn('+ Add step', {onClick:() => setSteps(a => a.concat([{ch:'Email', w:'24 hours', tpl:'(write inline)'}]))})) : null,
+     Card('Rules — what moves the lead or stops the follow-up', Stack(...fu.rules.map((r, i) => h('div', {key:i, style:{display:'flex', gap:'8px', flexWrap:'wrap', alignItems:'flex-end', border:'1px dashed ' + C.bd, borderRadius:'10px', padding:'9px 11px'}},
+        h('div', {style:{flex:'1 1 190px'}}, Lbl('When'), SelC(r[0], FU_WHEN, v => fuPut(arm, stage, c => { c.rules[i][0] = v; return c; }))),
+        r[0] === 'No reply after the last follow-up' ? h('div', {style:{flex:'0 0 120px'}}, Lbl('Wait (hours)'), FldC(r[3], v => fuPut(arm, stage, c => { c.rules[i][3] = v; return c; }))) : null,
+        h('div', {style:{flex:'1 1 190px'}}, Lbl('Then'), SelC(r[1], FU_THEN, v => fuPut(arm, stage, c => { c.rules[i][1] = v; return c; }))),
+        r[1] === 'Move to stage' ? h('div', {style:{flex:'1 1 160px'}}, Lbl('Stage'), SelC(r[2] || stages[0], stages, v => fuPut(arm, stage, c => { c.rules[i][2] = v; return c; }))) : null,
+        Btn('🗑', {sm:true, onClick:() => fuPut(arm, stage, c => { c.rules.splice(i, 1); return c; })})))
+      .concat([h('div', {key:'a'}, Btn('+ Add rule', {onClick:() => fuPut(arm, stage, c => { c.rules.push(['Lead replies','Stop follow-ups','','']); return c; })}))])))),
+    Card('Flow preview', Stack(
+      Lbl('Lead enters the column at'), h('input', {type:'datetime-local', value:new Date(t0 - new Date(t0).getTimezoneOffset() * 60000).toISOString().slice(0, 16), onChange:e => APP.setState({fuT0:new Date(e.target.value).getTime() || Date.now()}), style:inputStyle()}),
+      h('div', {style:{fontSize:'11.5px', color:C.faint}}, 'Eastern Time · sending hours applied (8:00 AM – 6:00 PM, weekdays — Settings → Sending Rules)'),
+      ...(!fu.on ? [HTM({fontSize:'12.5px', color:C.mut}, 'Follow-up is off for this column.')] : pv.length ? pv.map((p, i) => h('div', {key:i},
+        h('div', {style:{fontSize:'11.5px', color:C.faint, margin:'2px 0 4px'}}, '↓ ' + (p.x.w === 'Immediately' ? 'Right away' : 'Wait ' + p.x.w + (i ? ' after previous send' : ''))),
+        h('div', {style:{border:'1px solid ' + C.bd, borderRadius:'10px', padding:'9px 11px', background:'#fff'}}, h('b', {style:{fontSize:'12.5px'}}, (i + 1) + '. ' + p.x.ch + (p.x.ch === 'Call' ? ' — a task for the assignee' : ' · ' + p.x.tpl)),
+          h('div', {style:{fontSize:'12px', color:C.mut}}, new Date(p.at).toLocaleString('en-US', {weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit'}) + ' ET'), p.moved ? Tag('Moved to allowed sending hours', 'ai') : null))) : [HTM({fontSize:'12.5px', color:C.mut}, 'No steps in this column.')])
+        .concat(fu.rules.length ? [h('div', {key:'r', style:{fontSize:'12px', color:C.mut, marginTop:'4px', lineHeight:1.6}}, ...fu.rules.map((r, i) => h('div', {key:i}, '⤷ ' + r[0] + (r[3] ? ' (' + r[3] + ' h)' : '') + ' → ' + r[1].toLowerCase() + (r[1] === 'Move to stage' ? ' ' + r[2] : ''))))] : [])), {hard:true}))]});
+};
+OWNER.fucol = 'hotlist';
+
+/* Settings → Follow-up → Follow-up by column — the same data, for those who work in the list view */
+SCREENS.s_fucols = (p, st) => { const arm = st.fuArm || 'Restoration';
+ return Page({key:'s_fucols', title:'Follow-up by column', sub:'What runs when a lead enters each column of the pipeline. The same settings open from the ⋯ menu of each column on the Hotlist board — in the list view there is no column menu, so they live here too.',
+  children:[
+   h('div', {style:{display:'flex', gap:'4px', background:'#fff', border:'1px solid ' + C.bd, borderRadius:'9px', padding:'4px', alignSelf:'flex-start'}}, ...['Restoration','Commercial GC'].map(a => h('div', {key:a, onClick:() => APP.setState({fuArm:a}), style:{padding:'7px 13px', borderRadius:'6px', cursor:'pointer', fontSize:'12.5px', fontWeight:600, background:a === arm ? C.pri : 'transparent', color:a === arm ? '#fff' : C.mut}}, a))),
+   Tbl(['Column','Follow-up','Steps','Rules',''], B1.stagesFor(arm).filter(x => x !== 'Won' && x !== 'Lost').map(L => { const fu = fuGet(st, arm, L), S = fu.tabs.Default || [];
+     return ['<b>' + L + '</b>', fu.on && S.length ? Tag('On · ' + S.length + ' steps', 'ok') : Tag('Off'), S.length ? S.map(x => x.ch + ' · ' + x.w).join(' → ') : '—', fu.rules.map(r => r[0] + ' → ' + r[1].toLowerCase() + (r[2] && r[1] === 'Move to stage' ? ' ' + r[2] : '')).join('<br>') || '—',
+       Btn('Edit', {sm:true, onClick:() => { APP.setState({fuBack:'s_fucols'}); go('fucol', arm + '|' + L); }})]; }), {min:'1100px'}),
+   HTM({fontSize:'12px', color:C.faint}, 'The reusable cadences (the step templates) stay in Automations & Cadences. A change here applies to leads that enter the column from then on; a lead already running keeps its sequence, visible on its Automation tab with what was sent and what is next.')]});
+};
+(() => { let g = null; NAV.forEach(n => { if(n.id === 'x2') g = n; (n.subs || []).forEach(x => { if(x.id === 'x2') g = x; }); }); if(g && !g.items.some(i => i[0] === 's_fucols')) g.items.unshift(['s_fucols','Follow-up by column']); })();
+OWNER.s_fucols = 's_fucols';
+
+
+/* long tables: the header stays put while scrolling (Dana: the devs tend to forget it) */
+(() => { if(typeof document === 'undefined' || document.getElementById('stickyth')) return; const el = document.createElement('style'); el.id = 'stickyth';
+  el.textContent = 'div[style*="overflow: auto"] table thead th, div[style*="overflow:auto"] table thead th{position:sticky;top:0;z-index:2;background:#F4F8FB}'; document.head.appendChild(el); })();
 
 /* ================= BLOCK 4 — a working Phase 3 =================
    Jobs live in memory, beside the leads. A won lead is converted here, and every job carries its milestones, scope packages,
