@@ -2435,7 +2435,7 @@ SCREENS.mapping = (p, st) => b3Page(st, 'mapping', '2 · Line item mapping', (le
   Bar(SelC(show, ['Show: unmapped first','Show: all','Show: AI-mapped only'], v => setP2({mshow:v}), {w:'210px'}),
     Btn('Auto-map all with AI', {disabled:!L.some(l => !l.code && l.i !== B3.BAD), onClick:() => { const n = L.filter(l => !l.code && l.i !== B3.BAD).length; APP.b3Set(id, j => B3.T.automap(j)); toast(n + ' lines mapped by the AI — ' + (unm - n) + ' left for a person'); }}), Sp(),
     h('span', {style:{fontSize:'12.5px'}}, h('b', {style:{color:unm ? C.dg : C.ok}}, unm ? 'Unmapped: ' + unm + ' of ' + L.length : '✓ All ' + L.length + ' lines mapped')),
-    Btn('Mapping dictionary', {onClick:() => go('s_cost')})),
+    Btn('Mapping dictionary', {onClick:() => { go('catalog'); setTimeout(() => setTab(3), 30); }})),
   h('div', {style:{maxHeight:'560px', overflow:'auto', borderRadius:'12px', border:'1px solid ' + C.bd}}, Tbl(['#','Description (from Xactimate)','Category',{t:'Qty',n:true},'Cost code','Trade','Cost type','Source'],
     rows.map(l => ({key:l.i, c:[String(l.i + 1), l.desc, h('span', {style:{fontSize:'11px', fontWeight:600, whiteSpace:'nowrap'}}, XCATNAME[l.cat]), {t:l.qty.toLocaleString('en-US') + ' ' + l.uom, n:true},
       SelC(l.code ? B3.codeLbl(l.code) : '— unmapped —', ['— unmapped —'].concat(B3.CODEOPTS), v => { const c = v.charAt(0) === '—' ? '' : v.slice(0, 4); setL(l.i, {code:c, ctype:c ? (l.ctype || B3.ctypeOf(c)) : '', trade:'', src:c ? 'person' : ''}); }, {w:'230px', bad:!l.code}),
@@ -3326,7 +3326,7 @@ Object.assign(Component.prototype, {
 });
 
 /* ================= THE JOB STAYS SELECTED =================
-   Phase 3 has three global modules (Jobs, Subcontractors, Work in progress) plus Settings. Everything else lives inside the job.
+   Phase 3 has four global bases (Jobs, Clients, Trades & cost codes, Subcontractors), the weekly review (Work in progress) and Settings. Everything else lives inside the job.
    Once a job is open it stays fixed at the top and in the sidebar: moving between its sections never sends the user back to the list,
    and switching to another job from the selector keeps the same section open. */
 const JSECS = [['ov', 'Overview'], ['ms', 'Milestones & tasks'], ['pk', 'Scope packages'], ['cc', 'Contracts & compliance'], ['ch', 'Changes'], ['sv', 'Site visits'], ['co', 'Costs'], ['dir', 'Directory'], ['doc', 'Documents']];
@@ -3644,12 +3644,48 @@ SCREENS.s_exec = (p, st) => {
    HTM({fontSize:'11.5px', color:C.faint, lineHeight:1.6}, 'Who reviews the paperwork and when a job needs its own certificate are still to be confirmed with 3Rivers. The defaults above are what the platform does until then: the Operations Manager reviews, and the company certificate covers every job.')));
  return Page({key:'s_exec', title:'Execution settings', sub:'How bids and work orders behave, what a subcontractor must have on file, and who reviews it', children:[Tabs(T, st.tab), pane]}); };
 
-/* ================= MENU: three global modules, and the open job ================= */
-(() => { const g = NAV.find(n => n.id === 'g_sub'); if(g){ g.l = 'EXECUTION'; g.items = [['jobs', 'Jobs'], ['subs', 'Subcontractors'], ['wip', 'Work in progress']]; }
+/* ================= CLIENTS — only people and companies with a job; leads stay in the Hotlist ================= */
+const clientsOf = st => { const by = {};
+ st.jobs.forEach(j => { const k = j.client, l = st.leads.find(x => x.id === j.lead) || {}; const c = by[k] = by[k] || {n:k, jobs:[], lead:null};
+   c.jobs.push(j); if(!c.lead && l.id) c.lead = l; });
+ return Object.values(by).map(c => { const l = c.lead || {}, open = c.jobs.filter(j => j.st !== 'Closed'), inv = st.inv.filter(i => c.jobs.some(j => j.id === i.job) && i.st === 'Sent');
+   return Object.assign(c, {type:l.ctype || (c.jobs.some(j => j.div === 'Commercial') ? 'Company' : 'Individual'), phone:l.phone || '—', email:l.email || '—', city:l.city ? l.city + ', ' + (l.state || 'PA') : 'Pittsburgh, PA',
+     carrier:l.carrier || ((st.supps.find(x => c.jobs.some(j => j.id === x.job)) || {}).carrier) || '', claims:c.jobs.filter(j => j.claim).map(j => j.claim), open, port:JM.sum(c.jobs.map(j => JM.revised(st, j))), owed:JM.sum(inv.map(i => i.amt + (i.fee || 0))), late:inv.some(i => i.due < Date.now()), last:Math.max.apply(null, c.jobs.map(j => j.created || 0))}); })
+  .sort((a, b) => b.last - a.last); };
+SCREENS.clients = (p, st) => { const ui = st.jui, all = clientsOf(st), q = (ui.cq || '').toLowerCase(), f = ui.cf || 'All';
+ const rows = all.filter(c => (!q || c.n.toLowerCase().indexOf(q) >= 0) && (f === 'All' || (f === 'With an open job' ? c.open.length : !c.open.length)));
+ return Page({key:'clients', title:'Clients', sub:'Everyone 3Rivers has done or is doing a job for. A lead becomes a client the day it is converted into a job; until then it lives in the Hotlist',
+  actions:[Btn('Export CSV', {onClick:() => toast('CSV exported')})],
+  children:[Tiles([[all.length, 'Clients'], [all.filter(c => c.open.length).length, 'With an open job', null, C.ok], [JM.M0(JM.sum(all.map(c => c.port))), 'Portfolio — revised contract value'], [JM.M0(JM.sum(all.map(c => c.owed))), 'Owed to 3Rivers', null, all.some(c => c.late) ? C.dg : null]]),
+   Bar(FldC(ui.cq || '', v => setJ({cq:v}), {ph:'Search client…', w:'220px'}), SelC(f, ['All', 'With an open job', 'Past clients'], v => setJ({cf:v}), {w:'200px'}), h('span', {style:{fontSize:'12.5px', color:C.mut}}, rows.length + ' of ' + all.length)),
+   Tbl(['Client', 'Type', 'Contact', {t:'Jobs', n:true}, {t:'Portfolio', n:true}, {t:'Owed', n:true}, 'Insurance', 'Last job'], rows.map(c => ({c:['<b>' + c.n + '</b><div style="color:#7C93A5;font-size:11px">' + c.city + '</div>', c.type, c.phone + '<div style="color:#7C93A5;font-size:11px">' + c.email + '</div>', {t:c.open.length + ' open / ' + c.jobs.length, n:true}, {t:JM.M0(c.port), n:true}, {t:c.owed ? (c.late ? '<b style="color:#C8442E">' + JM.M0(c.owed) + '</b>' : JM.M0(c.owed)) : '—', n:true}, c.claims.length ? (c.carrier || 'Insurance claim') + ' · ' + c.claims.join(', ') : '—', jDay(c.last)], onClick:() => go('client', c.n)})), {min:'1150px'}),
+   Card('Where a client comes from', HTM({fontSize:'12.5px', lineHeight:1.7}, 'Nobody types a client in here. When the Operations Manager converts a signed and paid lead into a job, the client is created from the lead — name, contact, property and insurance — and every later job for the same person or company is added to the same client. Contacts and properties of leads that never became a job stay in Phase 1.'))]}); };
+SCREENS.client = (id, st) => { const c = clientsOf(st).find(x => x.n === id) || clientsOf(st)[0], inv = st.inv.filter(i => c.jobs.some(j => j.id === i.job) && i.st !== 'Draft' && i.st !== 'Void');
+ return Page({key:'client' + c.n, crumb:['Clients', () => go('clients'), c.n], title:c.n, sub:c.type + ' · ' + c.city + ' · ' + c.phone + ' · ' + c.email, actions:[c.lead ? Btn('Open the original lead', {onClick:() => go('lead', c.lead.id)}) : null],
+  children:[Tiles([[c.open.length + ' / ' + c.jobs.length, 'Open jobs / all jobs'], [JM.M0(c.port), 'Portfolio'], [JM.M0(c.owed), 'Owed to 3Rivers', null, c.late ? C.dg : null], [c.claims.length, 'Insurance claims']]),
+   Card('Jobs', Tbl(['Job', 'Stage', 'Division', 'Project manager', {t:'Contract', n:true}, 'Claim', 'Finish'], c.jobs.map(j => ({c:[jobLink(j), stageTag(j.st), j.div, j.pm, {t:JM.M0(JM.revised(st, j)), n:true}, j.claim || '—', jDay(j.af || j.pf)], onClick:() => go('job', j.id)})), {flush:true}), {flush:true}),
+   Row(Card('Invoices', inv.length ? Tbl(['Invoice', 'Job', {t:'Amount', n:true}, 'Due', 'Status'], inv.map(i => [i.id, '#' + i.job, {t:JM.M(i.amt + (i.fee || 0)), n:true}, jDay(i.due), Tag(i.st === 'Sent' && i.due < Date.now() ? 'Overdue' : i.st, i.st === 'Paid' ? 'ok' : i.st === 'Sent' && i.due < Date.now() ? 'dg' : 'wn')]), {flush:true}) : HTM({padding:'12px 16px', fontSize:'12.5px', color:C.mut}, 'None yet.'), {flush:true}),
+     Card('Insurance', c.claims.length ? Tbl(['Carrier', 'Claim', 'Job'], c.jobs.filter(j => j.claim).map(j => [c.carrier || '—', j.claim, '#' + j.id])) : HTM({padding:'12px 16px', fontSize:'12.5px', color:C.mut}, 'Pays directly — no claim on file.'), {flush:true}))]}); };
+
+/* ================= TRADES & COST CODES — the catalog every job, package and subcontractor uses ================= */
+SCREENS.catalog = (p, st) => { const T = ['Trades', 'Cost codes', 'Labour categories', 'Mapping dictionary'];
+ const fromCost = k => { const pg = SCREENS.s_cost(p, Object.assign({}, st, {tab:k})), kids = [].concat(pg.props.children); return kids[kids.length - 1]; };
+ let pane = null;
+ if(st.tab === 0){ const rows = TRADES.map(t => { const subs = st.subs.filter(s => s.t.indexOf(t) >= 0), ok = subs.filter(s => JM.qualified(s, t)), pks = []; st.jobs.forEach(j => j.pk.forEach(x => { if(x.t === t && j.st !== 'Closed') pks.push(x); }));
+     return [h('b', null, t), {t:ok.length + ' of ' + subs.length, n:true}, ok.map(s => s.n).slice(0, 3).join(', ') + (ok.length > 3 ? ' +' + (ok.length - 3) : '') || '—', {t:pks.length, n:true}, {t:pks.filter(x => x.ex === 'Subcontracted' && !x.wo && !x.bp).length || '—', n:true}, !subs.length && pks.length && pks.every(x => x.ex === 'Self-perform') ? Tag('Done by the crew') : ok.length < 2 && subs.length ? Tag('Fewer than two can be chosen', 'wn') : !subs.length ? Tag('No subcontractor', 'dg') : Tag('Covered', 'ok')]; });
+   pane = Stack(Bar(Sp(), Btn('+ Add trade', {kind:'pri', onClick:() => toast('Trade added')})),
+     Tbl(['Trade', {t:'Can be chosen', n:true}, 'Subcontractors ready', {t:'Packages on open jobs', n:true}, {t:'Waiting for a company', n:true}, 'Coverage'], rows, {min:'1000px'}),
+     Card('Why trades are a base', HTM({fontSize:'12.5px', lineHeight:1.7}, 'A trade is what ties the three together: every scope package carries one, every subcontractor is approved for one or more, and only companies approved for the trade — with current paperwork — appear when a work order or a bid goes out. A trade with fewer than two companies ready cannot go out to bid.'))); }
+ else pane = fromCost([0, 0, 2, 3][st.tab]);
+ return Page({key:'catalog', title:'Trades & cost codes', sub:'The catalog every job, scope package and subcontractor is built on: the trades, the twelve reporting groups and their codes, and how Xactimate lines land in them', children:[Tabs(T, st.tab), pane]}); };
+
+/* ================= MENU: four bases (Jobs, Clients, Trades & cost codes, Subcontractors), the weekly review, and the open job ================= */
+(() => { const g = NAV.find(n => n.id === 'g_sub'); if(g){ g.l = 'EXECUTION'; g.items = [['jobs', 'Jobs'], ['clients', 'Clients'], ['catalog', 'Trades & cost codes'], ['subs', 'Subcontractors'], ['wip', 'Work in progress']]; }
+ NAV.forEach(n => (n.subs || []).forEach(x => { x.items = x.items.filter(i => i[0] !== 's_cost'); }));
  const k = NAV.findIndex(n => n.id === 'g_wip'); if(k >= 0) NAV.splice(k, 1);
  const f = NAV.find(n => n.id === 'g_field'); if(f && !f.items.some(i => i[0] === 'dailylogs')) f.items.splice(1, 0, ['dailylogs', 'Daily logs']);
- Object.assign(OWNER, {job:'jobctx', workorder:'jobctx', bidpkg:'jobctx', bidcompare:'jobctx', scopebuilder:'jobctx', clientportal:'jobctx', sub:'subs', subportal:'subs', workorders:'subs', subcontracts:'subs', bids:'jobs', changeorders:'jobs', scorecard:'wip', sitevisits:'wip', supplements:'wip'});
- Object.assign(TITLES, {jobs:'Jobs', job:'Job', dailylogs:'Daily logs', workorder:'Work order', bidpkg:'Bid package', bidcompare:'Bid comparison', scopebuilder:'Split a package'}); })();
+ Object.assign(OWNER, {client:'clients', s_cost:'catalog', job:'jobctx', workorder:'jobctx', bidpkg:'jobctx', bidcompare:'jobctx', scopebuilder:'jobctx', clientportal:'jobctx', sub:'subs', subportal:'subs', workorders:'subs', subcontracts:'subs', bids:'jobs', changeorders:'jobs', scorecard:'wip', sitevisits:'wip', supplements:'wip'});
+ Object.assign(TITLES, {clients:'Clients', client:'Client', catalog:'Trades & cost codes', jobs:'Jobs', job:'Job', dailylogs:'Daily logs', workorder:'Work order', bidpkg:'Bid package', bidcompare:'Bid comparison', scopebuilder:'Split a package'}); })();
 (() => { const go0 = Component.prototype.go, nr0 = Component.prototype.navRows;
  Component.prototype.go = function(id, p){ const st = this.state, from = st.cur; go0.call(this, id, p);
    let cj = null;
