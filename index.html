@@ -4950,11 +4950,23 @@ SCREENS.s_billing = (p, st) => { const c = F45.cfg(st), set = patch => APP.f45Cf
  const pane = t === 2 ? mine : (SCREENS.s_billing_pane ? SCREENS.s_billing_pane(p, Object.assign({}, st, {tab:t === 3 ? 2 : t})) : null);
  return Page({key:'s_billing', title:'Invoicing, collections & vendor payments', sub:'The rules Billing follows. Every change applies from that moment on; nothing already sent changes', children:[Tabs(T, t), pane]}); };
 
+/* 18-nov: el cobro de las facturas vencidas tambien dentro del job (los mismos datos y pasos que Billing > Payments & collections) */
+const jobCollect = (st, j) => { const over = BM.outstanding(st).filter(i => i.job === j.id && BM.daysOver(i) > 0).sort((a, b) => BM.daysOver(b) - BM.daysOver(a));
+ if(!over.length) return null;
+ return Card('Collections — overdue on this job', Stack(
+   HTM({fontSize:'12.5px', color:C.mut, lineHeight:1.6, padding:'12px 16px 0'}, 'The same collection steps as Billing › Payments & collections, only for this job. <b>A person releases every stage</b>; nothing escalates on its own, and a payment stops the track straight away.'),
+   Tbl(['Invoice', {t:'Amount', n:true}, 'Due', {t:'Days overdue', n:true}, 'Track', 'Policy stage', 'Next action', ''], over.map(i => { const s = BM.stageDue(i, st), tr = BM.trackOf(st, i), L = BM.LADDER[tr];
+     return {c:['<span style="white-space:nowrap">' + i.id + '</span>', {t:JM.M(i.amt + (i.fee || 0)), n:true}, jDay(i.due), {t:BM.daysOver(i), n:true}, Tag(tr, tr === 'Firm' ? 'dg' : null), (i.stage || 0) ? 'Stage ' + i.stage + ' of ' + L.length + ' — ' + L[i.stage - 1][0] : 'None yet',
+       s ? (s.ready ? 'Release stage ' + ((i.stage || 0) + 1) + ' — ' + s.name : 'Stage ' + ((i.stage || 0) + 1) + ' from day ' + s.day) : 'An Admin decides the referral',
+       s && s.ready ? Btn('Release', {sm:true, kind:'pri', onClick:stop(() => APP.b5Stage(i.id))}) : Btn('Open', {sm:true, onClick:stop(() => go('invoice', i.id))})], onClick:() => go('invoice', i.id)}; }), {min:'1000px'})),
+  {flush:true, hard:true, actions:[Btn('Open Payments & collections', {sm:true, onClick:() => go('collections')})]}); };
+
 /* ================= THE JOB: invoices, vendor bills and costs ================= */
 Object.assign(JOBX, {
  inv:(st, j) => { const inv = (st.inv || []).filter(i => i.job === j.id).sort((a, b) => (a.ms || 'Z').localeCompare(b.ms || 'Z')), tot = JM.sum(inv.filter(i => i.st !== 'Void' && i.st !== 'Written off').map(i => i.amt)), paid = JM.sum(inv.filter(i => i.st === 'Paid').map(i => i.amt));
   return {sub:'This job’s client invoices: one per payment in the contract, a draft until its milestone is reached — the same records as Billing › Invoices', actions:[QBtn('Send every invoice ready', () => APP.f45SendAll(), {big:true}), Btn('Open Billing › Invoices', {onClick:() => go('invoices')})],
    children:[Tiles([[JM.M0(JM.wip(st, j).rev), 'Revised contract'], [JM.M0(tot), 'Invoiced and drafted'], [JM.M0(paid), 'Paid', null, C.ok], [inv.filter(i => i.st === 'Ready to send').length, 'Ready to send', null, C.pri], [inv.filter(i => i.st === 'Draft').length, 'Drafts']]),
+    jobCollect(st, j),
     inv.length ? Tbl(['Invoice', 'What for', {t:'Amount', n:true}, 'Issued', 'Due', 'Status', ''], inv.map(i => ({c:[i.id, i.what, {t:JM.M(i.amt + (i.fee || 0)), n:true}, i.iss && i.st !== 'Draft' ? jDay(i.iss) : '—', jDay(i.due), invTag2(st, i), i.st === 'Ready to send' ? Btn('Review and send', {sm:true, kind:'pri', onClick:stop(() => go('invoice', i.id))}) : i.st === 'Sent' ? h('div', {style:{display:'flex', gap:'5px'}}, seeAs('cinv', i.id, 'client', 'As the client'), QBtn('Client pays', stop(() => APP.f45QuickPay(i.id)))) : ''], onClick:() => go('invoice', i.id), style:i.st === 'Draft' ? {color:'#7C93A5'} : null})), {min:'1000px'}) : Card('', HTM({fontSize:'12.5px', color:C.mut}, 'No invoices on this job yet.'))]}; },
  ap:(st, j) => { const ap = (st.ap || []).filter(a => a.job === j.id).sort((a, b) => b.rec - a.rec), wos = st.wos.filter(w => w.job === j.id && w.st === 'Accepted');
   return {sub:'What each company billed on this job against its purchase order, the retention held and the lien waivers — the same records as Billing › Vendor bills', actions:[Btn('Open Billing › Vendor bills', {onClick:() => go('apinvoices')})],
